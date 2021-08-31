@@ -1,0 +1,12 @@
+{
+  "domain": "windcentrale",
+  "name": "Windcentrale",
+  "config_flow": true,
+  "documentation": "https://github.com/jobvk/Home-Assistant-Windcentrale",
+  "issue_tracker": "https://github.com/jobvk/Home-Assistant-Windcentrale/issues",
+  "requirements": [],
+  "iot_class": "cloud_polling",
+  "dependencies": [],
+  "codeowners": ["@jobvk"],
+  "version": "0.1.0"
+}

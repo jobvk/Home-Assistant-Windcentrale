@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Die Windcentrale Einrichten",
+        "description": "Die Windcentrale Integration einrichten. https://www.windcentrale.nl\n\nWenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: https://github.com/jobvk/Home-Assistant-Windcentrale\n\nFülle die Anzahl der Windteile dass Sie von der Spezifische Windkraftanlage besitzt ein:",
+        "data": {
+            "de_grote_geert": "De Grote Geert",
+            "de_jonge_held": "De Jonge Held",
+            "het_rode_hert": "Het Rode Hert",
+            "de_ranke_zwaan": "De Ranke Zwaan",
+            "de_witte_juffer": "De Witte Juffer",
+            "de_bonte_hen": "De Bonte Hen",
+            "de_trouwe_wachter": "De Trouwe Wachter",
+            "de_blauwe_reiger": "De Blauwe Reiger",
+            "de_vier_winden": "De Vier Winden",
+            "de_boerenzwaluw": "De Boerenzwaluw",
+            "het_vliegend_hert": "Het Vliegend Hert"
+        }
+      }
+    },
+    "error": {
+      "invalid_number_of_shares": "Alle Textfelder mussen nul oder mehr sein.",
+      "unknown": "Der Fehler ist nicht bekannt."
+    },
+    "abort": {
+      "already_configured": "Die Windcentrale ist schon konfiguriert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "De Windcentrale Anpassen",
+        "description": "Optionen für die Windcentrale Integration. https://www.windcentrale.nl\n\nWenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: https://github.com/jobvk/Home-Assistant-Windcentrale\n",
+        "data": {
+          "live": "Schalte die Live-Datasensoren der Windkraftanlage(n) an",
+          "live_interval": "Aktualisierungsfrequenz für die Live-Sensoren(Minimal 20 Sek - Maximal 300 Sek)",
+          "production": "Schalte die Sensoren für die Produktionshistorie der Windkraftanlage(n) an",
+          "production_interval": "Aktualisierungsfrequenz für die Produktionssensoren(Minimal 1 Min - Maximal 60 Min)",
+          "news": "Schalte die Nachrichtensensoren der Windkraftanlage(n) an",
+          "news_filter": "Filter für die Nachrichten der Windkraftanlage(n)",
+          "news_interval": "Aktualisierungsfrequenz des Nachrichtensensor(Minimal 1 Min - Maximal 60 Min)",
+          "show_on_map": "Zeige die Windkraftanlage(n) auf der Karte"
+        }
+      }
+    },
+    "error": {
+      "unknown": "Der Fehler ist nicht bekannt."
+    }
+  }
+}
