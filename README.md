@@ -4,7 +4,7 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/jobvk/Home-Assistant-Windcentrale)](https://github.com/jobvk/Home-Assistant-Windcentrale/releases)
 [![GitHub](https://img.shields.io/badge/license-Apache-blue)](LICENSE)
 
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/jobvk/Home-Assistant-Sensor-Windcentrale/graphs/commit-activity)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/jobvk/Home-Assistant-Windcentrale/graphs/commit-activity)
 [![Maintainer](https://img.shields.io/badge/Maintainer-jobvk-brightgreen.svg)](https://github.com/jobvk/)
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-orange.svg)](https://discord.gg/T3tK4Jsquc)
 [![Discord](https://img.shields.io/discord/882015341520244786?color=%09%237289DA)](https://discord.gg/T3tK4Jsquc)
