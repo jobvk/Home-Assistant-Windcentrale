@@ -46,7 +46,7 @@ The official website https://www.windcentrale.nl
 ### Manual Installation
 
 1. Download the `windcentrale.zip` file from the
-   [latest release](https://github.com/jobvk/Home-Assistant-Sensor-Windcentrale/releases/latest).
+   [latest release](https://github.com/jobvk/Home-Assistant-Windcentrale/releases/latest).
 2. Unpack the release and copy the files into the `custom_components/windcentrale` directory.
 3. Restart your instance.
 
