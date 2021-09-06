@@ -1,0 +1,109 @@
+name: Report an issue
+description: Report an issue for the Home Assistant Windcentrale integration.
+labels: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # Bug Report
+        
+        This issue form is for reporting bugs only!
+
+        If you have a feature or enhancement request, please use the [feature request][fr].
+        If there is someting wrong with the documentation, please use the [documentation][doc].
+        You just have a question for me or need support, please contact me on my [discord][dis].
+        
+        [fr]: https://github.com/jobvk/Home-Assistant-Windcentrale/issues/new?labels=enhancement&template=feature_request.yml
+        [doc]: https://github.com/jobvk/Home-Assistant-Windcentrale/issues/new?labels=documentation&template=documentation_change.yml
+        [dis]: https://discord.com/invite/T3tK4Jsquc
+  - type: checkboxes
+    attributes:
+      label: Checklist
+      options:
+        - label: I'm running the [latest](https://github.com/jobvk/Home-Assistant-Windcentrale/releases/latest) version of the Windcentrale integration.
+          required: true
+        - label: I checked if there is not a duplicate issue with the same question.
+          required: true
+        - label: I have read the [README.md](https://github.com/jobvk/Home-Assistant-Windcentrale/blob/master/README.md) page.
+          required: true
+        - label:  This issue is a bug related to the Windcentrale integration.
+          required: true
+        - label: This issue only contains 1 issue (if you have multiple issues, open one issue for each issue).
+          required: true
+        - label: I have filled out the issue template to the best of my ability.
+          required: true
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: The problem
+      description: >-
+        Describe the issue you are experiencing here to communicate to the
+        maintainer. Tell me what you were trying to do and what happened.
+
+        Provide a clear and concise description of what the problem is.
+  - type: markdown
+    attributes:
+      value: |
+        # Environment
+  - type: input
+    id: version-core
+    validations:
+      required: true
+    attributes:
+      label: What is version of Home Assistant Core did you recieve the bug?
+      placeholder: core-
+      description: >
+        Can be found in the Configuration panel -> Info.
+  - type: input
+    id: version-supervisor
+    validations:
+      required: true
+    attributes:
+      label: What is version of Home Assistant Supervisor did you recieve the bug?
+      placeholder: supervisor-
+      description: >
+        Can be found in the Configuration panel -> Info.
+  - type: input
+    id: host-operating-system
+    validations:
+      required: true
+    attributes:
+      label: What is version of Home Assistant Supervisor?
+      placeholder: Home Assistant OS 
+      description: >
+        Can be found in the Configuration panel -> Info.
+  - type: input
+    id: version-windcentrale
+    validations:
+      required: true
+    attributes:
+      label: What is version of the Windcentrale integration?
+      placeholder:
+      description: >
+        Can be found in the `/config/custom_components/windcentrale/manifest.json`
+
+  - type: markdown
+    attributes:
+      value: |
+        # Details
+  - type: textarea
+    id: code-snippet
+    attributes:
+      label: Example Code snippet
+      description: |
+        If this issue has an example piece of code that can help reproducing this problem, please provide.
+        This can be an piece of code from, e.g., an automation, script, scene or configuration.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Anything in the logs that might be useful for us?
+      description: For example, error message, or stack traces.
+  - type: textarea
+    id: additional-information
+    attributes:
+      label: Additional information
+      description: >
+        If you have any additional information for the maintainer, use the field below.
+        Please note, you can attach screenshots or screen recordings here, by
+        dragging and dropping files in the field below.
