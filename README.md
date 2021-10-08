@@ -127,7 +127,6 @@ Below is an example of the sensors.
 ## ToDo
 
 * Report right state after restart
-* Make the sensor available for Energy Management tab
 
 ## License
 
