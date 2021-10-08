@@ -1,4 +1,6 @@
 """Constants for the Windcentrale integration."""
+import datetime
+
 from homeassistant.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_ENERGY,
@@ -48,17 +50,17 @@ DEFAULT_SHOW_ON_MAP = False
 # Format:
 # Id: [Config, Name, number, Manufacturer, Model, Latitude, Longitude, StartDate]
 WINDTURBINES_LIST = {
-    'de_grote_geert': [CONF_WINDTURBINE_DE_GROTE_GEERT, 'De Grote Geert', 1, 'Enercon', 'E-70', "Meedhuizen", 53.27988, 6.9594, '1 jan 2013'],
-    'de_jonge_held': [CONF_WINDTURBINE_DE_JONGE_HELD, 'De Jonge Held', 2, 'Enercon', 'E-70', "Meedhuizen", 53.27725, 6.95859, '1 jan 2013'],
-    'het_rode_hert': [CONF_WINDTURBINE_HET_RODE_HERT, 'Het Rode Hert', 31, 'Vestas', 'V80', "Culemborg", 51.935829, 5.192112, '1 jan 2014'] ,
-    'de_ranke_zwaan': [CONF_WINDTURBINE_DE_RANKE_ZWAAN, 'De Ranke Zwaan', 41, 'Vestas', 'V80', "Culemborg", 51.934916, 5.199874, '1 jan 2014'],
-    'de_witte_juffer': [CONF_WINDTURBINE_DE_WITTE_JUFFER, 'De Witte Juffer', 51, 'Vestas', 'V80', "Culemborg", 51.935174, 5.195846, '1 jan 2014'],
-    'de_bonte_hen': [CONF_WINDTURBINE_DE_BONTE_HEN, 'De Bonte Hent', 111, 'Vestas', 'V52', "Burgerbrug", 52.757049, 4.684686, '1 jan 2014'],
-    'de_trouwe_wachter': [CONF_WINDTURBINE_DE_TROUWE_WACHTER, 'De Trouwe Wachter', 121, 'Vestas', 'V52', "Burgerbrug", 52.758741, 4.686049, '1 jan 2014'],
-    'de_blauwe_reiger': [CONF_WINDTURBINE_DE_BLAUWE_REIGER, 'De Blauwe Reiger', 131, 'Vestas', 'V52', "Burgerbrug", 52.760478, 4.687449, '1 jan 2014'],
-    'de_vier_winden': [CONF_WINDTURBINE_DE_VIER_WINDEN, 'De Vier Winden', 141, 'Vestas', 'V52', "Burgerbrug", 52.762214, 4.688828, '1 jul 2014'],
-    'de_boerenzwaluw': [CONF_WINDTURBINE_DE_BOERENZWALUW, 'De Boerenzwaluw', 191, 'Enercon', 'E-44', "Burum", 53.265376, 6.214152, '1 aug 2016'],
-    'het_vliegend_hert': [CONF_WINDTURBINE_HET_VLIEGEND_HERT, 'Het Vliegend Hert', 211, 'Lagerwey', 'L82', "Rouveen", 52.59131, 6.22014, '15 sep 2018']
+    'de_grote_geert': [CONF_WINDTURBINE_DE_GROTE_GEERT, 'De Grote Geert', 1, 'Enercon', 'E-70', "Meedhuizen", 53.27988, 6.9594, datetime.datetime(2013, 1, 1)],
+    'de_jonge_held': [CONF_WINDTURBINE_DE_JONGE_HELD, 'De Jonge Held', 2, 'Enercon', 'E-70', "Meedhuizen", 53.27725, 6.95859, datetime.datetime(2013, 1, 1)],
+    'het_rode_hert': [CONF_WINDTURBINE_HET_RODE_HERT, 'Het Rode Hert', 31, 'Vestas', 'V80', "Culemborg", 51.935829, 5.192112, datetime.datetime(2014, 1, 1)] ,
+    'de_ranke_zwaan': [CONF_WINDTURBINE_DE_RANKE_ZWAAN, 'De Ranke Zwaan', 41, 'Vestas', 'V80', "Culemborg", 51.934916, 5.199874, datetime.datetime(2014, 1, 1)],
+    'de_witte_juffer': [CONF_WINDTURBINE_DE_WITTE_JUFFER, 'De Witte Juffer', 51, 'Vestas', 'V80', "Culemborg", 51.935174, 5.195846, datetime.datetime(2014, 1, 1)],
+    'de_bonte_hen': [CONF_WINDTURBINE_DE_BONTE_HEN, 'De Bonte Hent', 111, 'Vestas', 'V52', "Burgerbrug", 52.757049, 4.684686, datetime.datetime(2014, 1, 1)],
+    'de_trouwe_wachter': [CONF_WINDTURBINE_DE_TROUWE_WACHTER, 'De Trouwe Wachter', 121, 'Vestas', 'V52', "Burgerbrug", 52.758741, 4.686049, datetime.datetime(2014, 1, 1)],
+    'de_blauwe_reiger': [CONF_WINDTURBINE_DE_BLAUWE_REIGER, 'De Blauwe Reiger', 131, 'Vestas', 'V52', "Burgerbrug", 52.760478, 4.687449, datetime.datetime(2014, 1, 1)],
+    'de_vier_winden': [CONF_WINDTURBINE_DE_VIER_WINDEN, 'De Vier Winden', 141, 'Vestas', 'V52', "Burgerbrug", 52.762214, 4.688828, datetime.datetime(2014, 7, 1)],
+    'de_boerenzwaluw': [CONF_WINDTURBINE_DE_BOERENZWALUW, 'De Boerenzwaluw', 191, 'Enercon', 'E-44', "Burum", 53.265376, 6.214152, datetime.datetime(2016, 8, 1)],
+    'het_vliegend_hert': [CONF_WINDTURBINE_HET_VLIEGEND_HERT, 'Het Vliegend Hert', 211, 'Lagerwey', 'L82', "Rouveen", 52.59131, 6.22014, datetime.datetime(2018, 9, 15)]
 }
 
 # Format:

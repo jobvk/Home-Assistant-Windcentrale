@@ -130,6 +130,8 @@ class LiveSensor(SensorBase):
         elif self.type == "winddirection":
             attr["Degrees"] = self.degrees.get(self._state)
         elif self.type == "kwh":
+            attr["last_reset"] = self._windturbine.startDate
+            attr["state_class"] = "total_increasing"
             attr["kWh Forecast"] = self._windturbine.live_data["kwhForecast"]
         return attr
 
