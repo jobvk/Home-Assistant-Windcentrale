@@ -12,15 +12,6 @@ The `Windcentrale` component is a Home Assistant component which lets you get se
 
 The official website https://www.windcentrale.nl
 
-## Table of Contents
-* [Example](#example)
-* [Sensors](#sensors)
-  * [Live](#live)
-  * [History](#history)
-  * [News](#news)
-* [License](#license)
-* [Say thank you](#say-thank-you)
-
 ## Example
 
 Below is an example of the sensors.
