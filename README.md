@@ -32,6 +32,7 @@ The official website https://www.windcentrale.nl
 * [Example](#example)
 * [ToDo](#todo)
 * [License](#license)
+* [Disclaimer](#disclaimer)
 * [Say thank you](#say-thank-you)
 
 ## Installation
@@ -130,8 +131,10 @@ Below is an example of the sensors.
 * Make the sensor available for Energy Management tab
 
 ## License
-
 [Apache License 2.0](https://github.com/jobvk/Home-Assistant-Windcentrale/blob/main/LICENSE)
+
+## Disclaimer
+This integration is not developed, nor supported by the windcentrale company.
 
 ## Say thank you
 
