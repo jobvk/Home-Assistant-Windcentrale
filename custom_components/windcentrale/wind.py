@@ -143,7 +143,7 @@ class LiveAPI:
     def __get_data(self):
         "Collect data form url"
         get_url = '{}/{}/{}'.format(self.main_url, self.windturbine_number, "live")
-        return requests.get(get_url, verify=False)
+        return requests.get(get_url, verify=True)
 
     async def update(self):
         "Get data ready for home assitant"
@@ -204,7 +204,7 @@ class ProductionAPI:
     def __get_data(self):
         "Collect data form url"
         get_url = '{}/{}'.format(self.main_url, self.windturbine_number)
-        return requests.get(get_url, verify=False)
+        return requests.get(get_url, verify=True)
 
     async def update(self):
         "Get data ready for home assitant"
@@ -276,7 +276,7 @@ class NewsAPI:
 
     def __get_data(self):
         "Collect data form url"
-        return requests.get(self.main_url, verify=False)
+        return requests.get(self.main_url, verify=True)
 
     async def update(self):
         "Get data ready for home assitant"
