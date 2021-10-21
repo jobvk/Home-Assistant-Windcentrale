@@ -144,4 +144,4 @@ If you want to make donation as appreciation of my work, you can buy me a coffee
 [![Buy me a coffee][buymeacoffee-shield]][buymeacoffee]
 
 [buymeacoffee-shield]: https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg
-[buymeacoffee]: https://www.buymeacoffee.com/jobvk 
+[buymeacoffee]: https://www.buymeacoffee.com/jobvk

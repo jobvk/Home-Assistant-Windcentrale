@@ -123,9 +123,8 @@ class LiveSensor(SensorBase):
             else:
                 attr["Latitude"]  = self._windturbine.latitude
                 attr["Longitude"] = self._windturbine.longitude
-            attr["Energy-Efficient Bulbs"] = math.floor(self._state / 12)
-        elif self.type == "powerabstot":
             attr["Households"] = math.floor((self._windturbine.live_data["powerAbsTot"] * 1000) / 400)
+            attr["Energy-Efficient Bulbs"] = math.floor(self._state / 12)
         elif self.type == "runpercentage":
             attr["Start Date"] = self._windturbine.startDate
         elif self.type == "winddirection":
