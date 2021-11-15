@@ -54,7 +54,7 @@ WINDTURBINES_LIST = {
     'het_rode_hert': [CONF_WINDTURBINE_HET_RODE_HERT, 'Het Rode Hert', 31, 'Vestas', 'V80', "Culemborg", 51.935829, 5.192112, dt.datetime(2014, 1, 1)] ,
     'de_ranke_zwaan': [CONF_WINDTURBINE_DE_RANKE_ZWAAN, 'De Ranke Zwaan', 41, 'Vestas', 'V80', "Culemborg", 51.934916, 5.199874, dt.datetime(2014, 1, 1)],
     'de_witte_juffer': [CONF_WINDTURBINE_DE_WITTE_JUFFER, 'De Witte Juffer', 51, 'Vestas', 'V80', "Culemborg", 51.935174, 5.195846,dt.datetime(2014, 1, 1)],
-    'de_bonte_hen': [CONF_WINDTURBINE_DE_BONTE_HEN, 'De Bonte Hent', 111, 'Vestas', 'V52', "Burgerbrug", 52.757049, 4.684686, dt.datetime(2014, 1, 1)],
+    'de_bonte_hen': [CONF_WINDTURBINE_DE_BONTE_HEN, 'De Bonte Hen', 111, 'Vestas', 'V52', "Burgerbrug", 52.757049, 4.684686, dt.datetime(2014, 1, 1)],
     'de_trouwe_wachter': [CONF_WINDTURBINE_DE_TROUWE_WACHTER, 'De Trouwe Wachter', 121, 'Vestas', 'V52', "Burgerbrug", 52.758741, 4.686049, dt.datetime(2014, 1, 1)],
     'de_blauwe_reiger': [CONF_WINDTURBINE_DE_BLAUWE_REIGER, 'De Blauwe Reiger', 131, 'Vestas', 'V52', "Burgerbrug", 52.760478, 4.687449, dt.datetime(2014, 1, 1)],
     'de_vier_winden': [CONF_WINDTURBINE_DE_VIER_WINDEN, 'De Vier Winden', 141, 'Vestas', 'V52', "Burgerbrug", 52.762214, 4.688828, dt.datetime(2014, 7, 1)],
