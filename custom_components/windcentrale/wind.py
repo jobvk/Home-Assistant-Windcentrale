@@ -1,3 +1,4 @@
+from http import HTTPStatus
 import logging
 import json
 import requests
@@ -6,7 +7,7 @@ from defusedxml import ElementTree
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.util import dt as dt_util
-from homeassistant.const import CONF_SHOW_ON_MAP, CONF_SCAN_INTERVAL, HTTP_OK
+from homeassistant.const import CONF_SHOW_ON_MAP, CONF_SCAN_INTERVAL
 from .const import *
 
 _LOGGER = logging.getLogger(__name__)
@@ -151,7 +152,7 @@ class LiveAPI:
 
         try:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
-            if not request_data.status_code == HTTP_OK:
+            if not request_data.status_code == HTTPStatus.OK:
                 _LOGGER.error('Invalid response from server for collection live data of windturbine {}'.format(self.windturbine_name))
                 self.status = False
                 return
@@ -212,7 +213,7 @@ class ProductionAPI:
 
         try:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
-            if not request_data.status_code == HTTP_OK:
+            if not request_data.status_code == HTTPStatus.OK:
                 _LOGGER.error('Invalid response from server for collection production data of windturbine {}'.format(self.windturbine_name))
                 self.status = False
                 return
@@ -284,7 +285,7 @@ class NewsAPI:
 
         try:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
-            if not request_data.status_code == HTTP_OK:
+            if not request_data.status_code == HTTPStatus.OK:
                 _LOGGER.error('Invalid response from server for collection news data')
                 self.status = False
                 return

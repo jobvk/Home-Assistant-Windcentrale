@@ -194,6 +194,9 @@ class ProductionSensor(SensorBase):
         attr = {}
         attr["Start Time"] = self._tstart
         attr["End Time"] = self._tend
+        if self.type == "day":
+            attr["last_reset"] = self._tstart
+            attr["state_class"] = "total"
         return attr
 
     @property
