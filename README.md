@@ -30,6 +30,7 @@ The official website https://www.windcentrale.nl
   * [History](#history)
   * [News](#news)
 * [Example](#example)
+* [Energy Management tab](#energy-management-tab)
 * [ToDo](#todo)
 * [License](#license)
 * [Disclaimer](#disclaimer)
@@ -125,10 +126,30 @@ Below is an example of the sensors.
 
 ![image](https://user-images.githubusercontent.com/32730202/131559255-c2e7cd9f-6951-47be-9ae7-fd65dd8a5f85.png)
 
+## Energy Management tab
+
+To use of Energy Management tab you need to use the sensor `sensor.name_day_production` 
+
+The sensor state_class is "total" and not "total_increasing" because of energy use of the windturbine. If the windturbine is not spinning the windturbine can use more power than it produces. Found this on their site:
+
+![image](https://user-images.githubusercontent.com/32730202/140643066-aa6679d9-82de-4316-8627-3339c1475b67.png)
+
+But there is also one problem. The API of the production history updates every couple of minutes. But 5 minutes after the hour/day has passed they change some data. I haven't found a solution for this yet. But this means there is a difference between the graph of Home Assistant energy management tab and the original app. This also means that when the day is over, the total will not align with the correct values. When I have found a solution I will certainly update it.
+
+If you found a solution please contact me on [discord](https://discord.com/invite/T3tK4Jsquc) or make a pull request.
+
+Home Assistant
+
+![image](https://user-images.githubusercontent.com/32730202/140643312-0836568f-5acf-4369-a135-9a6b7a6629ac.png)
+
+Windcentrale app
+
+![image](https://user-images.githubusercontent.com/32730202/140643292-7ea72af5-0846-4c2a-8ffb-5ce837486b6e.png)
+
 ## ToDo
 
 * Report right state after restart
-* Make the sensor available for Energy Management tab
+* Change setup manually to setup with credentials login (Help wanted) [#10](https://github.com/jobvk/Home-Assistant-Windcentrale/issues/10)
 
 ## License
 [Apache License 2.0](https://github.com/jobvk/Home-Assistant-Windcentrale/blob/main/LICENSE)
