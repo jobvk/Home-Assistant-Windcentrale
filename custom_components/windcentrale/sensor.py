@@ -1,6 +1,7 @@
 """Platform for sensor integration."""
 import math
 from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorDeviceClass
 from datetime import timedelta
 from .const import DOMAIN, LIVE_SENSOR_TYPES, PRODUCTION_SENSOR_TYPES
 from homeassistant.const import ATTR_LOCATION, ATTR_LATITUDE, ATTR_LONGITUDE
@@ -90,7 +91,7 @@ class LiveSensor(SensorBase):
             return f"{self._windturbine.name} {self._name}"
 
     @property
-    def device_class(self):
+    def device_class(self) -> SensorDeviceClass:
         """Device class of the sensor."""
         return self._device_class
 
@@ -110,7 +111,7 @@ class LiveSensor(SensorBase):
         return self._unit
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes of the entity."""
         attr = {}
         if self.type == "windturbine":
@@ -174,7 +175,7 @@ class ProductionSensor(SensorBase):
         return f"{self._windturbine.name} {self._name}"
 
     @property
-    def device_class(self):
+    def device_class(self) -> SensorDeviceClass:
         """Device class of the sensor."""
         return self._device_class
 
@@ -189,7 +190,7 @@ class ProductionSensor(SensorBase):
         return self._unit
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes of the entity."""
         attr = {}
         attr["Start Time"] = self._tstart
@@ -241,7 +242,7 @@ class NewsSensor(SensorEntity):
         return "mdi:information"
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes of the entity."""
         attr = {}
         attr["News Item"] = self._item
