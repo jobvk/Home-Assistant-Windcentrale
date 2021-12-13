@@ -1,9 +1,7 @@
 """Constants for the Windcentrale integration."""
 import datetime as dt
+from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.const import (
-    DEVICE_CLASS_POWER,
-    DEVICE_CLASS_ENERGY,
-    DEVICE_CLASS_TIMESTAMP,
     POWER_WATT,
     POWER_KILO_WATT,
     ENERGY_WATT_HOUR,
@@ -65,25 +63,25 @@ WINDTURBINES_LIST = {
 # Format:
 # Id: [Name, Device Class, Unit Of Measurement, Icon, Json Key]
 LIVE_SENSOR_TYPES = {
-    'windturbine': [None, DEVICE_CLASS_POWER, POWER_WATT, 'mdi:wind-turbine', 'powerAbsWd'],
+    'windturbine': [None, SensorDeviceClass.POWER, POWER_WATT, 'mdi:wind-turbine', 'powerAbsWd'],
     'windspeed': ['Wind Speed', None, 'BFT', 'mdi:windsock', 'windSpeed'],
     'winddirection': ['Wind Direction', None, None, 'mdi:compass', 'windDirection'],
-    'powerabstot': ['Power Production Total', DEVICE_CLASS_POWER, POWER_KILO_WATT, None, 'powerAbsTot'],
-    'powerabswd': ['Power Production Per Share', DEVICE_CLASS_POWER, POWER_WATT, None, 'powerAbsWd'],
+    'powerabstot': ['Power Production Total', SensorDeviceClass.POWER, POWER_KILO_WATT, None, 'powerAbsTot'],
+    'powerabswd': ['Power Production Per Share', SensorDeviceClass.POWER, POWER_WATT, None, 'powerAbsWd'],
     'powerrel': ['Max Power', None, PERCENTAGE, 'mdi:chart-timeline-variant', 'powerRel'],
     'rpm': ['Revolutions Per Minute', None, 'RPM', 'mdi:speedometer', 'rpm'],
-    'kwh': ['kWh', DEVICE_CLASS_ENERGY, ENERGY_KILO_WATT_HOUR, None, 'kwh'],
+    'kwh': ['kWh', SensorDeviceClass.ENERGY, ENERGY_KILO_WATT_HOUR, None, 'kwh'],
     'hoursrunthisyear': ['Hours Run This Year', None, TIME_HOURS, 'mdi:calendar-clock', 'hoursRunThisYear'],
     'runpercentage': ['Run Percentage', None, PERCENTAGE, 'mdi:percent', 'runPercentage'],
-    'timestamp': ['Last Update', DEVICE_CLASS_TIMESTAMP, None, None, 'timestamp']
+    'timestamp': ['Last Update', SensorDeviceClass.TIMESTAMP, None, None, 'timestamp']
 }
 
 # Format:
 # Id: [Name, Unit Of Measurement, Device Class, XML Key]
 PRODUCTION_SENSOR_TYPES = {
-    'day': ['Day Production', ENERGY_WATT_HOUR, DEVICE_CLASS_ENERGY, 'DAY'],
-    'week': ['Week Production', ENERGY_KILO_WATT_HOUR, DEVICE_CLASS_ENERGY, 'WEEK'],
-    'month': ['Month Production', ENERGY_KILO_WATT_HOUR, DEVICE_CLASS_ENERGY, 'MONTH'],
-    'year': ['Year Production', 'MWh', DEVICE_CLASS_ENERGY, 'YEAR'],
-    'lifetime': ['Total Production', 'MWh', DEVICE_CLASS_ENERGY, 'LIFETIME']
+    'day': ['Day Production', ENERGY_WATT_HOUR, SensorDeviceClass.ENERGY, 'DAY'],
+    'week': ['Week Production', ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, 'WEEK'],
+    'month': ['Month Production', ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, 'MONTH'],
+    'year': ['Year Production', 'MWh', SensorDeviceClass.ENERGY, 'YEAR'],
+    'lifetime': ['Total Production', 'MWh', SensorDeviceClass.ENERGY, 'LIFETIME']
 }
