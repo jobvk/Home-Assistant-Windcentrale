@@ -8,8 +8,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
 
     new_devices = []
     for windturbine in wind.windturbines:
-        if wind.live == True:
-            new_devices.append(PulsingSensor(windturbine))
+        new_devices.append(PulsingSensor(windturbine))
 
     if new_devices:
         async_add_devices(new_devices)

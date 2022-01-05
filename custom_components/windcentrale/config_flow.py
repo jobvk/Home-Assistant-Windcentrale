@@ -7,7 +7,6 @@ from homeassistant.core import callback
 from .const import *
 from .wind import Credentials
 
-
 _LOGGER = logging.getLogger(__name__)
 
 WINDTURBINE_SCHEMA = vol.Schema({
@@ -61,14 +60,8 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 errors["base"] = "unknown"
 
         return self.async_show_form(step_id="init", data_schema= vol.Schema({   
-            vol.Optional(CONF_OPTIONS_LIVE, default=self.config_entry.options.get(CONF_OPTIONS_LIVE, DEFAULT_LIVE)): bool,
-            vol.Optional(CONF_OPTIONS_LIVE_INTERVAL, default=self.config_entry.options.get(CONF_OPTIONS_LIVE_INTERVAL, DEFAULT_LIVE_INTERVAL)): vol.All(vol.Coerce(int), vol.Range(min=20, max=300)),
-            vol.Optional(CONF_OPTIONS_PRODUCTION, default=self.config_entry.options.get(CONF_OPTIONS_PRODUCTION, DEFAULT_PRODUCTION)): bool,
-            vol.Optional(CONF_OPTIONS_PRODUCTION_INTERVAL, default=self.config_entry.options.get(CONF_OPTIONS_PRODUCTION_INTERVAL, DEFAULT_PRODUCTION_INTERVAL)): vol.All(vol.Coerce(int), vol.Range(min=1, max=60)),
-            vol.Optional(CONF_OPTIONS_NEWS, default=self.config_entry.options.get(CONF_OPTIONS_NEWS, DEFAULT_NEWS)): bool,
-            vol.Optional(CONF_OPTIONS_NEWS_FILTER, default=self.config_entry.options.get(CONF_OPTIONS_NEWS_FILTER, NEWS_FILTER[0])): vol.In(NEWS_FILTER),
-            vol.Optional(CONF_OPTIONS_NEWS_INTERVAL, default=self.config_entry.options.get(CONF_OPTIONS_NEWS_INTERVAL, DEFAULT_NEWS_INTERVAL)): vol.All(vol.Coerce(int), vol.Range(min=1, max=60)),
-            vol.Optional(CONF_SHOW_ON_MAP, default=self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)): bool,
+            vol.Optional(CONF_NEWS_FILTER, default=self.config_entry.options.get(CONF_NEWS_FILTER, NEWS_FILTER[0])): vol.In(NEWS_FILTER),
+            vol.Optional(CONF_SHOW_ON_MAP, default=self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)): bool
         }), 
         errors=errors)
 

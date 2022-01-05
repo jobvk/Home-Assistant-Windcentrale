@@ -5,9 +5,8 @@ from http import HTTPStatus
 from datetime import timedelta
 from defusedxml import ElementTree
 from homeassistant.helpers.event import async_track_point_in_utc_time
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.util import dt as dt_util
-from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SHOW_ON_MAP, CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_SHOW_ON_MAP
 from .const import *
 
 _LOGGER = logging.getLogger(__name__)
@@ -19,18 +18,7 @@ class Wind:
         self.hass = hass
         self.id = DOMAIN
 
-        self.windCredentials = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD])
-
-        self.live = self.config_entry.options.get(CONF_OPTIONS_LIVE, DEFAULT_LIVE)
-        self.live_interval = timedelta(seconds=self.config_entry.options.get(CONF_OPTIONS_LIVE_INTERVAL, DEFAULT_LIVE_INTERVAL))
-
-        self.production = self.config_entry.options.get(CONF_OPTIONS_PRODUCTION, DEFAULT_PRODUCTION)
-        self.production_interval = timedelta(minutes=self.config_entry.options.get(CONF_OPTIONS_PRODUCTION_INTERVAL, DEFAULT_PRODUCTION_INTERVAL))
-
-        self.news = self.config_entry.options.get(CONF_OPTIONS_NEWS, DEFAULT_NEWS)
-        self.news_filter = self.config_entry.options.get(CONF_OPTIONS_NEWS_FILTER, DEFAULT_NEWS_FILTER)
-        self.news_interval = timedelta(minutes=self.config_entry.options.get(CONF_OPTIONS_NEWS_INTERVAL, DEFAULT_NEWS_INTERVAL))
-
+        self.news_filter = self.config_entry.options.get(CONF_NEWS_FILTER, DEFAULT_NEWS_FILTER)
         self.show_on_map = self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)
 
         self.windturbines = []
@@ -63,7 +51,7 @@ class Wind:
     async def async_update_news(self, *_):
         "Start update and schedule update based on news interval"
         await self.newsapi.update()
-        await self.schedule_update_news(self.news_interval)
+        await self.schedule_update_news(timedelta(minutes=NEWS_INTERVAL))
 
 class Windturbine:
     "Create windturbine and collect data"
@@ -120,7 +108,7 @@ class Windturbine:
     async def async_update_live(self, *_):
         "Start update and schedule update based on live interval"
         await self.liveapi.update()
-        await self.schedule_update_live(self.wind.live_interval)
+        await self.schedule_update_live(timedelta(seconds=LIVE_INTERVAL))
 
     async def schedule_update_production(self, interval):
         "Schedule update based on production interval"
@@ -130,7 +118,7 @@ class Windturbine:
     async def async_update_production(self, *_):
         "Start update and schedule update based on production interval"
         await self.productionapi.update()
-        await self.schedule_update_production(self.wind.production_interval)
+        await self.schedule_update_production(timedelta(minutes=PRODUCTION_INTERVAL))
 
 class LiveAPI:
     "Collect live data"

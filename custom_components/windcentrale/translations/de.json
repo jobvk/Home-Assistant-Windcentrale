@@ -24,13 +24,7 @@
         "title": "De Windcentrale Anpassen",
         "description": "Optionen für die Windcentrale Integration. https://www.windcentrale.nl\n\nWenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: https://github.com/jobvk/Home-Assistant-Windcentrale\n",
         "data": {
-          "live": "Schalte die Live-Datasensoren der Windkraftanlage(n) an",
-          "live_interval": "Aktualisierungsfrequenz für die Live-Sensoren(Minimal 20 Sek - Maximal 300 Sek)",
-          "production": "Schalte die Sensoren für die Produktionshistorie der Windkraftanlage(n) an",
-          "production_interval": "Aktualisierungsfrequenz für die Produktionssensoren(Minimal 1 Min - Maximal 60 Min)",
-          "news": "Schalte die Nachrichtensensoren der Windkraftanlage(n) an",
           "news_filter": "Filter für die Nachrichten der Windkraftanlage(n)",
-          "news_interval": "Aktualisierungsfrequenz des Nachrichtensensor(Minimal 1 Min - Maximal 60 Min)",
           "show_on_map": "Zeige die Windkraftanlage(n) auf der Karte"
         }
       }

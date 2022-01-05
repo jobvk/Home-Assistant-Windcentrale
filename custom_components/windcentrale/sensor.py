@@ -12,23 +12,18 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     new_entities = []
     for windturbine in wind.windturbines:
-        if wind.live == True:
-            for live_sensors in LIVE_SENSOR_TYPES:
-                live_sensor_type = live_sensors.lower()
-                new_entities.append(LiveSensor(windturbine, live_sensor_type))
+
+        for live_sensor in LIVE_SENSOR_TYPES:
+            new_entities.append(LiveSensor(windturbine, live_sensor.lower()))
+
+        for production_sensor in PRODUCTION_SENSOR_TYPES:
+            new_entities.append(ProductionSensor(windturbine, production_sensor.lower()))
 
         await windturbine.schedule_update_live(timedelta())
-
-        if wind.production == True:
-            for production_sensors in PRODUCTION_SENSOR_TYPES:
-                production_sensor_type = production_sensors.lower()
-                new_entities.append(ProductionSensor(windturbine, production_sensor_type))
-
         await windturbine.schedule_update_production(timedelta())
 
-    if wind.news == True:
-        new_entities.append(NewsSensor(wind))
-        await wind.schedule_update_news(timedelta())
+    new_entities.append(NewsSensor(wind))
+    await wind.schedule_update_news(timedelta())
 
     if new_entities:
         async_add_entities(new_entities)

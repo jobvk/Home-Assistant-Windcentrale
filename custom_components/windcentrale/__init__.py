@@ -3,7 +3,6 @@ import asyncio
 from homeassistant import config_entries, core
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.const import CONF_SHOW_ON_MAP 
 from . import wind
 from .const import *
 

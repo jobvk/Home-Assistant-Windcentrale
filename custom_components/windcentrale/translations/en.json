@@ -24,13 +24,7 @@
         "title": "The Windcentrale Options",
         "description": "Options for the Windcentrale integration. https://www.windcentrale.nl\n\nIf you need help with the configuration, have a look over here: https://github.com/jobvk/Home-Assistant-Windcentrale\n",
         "data": {
-          "live": "Enable live data sensors of the wind tubine(s)",
-          "live_interval": "Update frequency for the live sensors(Minimum 20 sec - Maximum 300 sec)",
-          "production": "Enable the production history sensors of the wind turbine(s)",
-          "production_interval": "Update the frequency for the production sensors(Minimum 1 min - Maximum 60 min)",
-          "news": "Enable news for the wind turbine(s)",
           "news_filter": "Filter for the news of the wind turbines(s)",
-          "news_interval": "Update frequency for the news sensor(Minimum 1 min - Maximum 60 min)",
           "show_on_map": "Show the wind tubine(s) on the map"
         }
       }

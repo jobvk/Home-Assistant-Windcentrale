@@ -15,21 +15,13 @@ DOMAIN = "windcentrale"
 PLATFORMS = ["sensor","binary_sensor"]
 NEWS_FILTER = ["All News", "General + Your Windturbine(s)", "Only Your Windturbine(s)"]
 
-CONF_OPTIONS_LIVE = "live"
-CONF_OPTIONS_LIVE_INTERVAL = "live_interval"
-CONF_OPTIONS_PRODUCTION = "production"
-CONF_OPTIONS_PRODUCTION_INTERVAL = "production_interval"
-CONF_OPTIONS_NEWS = "news"
-CONF_OPTIONS_NEWS_FILTER = "news_filter"
-CONF_OPTIONS_NEWS_INTERVAL = "news_interval"
+CONF_NEWS_FILTER = "news_filter"
 
-DEFAULT_LIVE = True
-DEFAULT_LIVE_INTERVAL = 60
-DEFAULT_PRODUCTION = True
-DEFAULT_PRODUCTION_INTERVAL = 5
-DEFAULT_NEWS = True
+LIVE_INTERVAL = 10 #sec
+PRODUCTION_INTERVAL = 1 #min
+NEWS_INTERVAL = 5 #min
+
 DEFAULT_NEWS_FILTER = NEWS_FILTER[0]
-DEFAULT_NEWS_INTERVAL = 15
 DEFAULT_SHOW_ON_MAP = False
 
 # Format:
