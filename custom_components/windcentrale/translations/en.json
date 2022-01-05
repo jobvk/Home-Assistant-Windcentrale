@@ -5,7 +5,7 @@
         "title": "The Windcentrale Set Up",
         "description": "Set up the Windcentrale integration. https://www.windcentrale.nl\n\nIf you need help with the configuration have a look over here: https://github.com/jobvk/Home-Assistant-Windcentrale\n\nFill in the amount of windshares you own off the specific wind turbine:",
         "data": {
-          "email": "Enter your e-mail address",
+          "email": "Enter your email address",
           "password": "Enter your password"
         }
       }

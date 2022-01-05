@@ -5,13 +5,13 @@
         "title": "Die Windcentrale Einrichten",
         "description": "Die Windcentrale Integration einrichten. https://www.windcentrale.nl\n\nWenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: https://github.com/jobvk/Home-Assistant-Windcentrale\n\nFülle die Anzahl der Windteile dass Sie von der Spezifische Windkraftanlage besitzt ein:",
         "data": {
-          "email": "Geben sie ihre E-Mailadresse ein",
-          "password": "Gib dein Passwort ein"
+          "email": "Geben Sie Ihre E-Mailadresse ein",
+          "password": "Geben Sie Ihr Passwort ein"
         }
       }
     },
     "error": {
-      "bad_credentials": "Falsche Anmeldeinformationen: Bestätigen Sie Ihre E-Mail-Adresse und Ihr Passwort und versuchen Sie es erneut.",
+      "bad_credentials": "Falsche Anmeldedaten: Bitte überprüfen Sie Ihre E-Mailadresse und Ihr Passwort und versuchen Sie es erneut.",
       "unknown": "Der Fehler ist nicht bekannt."
     },
     "abort": {
