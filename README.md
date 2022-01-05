@@ -32,6 +32,7 @@ The official website https://www.windcentrale.nl
 * [Example](#example)
 * [Energy Management tab](#energy-management-tab)
 * [ToDo](#todo)
+* [Contributors](#contributors)
 * [License](#license)
 * [Disclaimer](#disclaimer)
 * [Say thank you](#say-thank-you)
@@ -58,16 +59,16 @@ The official website https://www.windcentrale.nl
 
 The Windcentrale component can be configured by config flow.
 
-Go to Configuration and then Integrations, click on the `+ add integration`, select Windcentrale and configure the options on the form.
-Fill in the amount of wind shares you own of the specific wind turbine(s). If you don't own wind shares of the other wind turbines, leave them on zero.
+Go to Configuration and then Devices & Services, select Integrations and click on the `+ add integration`, select Windcentrale and configure the setup on the form.
+Fill in your email address and password that you use for signing in to the website, and press submit.
 
-![image](https://user-images.githubusercontent.com/32730202/130699745-bb21526a-4cd2-4304-b62a-22329296149a.png)
+![image](https://user-images.githubusercontent.com/32730202/148293698-ea461760-da64-424a-b797-34fff7dcce41.PNG)
 
 ### Options
 
-Go to Configuration and then Integrations, search for the integration `Windcentrale` and click on configure. Here you can enable and disable sensors and adjust the interval of the sensors.
+Go to Configuration and then Devices & Service, select Integrations and search for the integration `Windcentrale` and click on configure. Here you can filter the news and show wind trubines on the map.
 
-![image](https://user-images.githubusercontent.com/32730202/130699869-7ca11929-d521-442e-ba4b-8dc6c967d109.png)
+![image](https://user-images.githubusercontent.com/32730202/148293494-814a6173-daf2-4a84-91ae-70601b1961d7.PNG)
 
 ## Sensors
 
@@ -149,7 +150,10 @@ Windcentrale app
 ## ToDo
 
 * Report right state after restart
-* Change setup manually to setup with credentials login (Help wanted) [#10](https://github.com/jobvk/Home-Assistant-Windcentrale/issues/10)
+
+## Contributors
+Special Thanks to all contributors
+* [@vdheidenet](https://github.com/vdheidenet): Sharing his data for creating the signing in function
 
 ## License
 [Apache License 2.0](https://github.com/jobvk/Home-Assistant-Windcentrale/blob/main/LICENSE)

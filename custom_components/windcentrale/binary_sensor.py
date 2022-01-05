@@ -8,8 +8,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
 
     new_devices = []
     for windturbine in wind.windturbines:
-        if wind.live == True:
-            new_devices.append(PulsingSensor(windturbine))
+        new_devices.append(PulsingSensor(windturbine))
 
     if new_devices:
         async_add_devices(new_devices)
@@ -32,7 +31,7 @@ class SensorBase(BinarySensorEntity):
         }
 
     @property
-    def available(self):
+    def available(self) -> bool:
         """Return true if windturbine live sensor is available."""
         return self._windturbine.live_status
 
@@ -45,22 +44,22 @@ class PulsingSensor(SensorBase):
         self._state = None
 
     @property
-    def unique_id(self):
+    def unique_id(self) -> str:
         """Unique ID for the sensor."""
         return f"{self._windturbine.name} Pulsating"
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Name for the sensor."""
         return f"{self._windturbine.name} Pulsating"
 
     @property
-    def state(self):
+    def state(self) -> bool:
         """State value for the sensor."""
         return self._state
 
     @property
-    def icon(self):
+    def icon(self) -> str:
         """Icon for the sensor."""
         return "mdi:pulse"
 
