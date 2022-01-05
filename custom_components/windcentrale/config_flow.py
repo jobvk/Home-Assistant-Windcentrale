@@ -2,24 +2,17 @@
 import logging
 import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
-from homeassistant.const import CONF_SHOW_ON_MAP 
+from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SHOW_ON_MAP 
 from homeassistant.core import callback
 from .const import *
+from .wind import Credentials
+
 
 _LOGGER = logging.getLogger(__name__)
 
 WINDTURBINE_SCHEMA = vol.Schema({
-    vol.Required(CONF_WINDTURBINE_DE_GROTE_GEERT, default=0): int,
-    vol.Required(CONF_WINDTURBINE_DE_JONGE_HELD, default=0): int,
-    vol.Required(CONF_WINDTURBINE_HET_RODE_HERT, default=0): int,
-    vol.Required(CONF_WINDTURBINE_DE_RANKE_ZWAAN, default=0): int,
-    vol.Required(CONF_WINDTURBINE_DE_WITTE_JUFFER, default=0): int,
-    vol.Required(CONF_WINDTURBINE_DE_BONTE_HEN, default=0): int,
-    vol.Required(CONF_WINDTURBINE_DE_TROUWE_WACHTER, default=0): int,
-    vol.Required(CONF_WINDTURBINE_DE_BLAUWE_REIGER, default=0): int,
-    vol.Required(CONF_WINDTURBINE_DE_VIER_WINDEN, default=0): int,
-    vol.Required(CONF_WINDTURBINE_DE_BOERENZWALUW, default=0): int,
-    vol.Required(CONF_WINDTURBINE_HET_VLIEGEND_HERT, default=0): int
+    vol.Required(CONF_EMAIL): str,
+    vol.Required(CONF_PASSWORD): str,
 })
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -41,12 +34,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             await self.async_set_unique_id(DOMAIN)
             self._abort_if_unique_id_configured()
             try:
-                await validate_input(self.hass, user_input)
-                return self.async_create_entry(title="Windcentrale", data=user_input)
-            except InvalidNumber:
-                errors["base"] = "invalid_number_of_shares"
+                windcentrale_data = await validate_input(self.hass, user_input)
+                return self.async_create_entry(title="Windcentrale", data=windcentrale_data)
+            except BadCredentials:
+                errors["base"] = "bad_credentials"
             except Exception:
-                _LOGGER.exception("Unexpected exception when submitting windcentrale config")
+                _LOGGER.error("Unexpected exception when submitting windcentrale config")
                 errors["base"] = "unknown"
 
         # If there is no user input or there were errors, show the form again, including any errors that were found with the input.
@@ -64,7 +57,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             try:
                 return self.async_create_entry(title="", data=user_input)
             except Exception:
-                _LOGGER.exception("Unexpected exception when chaning windcentrale options")
+                _LOGGER.error("Unexpected exception when chaning windcentrale options")
                 errors["base"] = "unknown"
 
         return self.async_show_form(step_id="init", data_schema= vol.Schema({   
@@ -79,12 +72,22 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         }), 
         errors=errors)
 
-async def validate_input(hass: core.HomeAssistant, data: dict):
+async def validate_input(hass, data: dict):
     """Validate the user input"""
-    for windturbineitem in WINDTURBINES_LIST:
-        if data[WINDTURBINES_LIST[windturbineitem][0]] <= -1:
-            raise InvalidNumber
-    return
+    windCredentials = Credentials(hass, data[CONF_EMAIL], data[CONF_PASSWORD])
+    result = await windCredentials.test_credentails()
+    if result == "Bad credentials":
+        raise BadCredentials
+    elif result == 'error':
+        raise Exception
+    elif result == 'succes':
+        windshare_dict = await windCredentials.collect_windshares()
+        for windturbine in WINDTURBINES_LIST:
+            if windturbine in windshare_dict:
+                data[windturbine] = windshare_dict[windturbine]["shares"]
+            else:
+                data[windturbine] = 0
+    return data
 
-class InvalidNumber(exceptions.HomeAssistantError):
+class BadCredentials(exceptions.HomeAssistantError):
     """Error to indicate there is an invalid number."""

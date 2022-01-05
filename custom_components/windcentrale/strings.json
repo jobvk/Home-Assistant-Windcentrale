@@ -5,22 +5,13 @@
         "title": "The Windcentrale Set Up",
         "description": "Set up the Windcentrale integration. https://www.windcentrale.nl\n\nIf you need help with the configuration have a look over here: https://github.com/jobvk/Home-Assistant-Windcentrale\n\nFill in the amount of windshares you own off the specific wind turbine:",
         "data": {
-            "de_grote_geert": "De Grote Geert",
-            "de_jonge_held": "De Jonge Held",
-            "het_rode_hert": "Het Rode Hert",
-            "de_ranke_zwaan": "De Ranke Zwaan",
-            "de_witte_juffer": "De Witte Juffer",
-            "de_bonte_hen": "De Bonte Hen",
-            "de_trouwe_wachter": "De Trouwe Wachter",
-            "de_blauwe_reiger": "De Blauwe Reiger",
-            "de_vier_winden": "De Vier Winden",
-            "de_boerenzwaluw": "De Boerenzwaluw",
-            "het_vliegend_hert": "Het Vliegend Hert"
+            "email": "Enter your e-mail address",
+            "password": "Enter your password"
         }
       }
     },
     "error": {
-      "invalid_number_of_shares": "All fields have to be zero or more.",
+      "bad_credentials": "Incorrect Credentials: Verify your e-mail address and password and try again.",
       "unknown": "The error is unknown."
     },
     "abort": {

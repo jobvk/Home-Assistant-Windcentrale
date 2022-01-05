@@ -44,7 +44,7 @@ class SensorBase(SensorEntity):
     def device_info(self):
         """Information about this wind turbine"""
         return {
-            "identifiers": {(DOMAIN, self._windturbine.windturbine_id)},
+            "identifiers": {(DOMAIN, self._windturbine.id)},
             "name": self._windturbine.name,
             "model": self._windturbine.model,
             "manufacturer": self._windturbine.manufacturer,
@@ -75,7 +75,7 @@ class LiveSensor(SensorBase):
             }
 
     @property
-    def unique_id(self):
+    def unique_id(self) -> str:
         """Unique ID for the sensor."""
         if self.type == "windturbine":
             return f"{self._windturbine.name}"
@@ -83,7 +83,7 @@ class LiveSensor(SensorBase):
             return f"{self._windturbine.name} {self._name}"
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Name for the sensor."""
         if self.type == "windturbine":
             return f"{self._windturbine.name}"
@@ -101,12 +101,12 @@ class LiveSensor(SensorBase):
         return self._state
 
     @property
-    def icon(self):
+    def icon(self) -> str:
         """Icon for the sensor."""
         return self._icon
 
     @property
-    def unit_of_measurement(self):
+    def unit_of_measurement(self) -> str:
         """Unit of measurement for the sensor."""
         return self._unit
 
@@ -115,7 +115,7 @@ class LiveSensor(SensorBase):
         """Return the state attributes of the entity."""
         attr = {}
         if self.type == "windturbine":
-            attr["Id"] = self._windturbine.number
+            attr["Id"] = self._windturbine.id
             attr["Shares"] = self._windturbine.shares
             attr[ATTR_LOCATION] = self._windturbine.location
             if self._windturbine.show_on_map:
@@ -135,7 +135,7 @@ class LiveSensor(SensorBase):
         return attr
 
     @property
-    def available(self):
+    def available(self) -> bool:
         """Return True if windturbine and wind is available."""
         return self._windturbine.live_status
 
@@ -165,12 +165,12 @@ class ProductionSensor(SensorBase):
         self._tend = None
 
     @property
-    def unique_id(self):
+    def unique_id(self) -> str:
         """Unique ID for the sensor."""
         return f"{self._windturbine.name} {self._name}"
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Name for the sensor."""
         return f"{self._windturbine.name} {self._name}"
 
@@ -185,7 +185,7 @@ class ProductionSensor(SensorBase):
         return self._state
 
     @property
-    def unit_of_measurement(self):
+    def unit_of_measurement(self) -> str:
         """Unit of measurement for the sensor."""
         return self._unit
 
@@ -201,7 +201,7 @@ class ProductionSensor(SensorBase):
         return attr
 
     @property
-    def available(self):
+    def available(self) -> bool:
         """Return true if windturbine production sensor is available."""
         return self._windturbine.production_status
 
@@ -222,22 +222,22 @@ class NewsSensor(SensorEntity):
         self._item = None
 
     @property
-    def unique_id(self):
+    def unique_id(self) -> str:
         """Unique ID for the sensor."""
         return "the windcentrale news"
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Name for the sensor."""
         return "The Windcentrale News"
 
     @property
-    def state(self):
+    def state(self) -> str:
         """Static news value for the news sensor."""
         return "News"
 
     @property
-    def icon(self):
+    def icon(self) -> str:
         """Icon for the sensor."""
         return "mdi:information"
 
@@ -249,7 +249,7 @@ class NewsSensor(SensorEntity):
         return attr
 
     @property
-    def available(self):
+    def available(self) -> bool:
         """Return true if windturbine news sensor is available."""
         return self.wind.news_status
 

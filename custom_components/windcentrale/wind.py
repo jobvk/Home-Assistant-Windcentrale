@@ -1,13 +1,13 @@
-from http import HTTPStatus
 import logging
 import json
 import requests
+from http import HTTPStatus
 from datetime import timedelta
 from defusedxml import ElementTree
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.util import dt as dt_util
-from homeassistant.const import CONF_SHOW_ON_MAP, CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SHOW_ON_MAP, CONF_SCAN_INTERVAL
 from .const import *
 
 _LOGGER = logging.getLogger(__name__)
@@ -18,6 +18,8 @@ class Wind:
         self.config_entry = config_entry
         self.hass = hass
         self.id = DOMAIN
+
+        self.windCredentials = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD])
 
         self.live = self.config_entry.options.get(CONF_OPTIONS_LIVE, DEFAULT_LIVE)
         self.live_interval = timedelta(seconds=self.config_entry.options.get(CONF_OPTIONS_LIVE_INTERVAL, DEFAULT_LIVE_INTERVAL))
@@ -32,9 +34,9 @@ class Wind:
         self.show_on_map = self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)
 
         self.windturbines = []
-        for windturbineitem in WINDTURBINES_LIST:
-            if self.config_entry.data[WINDTURBINES_LIST[windturbineitem][0]] >= 1:
-                self.windturbines.append(Windturbine(self.hass, windturbineitem, self))
+        for windturbine in WINDTURBINES_LIST:
+            if self.config_entry.data[windturbine] >= 1:
+                self.windturbines.append(Windturbine(self, self.hass, windturbine, self.config_entry.data[windturbine]))
 
         self.newsapi = NewsAPI(self.hass, self.news_filter, self.windturbines)
 
@@ -65,21 +67,20 @@ class Wind:
 
 class Windturbine:
     "Create windturbine and collect data"
-    def __init__(self, hass, windturbineitem, wind):
-        self.hass = hass
+    def __init__(self, wind, hass, windturbine_name, windturbine_shares):
         self.wind = wind
-        self.id = WINDTURBINES_LIST[windturbineitem][0]
-        self.name = WINDTURBINES_LIST[windturbineitem][1]
-        self.number = WINDTURBINES_LIST[windturbineitem][2]
-        self.manufacturer = WINDTURBINES_LIST[windturbineitem][3]
-        self.model = WINDTURBINES_LIST[windturbineitem][4]
-        self.location = WINDTURBINES_LIST[windturbineitem][5]
-        self.latitude = WINDTURBINES_LIST[windturbineitem][6]
-        self.longitude = WINDTURBINES_LIST[windturbineitem][7]
-        self.startDate = WINDTURBINES_LIST[windturbineitem][8]
-        self.shares = self.wind.config_entry.data[self.id]
-        self.liveapi = LiveAPI(self.hass, self.name, self.number)
-        self.productionapi = ProductionAPI(self.hass, self.name, self.number, self.shares)
+        self.hass = hass
+        self.name = windturbine_name
+        self.shares = windturbine_shares
+        self.id = WINDTURBINES_LIST[windturbine_name][0]
+        self.manufacturer = WINDTURBINES_LIST[windturbine_name][1]
+        self.model = WINDTURBINES_LIST[windturbine_name][2]
+        self.location = WINDTURBINES_LIST[windturbine_name][3]
+        self.latitude = WINDTURBINES_LIST[windturbine_name][4]
+        self.longitude = WINDTURBINES_LIST[windturbine_name][5]
+        self.startDate = WINDTURBINES_LIST[windturbine_name][6]
+        self.liveapi = LiveAPI(self.hass, self.id, self.name)
+        self.productionapi = ProductionAPI(self.hass, self.name, self.id, self.shares)
     
     @property
     def windturbine_id(self):
@@ -133,22 +134,22 @@ class Windturbine:
 
 class LiveAPI:
     "Collect live data"
-    def __init__(self, hass, name, number):
+    def __init__(self, hass, windturbineId, windturbineName):
         self.hass = hass
-        self.windturbine_name = name
-        self.windturbine_number = number
+        self.windturbine_id = windturbineId
+        self.windturbine_name = windturbineName
         self.status = None
         self.response_data = {}
         self.main_url = "https://zep-api.windcentrale.nl/production"
 
     def __get_data(self):
         "Collect data form url"
-        get_url = '{}/{}/{}'.format(self.main_url, self.windturbine_number, "live")
+        get_url = '{}/{}/{}'.format(self.main_url, self.windturbine_id, "live")
         return requests.get(get_url, verify=True)
 
     async def update(self):
         "Get data ready for home assitant"
-        _LOGGER.debug('Updating live data of windturbine {} using Rest API'.format(self.windturbine_name))
+        _LOGGER.info('Updating live data of windturbine {} using Rest API'.format(self.windturbine_name))
 
         try:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
@@ -191,10 +192,10 @@ class LiveAPI:
 
 class ProductionAPI:
     "Collect production data"
-    def __init__(self, hass, name, number, shares):
+    def __init__(self, hass, name, windturbineId, shares):
         self.hass = hass
         self.windturbine_name = name
-        self.windturbine_number = number
+        self.windturbine_id = windturbineId
         self.windturbine_shares = shares
         self.status = None
         self.winddelen = None
@@ -204,12 +205,12 @@ class ProductionAPI:
 
     def __get_data(self):
         "Collect data form url"
-        get_url = '{}/{}'.format(self.main_url, self.windturbine_number)
+        get_url = '{}/{}'.format(self.main_url, self.windturbine_id)
         return requests.get(get_url, verify=True)
 
     async def update(self):
         "Get data ready for home assitant"
-        _LOGGER.debug('Updating production data of windturbine {} using Rest API'.format(self.windturbine_name))
+        _LOGGER.info('Updating production data of windturbine {} using Rest API'.format(self.windturbine_name))
 
         try:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
@@ -269,11 +270,11 @@ class NewsAPI:
         self.hass = hass
         self.news_filter = news_filter
         self.response_data = None
-        self.windturbines_numbers = []
+        self.windturbines_ids = []
         self.status = None
         self.main_url = "https://zep-api.windcentrale.nl/app/config"
         for windturbine in windturbines:
-            self.windturbines_numbers.append(windturbine.number)
+            self.windturbines_ids.append(windturbine.id)
 
     def __get_data(self):
         "Collect data form url"
@@ -281,7 +282,7 @@ class NewsAPI:
 
     async def update(self):
         "Get data ready for home assitant"
-        _LOGGER.debug('Updating news data sensor')
+        _LOGGER.info('Updating news data sensor')
 
         try:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
@@ -311,10 +312,10 @@ class NewsAPI:
                 if self.news_filter == NEWS_FILTER[0]:
                     response_data_list.append(value_data)
                 elif self.news_filter == NEWS_FILTER[1]:
-                    if Windturbine_id == 0 or Windturbine_id in self.windturbines_numbers:
+                    if Windturbine_id == 0 or Windturbine_id in self.windturbines_ids:
                         response_data_list.append(value_data)
                 elif self.news_filter == NEWS_FILTER[2]:
-                    if Windturbine_id in self.windturbines_numbers:
+                    if Windturbine_id in self.windturbines_ids:
                         response_data_list.append(value_data)
 
             first_item = response_data_list[0]
@@ -332,3 +333,97 @@ class NewsAPI:
             _LOGGER.error('Error occurred while fetching data: %r', exc)
             self.status = False
             return
+
+class Credentials:
+    "Collect windshares data"
+    def __init__(self, hass, email, password):
+        self.hass = hass
+        self.email = email
+        self.password = password
+        self.credentailsData = {'client_id': 'clientapp', 'client_secret': 123456, 'grant_type': 'password', 'password': self.password, 'scope': 'read write', 'username': self.email} 
+        self.token_url = "https://zep-api.windcentrale.nl/oauth/token"
+        self.persons_url = "https://zep-api.windcentrale.nl/persons"
+
+    def __get_data_token(self):
+        "Collect aouth token form url"
+        credentailsHeaders = {'Authorization':'Basic Y2xpZW50YXBwOjEyMzQ1Ng=='}
+        return requests.post(self.token_url, data=self.credentailsData, headers=credentailsHeaders, verify=True)
+
+    def __get_data_persons(self):
+        "Collect data form persons url"
+        personsHeaders = {'Authorization':str(self.signin_data['token_type'] + " " + self.signin_data['access_token'])}
+        return requests.get(self.persons_url, headers=personsHeaders, verify=True)
+
+    async def test_credentails(self):
+        _LOGGER.info('Testing if credentails are correct')
+        try:
+            result_data_credentials = await self.hass.async_add_executor_job(self.__get_data_token)
+            self.signin_data = result_data_credentials.json()
+            _LOGGER.info(self.signin_data)
+            if result_data_credentials.status_code == HTTPStatus.OK:
+                return 'succes'
+            elif result_data_credentials.status_code == HTTPStatus.BAD_REQUEST:
+                if self.signin_data["error"] == "invalid_grant":
+                    return self.signin_data['error_description']
+            else:
+                _LOGGER.error("Error while testing credentials: {}".format(self.signin_data))
+                return 'error'
+
+        except requests.exceptions.Timeout:
+            """Time out error of server connection"""
+            _LOGGER.error('Timeout response from server when testing credentails')
+            return 'error'
+
+        except requests.exceptions.RequestException as exc:
+            """Error of server RequestException"""
+            _LOGGER.error('Error occurred while fetching testing credentails: %r', exc)
+            return 'error'
+    
+    async def collect_windshares(self):
+        _LOGGER.info('Colllecting windshares')
+        try:
+            result_data_persons = await self.hass.async_add_executor_job(self.__get_data_persons)
+            persons_data = result_data_persons.json()
+            _LOGGER.info(persons_data)
+            if result_data_persons.status_code == HTTPStatus.OK:
+
+                powerproducer_list = []
+                firstPowerProducer = persons_data["shares"][0]["address"]["shares"][1]["powerProducer"]
+                powerproducer_list.append(powerProducer(firstPowerProducer["@id"], firstPowerProducer["millId"], firstPowerProducer["name"]))
+                for windturbine in persons_data["shares"][0]["address"]["shares"][1]["powerProducer"]["energySupplier"]["powerProducers"]:
+                    if (('@id' in windturbine) and (windturbine["millId"] != 0)):
+                        powerproducer_list.append(powerProducer(windturbine["@id"], windturbine["millId"], windturbine["name"]))
+
+                ShareList = []
+                ShareList.append(Shares(persons_data["shares"][0]["@id"], persons_data["shares"][0]["powerProducer"]["@ref"]))
+                ShareList.append(Shares(persons_data["shares"][0]["address"]["shares"][1]["@id"], persons_data["shares"][0]["address"]["shares"][1]["powerProducer"]["@id"]))
+                for shares in persons_data["shares"][0]["address"]["shares"][2:]:
+                    if (('@id' in shares) and ('powerProducer' in shares)):
+                        ShareList.append(Shares(shares["@id"], shares["powerProducer"]["@ref"]))
+
+                for windproducer in powerproducer_list:
+                    for share in ShareList:
+                        if(windproducer.id == share.powerProducer):
+                            windproducer.add_shares()
+
+                windshares = {}
+
+                for powerproducer in powerproducer_list:
+                    windshares[powerproducer.name] = { "id" : powerproducer.id, "windturbine_id" : powerproducer.windturbine_id, "shares" : powerproducer.shares }
+
+                _LOGGER.info(windshares)
+
+                return windshares
+            else:
+                _LOGGER.error("Error while collecting windshares: {}".format(persons_data))
+                return None
+
+        except requests.exceptions.Timeout:
+            """Time out error of server connection"""
+            _LOGGER.error('Timeout response from server when testing credentails')
+            return None
+
+        except requests.exceptions.RequestException as exc:
+            """Error of server RequestException"""
+            _LOGGER.error('Error occurred while fetching testing credentails: %r', exc)
+            return None
