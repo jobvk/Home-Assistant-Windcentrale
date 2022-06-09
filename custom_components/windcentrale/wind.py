@@ -124,7 +124,10 @@ class LiveAPI:
     "Collect live data"
     def __init__(self, hass, windturbineId, windturbineName):
         self.hass = hass
-        self.windturbine_id = windturbineId
+        if windturbineId == 191:
+            self.windturbine_id = 201
+        else:
+            self.windturbine_id = windturbineId
         self.windturbine_name = windturbineName
         self.status = None
         self.response_data = {}
