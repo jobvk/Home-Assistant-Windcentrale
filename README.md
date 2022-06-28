@@ -1,15 +1,14 @@
 # Home Assistant sensor component for Windcentrale
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/integration)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/jobvk/Home-Assistant-Windcentrale)](https://github.com/jobvk/Home-Assistant-Windcentrale/releases)
 [![GitHub](https://img.shields.io/badge/license-Apache-blue)](LICENSE)
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/jobvk/Home-Assistant-Windcentrale/graphs/commit-activity)
 [![Maintainer](https://img.shields.io/badge/Maintainer-jobvk-brightgreen.svg)](https://github.com/jobvk/)
-[![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-orange.svg)](https://discord.gg/T3tK4Jsquc)
-[![Discord](https://img.shields.io/discord/882015341520244786?color=%09%237289DA)](https://discord.gg/T3tK4Jsquc)
+[![](https://dcbadge.vercel.app/api/shield/311908841459810316?style=flat&theme=default-inverted)](https://discordapp.com/users/311908841459810316/)
 
-[![Buy me a coffee](https://img.shields.io/static/v1.svg?label=Buy%20me%20a%20coffee&logo=buy%20me%20a%20coffee&logoColor=white&labelColor=blue&message=donate&color=Black)](https://www.buymeacoffee.com/jobvk)
+[![Buy me a coffee](https://img.shields.io/static/v1.svg?label=Buy%20me%20a%20coffee&logo=buy%20me%20a%20coffee&logoColor=white&labelColor=orange&message=donate&color=Black)](https://www.buymeacoffee.com/jobvk)
 
 Home Assistant component for the Windcentrale
 
