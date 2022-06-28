@@ -1,10 +1,14 @@
 # Home Assistant sensor component for Windcentrale
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/integration)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/jobvk/Home-Assistant-Windcentrale)](https://github.com/jobvk/Home-Assistant-Windcentrale/releases)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/jobvk/Home-Assistant-Sensor-Windcentrale/graphs/commit-activity)
+[![GitHub](https://img.shields.io/badge/license-Apache-blue)](LICENSE)
 
-[![Buy me a coffee](https://img.shields.io/static/v1.svg?label=Buy%20me%20a%20coffee&logo=buy%20me%20a%20coffee&logoColor=white&labelColor=blue&message=donate&color=Black)](https://www.buymeacoffee.com/jobvk)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/jobvk/Home-Assistant-Windcentrale/graphs/commit-activity)
+[![Maintainer](https://img.shields.io/badge/Maintainer-jobvk-brightgreen.svg)](https://github.com/jobvk/)
+[![](https://dcbadge.vercel.app/api/shield/311908841459810316?style=flat&theme=default-inverted)](https://discordapp.com/users/311908841459810316/)
+
+[![Buy me a coffee](https://img.shields.io/static/v1.svg?label=Buy%20me%20a%20coffee&logo=buy%20me%20a%20coffee&logoColor=white&labelColor=orange&message=donate&color=Black)](https://www.buymeacoffee.com/jobvk)
 
 Home Assistant component for the Windcentrale
 
