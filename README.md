@@ -136,7 +136,7 @@ The sensor state_class is "total" and not "total_increasing" because of energy u
 
 But there is also one problem. The API of the production history updates every couple of minutes. But 5 minutes after the hour/day has passed they change some data. I haven't found a solution for this yet. But this means there is a difference between the graph of Home Assistant energy management tab and the original app. This also means that when the day is over, the total will not align with the correct values. When I have found a solution I will certainly update it.
 
-If you found a solution please contact me on [discord](https://discord.com/invite/T3tK4Jsquc) or make a pull request.
+If you found a solution please contact me on [discord](https://discord.com/users/311908841459810316/) or make a pull request.
 
 Home Assistant
 
