@@ -3,8 +3,8 @@ import asyncio
 from homeassistant import config_entries, core
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from .const import DOMAIN, PLATFORMS
 from . import wind
-from .const import *
 
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the Windcentrale component."""
