@@ -11,7 +11,7 @@
       }
     },
     "error": {
-      "bad_credentials": "Falsche Anmeldedaten: Bitte überprüfen Sie Ihre E-Mailadresse und Ihr Passwort und versuchen Sie es erneut.",
+      "invalid_user_credentails": "Falsche Anmeldedaten: Bitte überprüfen Sie Ihre E-Mailadresse und Ihr Passwort und versuchen Sie es erneut.",
       "unknown": "Der Fehler ist nicht bekannt."
     },
     "abort": {

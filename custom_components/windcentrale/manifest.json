@@ -4,9 +4,10 @@
   "config_flow": true,
   "documentation": "https://github.com/jobvk/Home-Assistant-Windcentrale",
   "issue_tracker": "https://github.com/jobvk/Home-Assistant-Windcentrale/issues",
-  "requirements": [],
+  "requirements": ["boto3==1.20.40", "pycognito==2022.5.0"],
   "iot_class": "cloud_polling",
   "dependencies": [],
   "codeowners": ["@jobvk"],
-  "version": "0.1.4"
+  "version": "0.2.0",
+  "loggers": ["boto3"]
 }

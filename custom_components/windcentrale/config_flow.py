@@ -1,5 +1,6 @@
 """Config flow for windcentrale integration."""
 import logging
+import json
 import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SHOW_ON_MAP 
@@ -25,7 +26,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Get the options flow for this handler."""
         return OptionsFlowHandler(config_entry)
 
-
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
         errors = {}
@@ -33,12 +33,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             await self.async_set_unique_id(DOMAIN)
             self._abort_if_unique_id_configured()
             try:
-                windcentrale_data = await validate_input(self.hass, user_input)
-                return self.async_create_entry(title="Windcentrale", data=windcentrale_data)
-            except BadCredentials:
-                errors["base"] = "bad_credentials"
-            except Exception:
-                _LOGGER.error("Unexpected exception when submitting windcentrale config")
+                user_input = await validate_input(self.hass, user_input)
+                return self.async_create_entry(title="Windcentrale", data=user_input)
+            except InvalidUserCredentails:
+                errors["base"] = "invalid_user_credentails"
+            except Exception as e:
+                _LOGGER.error(e)
+                # _LOGGER.error("Unexpected exception when submitting windcentrale config")
                 errors["base"] = "unknown"
 
         # If there is no user input or there were errors, show the form again, including any errors that were found with the input.
@@ -56,31 +57,30 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             try:
                 return self.async_create_entry(title="", data=user_input)
             except Exception:
-                _LOGGER.error("Unexpected exception when chaning windcentrale options")
+                _LOGGER.error("Unexpected exception when changing windcentrale options")
                 errors["base"] = "unknown"
 
-        return self.async_show_form(step_id="init", data_schema= vol.Schema({   
+        return self.async_show_form(step_id="init", data_schema= vol.Schema({
             vol.Optional(CONF_NEWS_FILTER, default=self.config_entry.options.get(CONF_NEWS_FILTER, NEWS_FILTER[0])): vol.In(NEWS_FILTER),
             vol.Optional(CONF_SHOW_ON_MAP, default=self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)): bool
-        }), 
+        }),
         errors=errors)
 
-async def validate_input(hass, data: dict):
+async def validate_input(hass, user_input: dict):
     """Validate the user input"""
-    windCredentials = Credentials(hass, data[CONF_EMAIL], data[CONF_PASSWORD])
-    result = await windCredentials.test_credentails()
-    if result == "Bad credentials":
-        raise BadCredentials
-    elif result == 'error':
-        raise Exception
-    elif result == 'succes':
-        windshare_dict = await windCredentials.collect_windshares()
+    credentails = Credentials(hass, user_input[CONF_EMAIL], user_input[CONF_PASSWORD])
+    result_user_credentails = await credentails.authenticate_user_credentails()
+    user_input[CONF_TOKEN_HEADER] = json.dumps(result_user_credentails)
+    if result_user_credentails == "invalid_user_credentails":
+        raise InvalidUserCredentails
+    else:
+        result_projects_windshares = await credentails.collect_projects_windshares()
         for windturbine in WINDTURBINES_LIST:
-            if windturbine in windshare_dict:
-                data[windturbine] = windshare_dict[windturbine]["shares"]
+            if windturbine in result_projects_windshares:
+                user_input[windturbine] = result_projects_windshares[windturbine].toJSON()
             else:
-                data[windturbine] = 0
-    return data
+                user_input[windturbine] = None
+    return user_input
 
-class BadCredentials(exceptions.HomeAssistantError):
-    """Error to indicate there is an invalid number."""
+class InvalidUserCredentails(exceptions.HomeAssistantError):
+    """Error to indicate there is an incorrect username or password."""
