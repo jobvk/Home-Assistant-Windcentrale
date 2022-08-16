@@ -11,7 +11,7 @@
       }
     },
     "error": {
-      "bad_credentials": "Onjuiste Inloggegevens: Controleer uw e-mailadres en wachtwoord en probeer het opnieuw.",
+      "invalid_user_credentails": "Onjuiste Inloggegevens: Controleer uw e-mailadres en wachtwoord en probeer het opnieuw.",
       "unknown": "De fout is niet bekend."
     },
     "abort": {
@@ -24,8 +24,8 @@
         "title": "De Windcentrale Aanpassen",
         "description": "Opties voor de Windcentrale integratie. https://www.windcentrale.nl\n\nAls je hulp nodig hebt bij de configuratie, kijk dan hier: https://github.com/jobvk/Home-Assistant-Windcentrale\n",
         "data": {
-          "news_filter": "Filter voor het nieuws van de wind turbine(s)",
-          "show_on_map": "Laat de wind tubine(s) op de kaart zien"
+          "news_filter": "Filter voor het nieuws van de windturbine(s)",
+          "show_on_map": "Laat de windturbine(s) op de kaart zien"
         }
       }
     },

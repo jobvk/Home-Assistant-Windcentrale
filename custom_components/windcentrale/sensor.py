@@ -1,34 +1,40 @@
 """Platform for sensor integration."""
 import math
-from homeassistant.components.sensor import SensorEntity
-from homeassistant.components.sensor import SensorDeviceClass
-from datetime import timedelta
+from datetime import timedelta, datetime
 from .const import DOMAIN, LIVE_SENSOR_TYPES, PRODUCTION_SENSOR_TYPES
 from homeassistant.const import ATTR_LOCATION, ATTR_LATITUDE, ATTR_LONGITUDE
-
+from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorStateClass,
+    SensorEntity,
+    ATTR_LAST_RESET,
+    CONF_STATE_CLASS,
+)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Add sensors for passed config_entry in HA."""
     wind = hass.data[DOMAIN][config_entry.entry_id]
 
+    await wind.schedule_update_token(timedelta())
+    
     new_entities = []
     for windturbine in wind.windturbines:
-
         for live_sensor in LIVE_SENSOR_TYPES:
             new_entities.append(LiveSensor(windturbine, live_sensor.lower()))
 
-        for production_sensor in PRODUCTION_SENSOR_TYPES:
-            new_entities.append(ProductionSensor(windturbine, production_sensor.lower()))
+        # for production_sensor in PRODUCTION_SENSOR_TYPES:
+        #     new_entities.append(ProductionSensor(windturbine, production_sensor.lower()))
 
         await windturbine.schedule_update_live(timedelta())
-        await windturbine.schedule_update_production(timedelta())
+        # await windturbine.schedule_update_production(timedelta())
 
-    new_entities.append(NewsSensor(wind))
-    await wind.schedule_update_news(timedelta())
+    # new_entities.append(NewsSensor(wind))
+    # await wind.schedule_update_news(timedelta())
 
     if new_entities:
         async_add_entities(new_entities)
 
-class SensorBase(SensorEntity):
+class SensorBase(RestoreEntity, SensorEntity):
     """Base representation of a windcentrale turbine."""
 
     def __init__(self, windturbine):
@@ -45,6 +51,11 @@ class SensorBase(SensorEntity):
             "manufacturer": self._windturbine.manufacturer,
         }
 
+    @property
+    def available(self) -> bool:
+        """Return True if windturbine and wind is available."""
+        return True
+
 class LiveSensor(SensorBase):
     """Representation of a Sensor."""
 
@@ -54,10 +65,9 @@ class LiveSensor(SensorBase):
         self.type = live_sensor_type
         self._name = LIVE_SENSOR_TYPES[self.type][0]
         self._device_class = LIVE_SENSOR_TYPES[self.type][1]
-        self._unit = LIVE_SENSOR_TYPES[self.type][2]
+        self._unit_of_measurement = LIVE_SENSOR_TYPES[self.type][2]
         self._icon = LIVE_SENSOR_TYPES[self.type][3]
         self._sensor = LIVE_SENSOR_TYPES[self.type][4]
-        self._state = None
         self.degrees = {
                 "N":0,
                 "NO":45,
@@ -103,7 +113,7 @@ class LiveSensor(SensorBase):
     @property
     def unit_of_measurement(self) -> str:
         """Unit of measurement for the sensor."""
-        return self._unit
+        return self._unit_of_measurement
 
     @property
     def extra_state_attributes(self):
@@ -119,31 +129,33 @@ class LiveSensor(SensorBase):
             else:
                 attr["Latitude"]  = self._windturbine.latitude
                 attr["Longitude"] = self._windturbine.longitude
-            attr["Households"] = math.floor((self._windturbine.live_data["powerAbsTot"] * 1000) / 400)
-            attr["Energy-Efficient Bulbs"] = math.floor(self._state / 12)
-        elif self.type == "runpercentage":
-            attr["Start Date"] = self._windturbine.startDate
+            attr[CONF_STATE_CLASS] = SensorStateClass.MEASUREMENT
         elif self.type == "winddirection":
             attr["Degrees"] = self.degrees.get(self._state)
-        elif self.type == "kwh":
-            attr["kWh Forecast"] = self._windturbine.live_data["kwhForecast"]
+        elif self.type == "windspeed" or self.type == "powertotal" or self.type == "powerpershare" or self.type == "powerpercentage" or self.type == "rpm":
+            attr[CONF_STATE_CLASS] = SensorStateClass.MEASUREMENT
+        elif self.type == "energy" or self.type == "yearproduction":
+            attr[ATTR_LAST_RESET] = datetime(datetime.today().year, 1 ,1)
+            attr[CONF_STATE_CLASS] = SensorStateClass.TOTAL
         return attr
 
-    @property
-    def available(self) -> bool:
-        """Return True if windturbine and wind is available."""
-        return self._windturbine.live_status
+    async def async_added_to_hass(self):
+        """Call when entity is about to be added to Home Assistant."""
+        if (state := await self.async_get_last_state()) is None:
+            self._state = None
+            return
+
+        self._state = state.state
 
     def update(self):
         """Update the sensor."""
-        if self._windturbine.live_data:
+        if self._windturbine.live_data is not None:
             if self.type == "windturbine":
                 self._state = self._windturbine.live_data[self._sensor] * self._windturbine.shares
+            elif self.type == "energy":
+                self._state = self._windturbine.live_data[self._sensor] / self._windturbine.total_shares * self._windturbine.shares
             else:
                 self._state = self._windturbine.live_data[self._sensor]
-            return self._state
-        else:
-            return None
 
 class ProductionSensor(SensorBase):
     """Representation of a Sensor."""
