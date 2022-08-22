@@ -11,6 +11,7 @@ from homeassistant.components.sensor import (
     ATTR_LAST_RESET,
     CONF_STATE_CLASS,
 )
+
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Add sensors for passed config_entry in HA."""
     wind = hass.data[DOMAIN][config_entry.entry_id]
@@ -135,7 +136,7 @@ class LiveSensor(SensorBase):
         elif self.type == "windspeed" or self.type == "powertotal" or self.type == "powerpershare" or self.type == "powerpercentage" or self.type == "rpm":
             attr[CONF_STATE_CLASS] = SensorStateClass.MEASUREMENT
         elif self.type == "energy" or self.type == "yearproduction":
-            attr[ATTR_LAST_RESET] = datetime(datetime.today().year, 1 ,1)
+            attr[ATTR_LAST_RESET] = datetime(datetime.now().year, 1, 1)
             attr[CONF_STATE_CLASS] = SensorStateClass.TOTAL
         return attr
 
@@ -154,6 +155,8 @@ class LiveSensor(SensorBase):
                 self._state = self._windturbine.live_data[self._sensor] * self._windturbine.shares
             elif self.type == "energy":
                 self._state = self._windturbine.live_data[self._sensor] / self._windturbine.total_shares * self._windturbine.shares
+            elif self.type == "runpercentage":
+                self._state = round(timedelta(hours=self._windturbine.live_data[self._sensor]) / (datetime.now() - datetime(datetime.now().year, 1, 1)) * 100, 2)
             else:
                 self._state = self._windturbine.live_data[self._sensor]
 
