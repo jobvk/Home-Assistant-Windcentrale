@@ -160,10 +160,8 @@ class LiveAPI:
             for key, value in json_items[self.windturbine_id].items():
                 if key == "wind_power" or key == "power" or key == "power_per_share" or key == "power_percentage" or key == "year_production" or key == "total_runtime":
                     self.response_data[key] = int(value)
-                elif key == "rpm":
+                elif key == "rpm" or key == "year_runtime":
                     self.response_data[key] = float(value)
-                elif key == "year_runtime":
-                    self.response_data[key] = round(float(value), 2)
                 elif key == "timestamp":
                     self.response_data[key] = datetime.datetime.fromtimestamp(int(value))
                 elif key == "pulsating":

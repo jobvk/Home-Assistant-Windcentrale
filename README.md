@@ -153,6 +153,7 @@ Windcentrale app
 ## Contributors
 Special Thanks to all contributors
 * [@vdheidenet](https://github.com/vdheidenet): Sharing his data for creating the signing in function
+* [@rob-on-git](https://github.com/rob-on-git): For creating a formula for the run percentage sensor
 
 ## License
 [Apache License 2.0](https://github.com/jobvk/Home-Assistant-Windcentrale/blob/main/LICENSE)
