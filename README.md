@@ -4,9 +4,8 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/jobvk/Home-Assistant-Windcentrale)](https://github.com/jobvk/Home-Assistant-Windcentrale/releases)
 [![GitHub](https://img.shields.io/badge/license-Apache-blue)](LICENSE)
 
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/jobvk/Home-Assistant-Windcentrale/graphs/commit-activity)
 [![Maintainer](https://img.shields.io/badge/Maintainer-jobvk-brightgreen.svg)](https://github.com/jobvk/)
-[![](https://dcbadge.vercel.app/api/shield/311908841459810316?style=flat&theme=default-inverted)](https://discordapp.com/users/311908841459810316/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/jobvk/Home-Assistant-Windcentrale/graphs/commit-activity)
 
 [![Buy me a coffee](https://img.shields.io/static/v1.svg?label=Buy%20me%20a%20coffee&logo=buy%20me%20a%20coffee&logoColor=white&labelColor=orange&message=donate&color=Black)](https://www.buymeacoffee.com/jobvk)
 
@@ -30,8 +29,8 @@ The official website https://www.windcentrale.nl
   * [News](#news)
 * [Example](#example)
 * [Energy Management tab](#energy-management-tab)
-* [ToDo](#todo)
 * [Contributors](#contributors)
+* [Stargazers](#stargazers)
 * [License](#license)
 * [Disclaimer](#disclaimer)
 * [Say thank you](#say-thank-you)
@@ -146,14 +145,15 @@ Windcentrale app
 
 ![image](https://user-images.githubusercontent.com/32730202/140643292-7ea72af5-0846-4c2a-8ffb-5ce837486b6e.png)
 
-## ToDo
-
-* Report right state after restart
-
 ## Contributors
 Special Thanks to all contributors
 * [@vdheidenet](https://github.com/vdheidenet): Sharing his data for creating the signing in function
 * [@rob-on-git](https://github.com/rob-on-git): For creating a formula for the run percentage sensor
+
+## Stargazers
+Thanks to everyone having starred my repo!
+
+[![Stargazers repo roster for @jobvk/Home-Assistant-Windcentrale](https://git-lister.onrender.com/api/stars/jobvk/Home-Assistant-Windcentrale?limit=30)](https://github.com/jobvk/Home-Assistant-Windcentrale/stargazers)
 
 ## License
 [Apache License 2.0](https://github.com/jobvk/Home-Assistant-Windcentrale/blob/main/LICENSE)
