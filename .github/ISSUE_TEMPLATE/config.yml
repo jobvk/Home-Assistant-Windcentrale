@@ -4,7 +4,7 @@ contact_links:
     url: https://github.com/jobvk/Home-Assistant-Windcentrale/discussions/categories/ideas
     about: Show your feature request or idea to our community.
   - name: I have a question or need support, Ask the community for help
-    url: https://github.com/jobvk/Home-Assistant-Windcentrale/discussions
+    url: https://github.com/jobvk/Home-Assistant-Windcentrale/discussions/categories/support
     about: Let the people of our community help you.
   - name: Contact me privately
     url: https://discordapp.com/users/311908841459810316/
