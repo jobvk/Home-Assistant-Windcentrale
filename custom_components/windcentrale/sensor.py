@@ -135,9 +135,9 @@ class LiveSensor(SensorBase):
             attr["Degrees"] = self.degrees.get(self._state)
         elif self.type == "windspeed" or self.type == "powertotal" or self.type == "powerpershare" or self.type == "powerpercentage" or self.type == "rpm":
             attr[CONF_STATE_CLASS] = SensorStateClass.MEASUREMENT
-        elif self.type == "energy" or self.type == "yearproduction":
+        elif self.type == "energy" or self.type == "energyshares":
             attr[ATTR_LAST_RESET] = datetime(datetime.now().year, 1, 1)
-            attr[CONF_STATE_CLASS] = SensorStateClass.TOTAL
+            attr[CONF_STATE_CLASS] = SensorStateClass.TOTAL_INCREASING
         return attr
 
     async def async_added_to_hass(self):
@@ -153,7 +153,7 @@ class LiveSensor(SensorBase):
         if self._windturbine.live_data is not None:
             if self.type == "windturbine":
                 self._state = self._windturbine.live_data[self._sensor] * self._windturbine.shares
-            elif self.type == "energy":
+            elif self.type == "energyshares":
                 self._state = self._windturbine.live_data[self._sensor] / self._windturbine.total_shares * self._windturbine.shares
             elif self.type == "runpercentage":
                 self._state = round(timedelta(hours=self._windturbine.live_data[self._sensor]) / (datetime.now() - datetime(datetime.now().year, 1, 1)) * 100, 2)
