@@ -1,6 +1,8 @@
 name: Report an issue
 description: Report an issue for the Home Assistant Windcentrale integration.
 labels: bug
+assignees:
+  - jobvk
 body:
   - type: markdown
     attributes:
@@ -9,13 +11,13 @@ body:
         
         This issue form is for reporting bugs only!
 
-        If you have a feature or enhancement request, please use the [feature request][fr].
         If there is someting wrong with the documentation, please use the [documentation][doc].
-        You just have a question for me or need support, please contact me on my [discord][dis].
+        If you have a feature or enhancement request, please use the [discussions ideas page][dip].
+        If you need help anything else please have a look on our [discussions page][dp].
         
-        [fr]: https://github.com/jobvk/Home-Assistant-Windcentrale/issues/new?labels=enhancement&template=feature_request.yml
         [doc]: https://github.com/jobvk/Home-Assistant-Windcentrale/issues/new?labels=documentation&template=documentation_change.yml
-        [dis]: https://discord.com/invite/T3tK4Jsquc
+        [dip]: https://github.com/jobvk/Home-Assistant-Windcentrale/discussions/categories/ideas
+        [dp]: https://github.com/jobvk/Home-Assistant-Windcentrale/discussions/
   - type: checkboxes
     attributes:
       label: Checklist
