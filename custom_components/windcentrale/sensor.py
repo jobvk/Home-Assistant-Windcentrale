@@ -123,6 +123,7 @@ class LiveSensor(SensorBase):
         if self.type == "windturbine":
             attr["Id"] = self._windturbine.id
             attr["Shares"] = self._windturbine.shares
+            attr["Total_Shares"] = self._windturbine.total_shares
             attr[ATTR_LOCATION] = self._windturbine.location
             if self._windturbine.show_on_map:
                 attr[ATTR_LATITUDE] = self._windturbine.latitude
@@ -135,7 +136,7 @@ class LiveSensor(SensorBase):
             attr["Degrees"] = self.degrees.get(self._state)
         elif self.type == "windspeed" or self.type == "powertotal" or self.type == "powerpershare" or self.type == "powerpercentage" or self.type == "rpm":
             attr[CONF_STATE_CLASS] = SensorStateClass.MEASUREMENT
-        elif self.type == "energy" or self.type == "yearproduction":
+        elif self.type == "energy" or self.type == "yearproduction" or self.type == "yearproducedpercentage":
             attr[ATTR_LAST_RESET] = datetime(datetime.now().year, 1, 1)
             attr[CONF_STATE_CLASS] = SensorStateClass.TOTAL
         return attr
@@ -145,7 +146,7 @@ class LiveSensor(SensorBase):
         if (state := await self.async_get_last_state()) is None:
             self._state = None
             return
-
+ 
         self._state = state.state
 
     def update(self):
@@ -157,6 +158,9 @@ class LiveSensor(SensorBase):
                 self._state = self._windturbine.live_data[self._sensor] / self._windturbine.total_shares * self._windturbine.shares
             elif self.type == "runpercentage":
                 self._state = round(timedelta(hours=self._windturbine.live_data[self._sensor]) / (datetime.now() - datetime(datetime.now().year, 1, 1)) * 100, 2)
+            elif self.type == "yearproducedpercentage":
+                """ Year production / total_shares * 2 (one share ~ 0.5MW) / 1000 (convert from kWh normal) * 100% """
+                self._state = round(self._windturbine.live_data[self._sensor] / self._windturbine.total_shares * 0.2, 1)
             else:
                 self._state = self._windturbine.live_data[self._sensor]
 

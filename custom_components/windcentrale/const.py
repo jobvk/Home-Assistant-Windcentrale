@@ -58,6 +58,7 @@ LIVE_SENSOR_TYPES = {
     "runtimeyear": ["Hours Run This Year", None, TIME_HOURS, "mdi:calendar-clock", "year_runtime"],
     "runtimetotal": ["Hours Run Total", None, TIME_HOURS, "mdi:calendar-clock", "total_runtime"],
     "runpercentage": ["Run Percentage", None, PERCENTAGE, "mdi:percent", "year_runtime"],
+    "yearproducedpercentage": ["Year production prognoses", None, PERCENTAGE, "mdi:percent", "year_production"],
     "timestamp": ["Last Update", SensorDeviceClass.TIMESTAMP, None, None, "timestamp"]
 }
 
