@@ -55,10 +55,10 @@ LIVE_SENSOR_TYPES = {
     "rpm": ["Revolutions Per Minute", None, "RPM", "mdi:gauge", "rpm"],
     "energy": ["Energy", SensorDeviceClass.ENERGY, ENERGY_KILO_WATT_HOUR, None, "year_production"],
     "energyshares": ["Energy shares", SensorDeviceClass.ENERGY, ENERGY_KILO_WATT_HOUR, None, "year_production"],
+    "energyprognoses": ["Energy Prognoses This Year", None, PERCENTAGE, "mdi:percent", "year_production"],
     "runtimeyear": ["Hours Run This Year", None, TIME_HOURS, "mdi:calendar-clock", "year_runtime"],
     "runtimetotal": ["Hours Run Total", None, TIME_HOURS, "mdi:calendar-clock", "total_runtime"],
     "runpercentage": ["Run Percentage", None, PERCENTAGE, "mdi:percent", "year_runtime"],
-    "yearproducedpercentage": ["Year production prognoses", None, PERCENTAGE, "mdi:percent", "year_production"],
     "timestamp": ["Last Update", SensorDeviceClass.TIMESTAMP, None, None, "timestamp"]
 }
 
