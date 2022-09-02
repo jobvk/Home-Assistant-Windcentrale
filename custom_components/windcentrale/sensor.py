@@ -146,7 +146,7 @@ class LiveSensor(SensorBase):
         if (state := await self.async_get_last_state()) is None:
             self._state = None
             return
- 
+
         self._state = state.state
 
     def update(self):
@@ -274,3 +274,4 @@ class NewsSensor(SensorEntity):
             return self._item
         else:
             return None
+
