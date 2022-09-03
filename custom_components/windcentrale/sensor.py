@@ -159,7 +159,7 @@ class LiveSensor(SensorBase):
             elif self.type == "runpercentage":
                 self._state = round(timedelta(hours=self._windturbine.live_data[self._sensor]) / (datetime.now() - datetime(datetime.now().year, 1, 1)) * 100, 2)
             elif self.type == "energyprognoses":
-                self._state = round((self._windturbine.live_data[self._sensor] / self._windturbine.EnergyPrognoses) * 100, 2)
+                self._state = round((self._windturbine.live_data[self._sensor] / self._windturbine.energy_prognoses) * 100, 2)
             else:
                 self._state = self._windturbine.live_data[self._sensor]
 
