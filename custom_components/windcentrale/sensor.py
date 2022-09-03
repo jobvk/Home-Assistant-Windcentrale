@@ -138,7 +138,7 @@ class LiveSensor(SensorBase):
             attr[CONF_STATE_CLASS] = SensorStateClass.MEASUREMENT
         elif self.type == "energy" or self.type == "energyshares":
             attr[ATTR_LAST_RESET] = datetime(datetime.now().year, 1, 1)
-            attr[CONF_STATE_CLASS] = SensorStateClass.TOTAL_INCREASING
+            attr[CONF_STATE_CLASS] = SensorStateClass.TOTAL
         return attr
 
     async def async_added_to_hass(self):
