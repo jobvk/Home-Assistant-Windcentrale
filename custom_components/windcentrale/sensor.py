@@ -123,6 +123,7 @@ class LiveSensor(SensorBase):
         if self.type == "windturbine":
             attr["Id"] = self._windturbine.id
             attr["Shares"] = self._windturbine.shares
+            attr["Total_Shares"] = self._windturbine.total_shares
             attr[ATTR_LOCATION] = self._windturbine.location
             if self._windturbine.show_on_map:
                 attr[ATTR_LATITUDE] = self._windturbine.latitude
@@ -135,7 +136,7 @@ class LiveSensor(SensorBase):
             attr["Degrees"] = self.degrees.get(self._state)
         elif self.type == "windspeed" or self.type == "powertotal" or self.type == "powerpershare" or self.type == "powerpercentage" or self.type == "rpm":
             attr[CONF_STATE_CLASS] = SensorStateClass.MEASUREMENT
-        elif self.type == "energy" or self.type == "yearproduction":
+        elif self.type == "energy" or self.type == "energyshares":
             attr[ATTR_LAST_RESET] = datetime(datetime.now().year, 1, 1)
             attr[CONF_STATE_CLASS] = SensorStateClass.TOTAL
         return attr
@@ -153,10 +154,12 @@ class LiveSensor(SensorBase):
         if self._windturbine.live_data is not None:
             if self.type == "windturbine":
                 self._state = self._windturbine.live_data[self._sensor] * self._windturbine.shares
-            elif self.type == "energy":
+            elif self.type == "energyshares":
                 self._state = self._windturbine.live_data[self._sensor] / self._windturbine.total_shares * self._windturbine.shares
             elif self.type == "runpercentage":
                 self._state = round(timedelta(hours=self._windturbine.live_data[self._sensor]) / (datetime.now() - datetime(datetime.now().year, 1, 1)) * 100, 2)
+            elif self.type == "energyprognoses":
+                self._state = round((self._windturbine.live_data[self._sensor] / self._windturbine.energy_prognoses) * 100, 2)
             else:
                 self._state = self._windturbine.live_data[self._sensor]
 

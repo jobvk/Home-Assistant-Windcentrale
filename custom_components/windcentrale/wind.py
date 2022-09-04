@@ -77,7 +77,8 @@ class Windturbine:
         self.latitude = WINDTURBINES_LIST[windturbine_name][3]
         self.longitude = WINDTURBINES_LIST[windturbine_name][4]
         self.total_shares = WINDTURBINES_LIST[windturbine_name][5]
-        self.startDate = WINDTURBINES_LIST[windturbine_name][6]
+        self.start_date = WINDTURBINES_LIST[windturbine_name][6]
+        self.energy_prognoses = WINDTURBINES_LIST[windturbine_name][7]
         self.liveapi = LiveAPI(self.hass, self.wind, self.id, self.name)
         #self.productionapi = ProductionAPI(self.hass, self.name, self.id, self.shares)
 
