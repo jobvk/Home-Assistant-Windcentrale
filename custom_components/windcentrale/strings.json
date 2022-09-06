@@ -24,7 +24,6 @@
         "title": "The Windcentrale Options",
         "description": "Options for the Windcentrale integration. https://www.windcentrale.nl\n\nIf you need help with the configuration, have a look over here: https://github.com/jobvk/Home-Assistant-Windcentrale\n",
         "data": {
-          "news_filter": "Filter for the news of the windturbines(s)",
           "show_on_map": "Show the windturbine(s) on the map"
         }
       }

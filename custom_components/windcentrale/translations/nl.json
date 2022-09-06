@@ -24,7 +24,6 @@
         "title": "De Windcentrale Aanpassen",
         "description": "Opties voor de Windcentrale integratie. https://www.windcentrale.nl\n\nAls je hulp nodig hebt bij de configuratie, kijk dan hier: https://github.com/jobvk/Home-Assistant-Windcentrale\n",
         "data": {
-          "news_filter": "Filter voor het nieuws van de windturbine(s)",
           "show_on_map": "Laat de windturbine(s) op de kaart zien"
         }
       }

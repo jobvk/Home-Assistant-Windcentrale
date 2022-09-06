@@ -29,8 +29,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         await windturbine.schedule_update_live(timedelta())
         # await windturbine.schedule_update_production(timedelta())
 
-    # new_entities.append(NewsSensor(wind))
-    # await wind.schedule_update_news(timedelta())
+    new_entities.append(NewsSensor(wind))
+    await wind.schedule_update_news(timedelta())
 
     if new_entities:
         async_add_entities(new_entities)
@@ -228,11 +228,11 @@ class ProductionSensor(SensorBase):
         else:
             return None
 
-class NewsSensor(SensorEntity):
+class NewsSensor(RestoreEntity, SensorEntity):
     def __init__(self, wind):
         """Initialize the sensor."""
         self.wind = wind
-        self._item = None
+        self.news_item = ""
 
     @property
     def unique_id(self) -> str:
@@ -247,7 +247,7 @@ class NewsSensor(SensorEntity):
     @property
     def state(self) -> str:
         """Static news value for the news sensor."""
-        return "News"
+        return self._state
 
     @property
     def icon(self) -> str:
@@ -258,18 +258,26 @@ class NewsSensor(SensorEntity):
     def extra_state_attributes(self):
         """Return the state attributes of the entity."""
         attr = {}
-        attr["News Item"] = self._item
+        attr["News Item"] = self.news_item
         return attr
 
     @property
     def available(self) -> bool:
         """Return true if windturbine news sensor is available."""
-        return self.wind.news_status
+        return True
+
+    async def async_added_to_hass(self):
+        """Call when entity is about to be added to Home Assistant."""
+        if (state := await self.async_get_last_state()) is None:
+            self._state = "News"
+            return
+
+        self._state = state.state
+
+        if "News Item" in state.attributes:
+            self.news_item = state.attributes["News Item"]
 
     def update(self):
         """Update the sensor."""
-        if self.wind.news_data:
-            self._item = self.wind.news_data
-            return self._item
-        else:
-            return None
+        if self.wind.news_data is not None:
+            self.news_item = self.wind.news_data

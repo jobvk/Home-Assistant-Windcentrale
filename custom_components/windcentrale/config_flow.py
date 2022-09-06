@@ -61,7 +61,6 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 errors["base"] = "unknown"
 
         return self.async_show_form(step_id="init", data_schema= vol.Schema({
-            vol.Optional(CONF_NEWS_FILTER, default=self.config_entry.options.get(CONF_NEWS_FILTER, NEWS_FILTER[0])): vol.In(NEWS_FILTER),
             vol.Optional(CONF_SHOW_ON_MAP, default=self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)): bool
         }),
         errors=errors)

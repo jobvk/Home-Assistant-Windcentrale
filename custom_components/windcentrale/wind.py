@@ -21,7 +21,6 @@ class Wind:
         self.hass = hass
         self.id = DOMAIN
         self.tokens = None
-        self.news_filter = self.config_entry.options.get(CONF_NEWS_FILTER, DEFAULT_NEWS_FILTER)
         self.show_on_map = self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)
         self.credentialsapi = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD])
 
@@ -31,27 +30,22 @@ class Wind:
                 project = json.loads(self.config_entry.data[windturbine])
                 self.windturbines.append(Windturbine(self, self.hass, project["name"], project["code"], project["shares"]))
     
-        # self.newsapi = NewsAPI(self.hass, self.news_filter, self.windturbines)
+        self.newsapi = NewsAPI(self, self.hass)
 
-    # @property
-    # def news_status(self):
-    #     "Set news status as result of api"
-    #     return self.newsapi.status
+    @property
+    def news_data(self):
+        "Set news data form news api result"
+        return self.newsapi.response_data
 
-    # @property
-    # def news_data(self):
-    #     "Set news data form news api result"
-    #     return self.newsapi.response_data
+    async def schedule_update_news(self, interval):
+        "Schedule update based on news interval"
+        nxt = dt_util.utcnow() + interval
+        async_track_point_in_utc_time(self.hass, self.async_update_news, nxt)
 
-    # async def schedule_update_news(self, interval):
-    #     "Schedule update based on news interval"
-    #     nxt = dt_util.utcnow() + interval
-    #     async_track_point_in_utc_time(self.hass, self.async_update_news, nxt)
-
-    # async def async_update_news(self, *_):
-    #     "Start update and schedule update based on news interval"
-    #     await self.newsapi.update()
-    #     await self.schedule_update_news(timedelta(minutes=NEWS_INTERVAL))
+    async def async_update_news(self, *_):
+        "Start update and schedule update based on news interval"
+        await self.newsapi.update()
+        await self.schedule_update_news(timedelta(minutes=NEWS_INTERVAL))
 
     async def schedule_update_token(self, interval):
         "Schedule update based on token interval"
@@ -259,72 +253,49 @@ class ProductionAPI:
 
 class NewsAPI:
     "Collect news data"
-    def __init__(self, hass, news_filter, windturbines):
+    def __init__(self, wind, hass):
+        self.wind = wind
         self.hass = hass
-        self.news_filter = news_filter
-        self.response_data = None
-        self.windturbines_ids = []
-        self.status = None
-        self.main_url = "https://zep-api.windcentrale.nl/app/config"
-        for windturbine in windturbines:
-            self.windturbines_ids.append(windturbine.id)
+        self.response_data = ""
+        self.main_url = "https://mijn.windcentrale.nl/api/v0/sustainable/notices"
 
     def __get_data(self):
         "Collect data form url"
-        return requests.get(self.main_url, verify=True)
+        return requests.get(self.main_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
         "Get data ready for home assitant"
         _LOGGER.info('Updating news data sensor')
 
         try:
+            if self.wind.tokens is None:
+                return
+
             request_data = await self.hass.async_add_executor_job(self.__get_data)
+
             if not request_data.status_code == HTTPStatus.OK:
                 _LOGGER.error('Invalid response from server for collection news data')
-                self.status = False
                 return
 
             if request_data.text == "":
                 _LOGGER.error('No news data found')
-                self.status = False
                 return
 
-            self.response_data = None
-            response_data_list = []
-
-            root = ElementTree.fromstring(request_data.text)
-            for newsitems in root.findall('./news/'):
-                value_data = {}
-                value_data[0] = newsitems.attrib.get('id')
-                value_data[1] = newsitems.attrib.get('i')
-                value_data[2] = int(newsitems.attrib.get('m'))
-                Windturbine_id = int(newsitems.attrib.get('m'))
-                value_data[3] = newsitems.attrib.get('t')
-                value_data[4] = newsitems.find('t').text
-                value_data[5] = newsitems.find('c').text
-                if self.news_filter == NEWS_FILTER[0]:
-                    response_data_list.append(value_data)
-                elif self.news_filter == NEWS_FILTER[1]:
-                    if Windturbine_id == 0 or Windturbine_id in self.windturbines_ids:
-                        response_data_list.append(value_data)
-                elif self.news_filter == NEWS_FILTER[2]:
-                    if Windturbine_id in self.windturbines_ids:
-                        response_data_list.append(value_data)
-
-            first_item = response_data_list[0]
-            self.response_data = '{}\n---------\n{}\n\nPublicatiedatum: {}'.format(first_item[4], first_item[5], first_item[3])
-            self.status = True
+            self.response_data = ""
+            json_items = json.loads(json.dumps(request_data.json()))
+            news_item = json_items[0]
+            publication_date = datetime.datetime.fromisoformat(news_item['publication_date_time']).strftime("%d-%m-%Y %H:%M:%S")
+            self.response_data = "{}\n---------\n{}\n\nPublicatiedatum: {}".format(news_item['title'], news_item['message'], publication_date)
+            _LOGGER.error(self.response_data)
 
         except requests.exceptions.Timeout:
             """Time out error of server connection"""
             _LOGGER.error('Timeout response from server for collection news data')
-            self.status = False
             return
 
         except requests.exceptions.RequestException as exc:
             """Error of server RequestException"""
             _LOGGER.error('Error occurred while fetching data: %r', exc)
-            self.status = False
             return
 
 class Credentials:
