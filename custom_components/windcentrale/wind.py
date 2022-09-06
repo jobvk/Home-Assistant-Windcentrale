@@ -286,7 +286,6 @@ class NewsAPI:
             news_item = json_items[0]
             publication_date = datetime.datetime.fromisoformat(news_item['publication_date_time']).strftime("%d-%m-%Y %H:%M:%S")
             self.response_data = "{}\n---------\n{}\n\nPublicatiedatum: {}".format(news_item['title'], news_item['message'], publication_date)
-            _LOGGER.error(self.response_data)
 
         except requests.exceptions.Timeout:
             """Time out error of server connection"""
