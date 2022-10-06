@@ -20,7 +20,7 @@ The official website https://www.windcentrale.nl
 
 Below is an example of the sensors.
 
-![image](https://user-images.githubusercontent.com/32730202/131559085-00470dae-f4d0-43b0-a082-395d63f29e76.png)
+<img src="https://user-images.githubusercontent.com/32730202/194361335-60f094cd-480e-4d7e-9c12-c9c9d538037e.png" width="668" height="541">
 
 ## Sensors
 
@@ -31,20 +31,26 @@ These sensors show live data from the wind turbine.
 |ID|Type|Description|Unit of Measurement
 |------------|------------|------------|------------|
 | `sensor.name` | Int | The total amount of power you currently generate with the number of wind shares. | Watt (W)
-| `sensor.name_current_power` | Int | The ability in percentage the wind turbine can generate power. | Percentage (%)
-| `sensor.name_hours_run_this_year` | Int | The number of hours that the windturbine has been running this year. | Hours (h)
-| `sensor.name_kwh` | Int | The amount of engery production by the windturbine this year. | Kilowatt-hour (kWh)
-| `sensor.name_last_updated` | DateTime | Returns when the windturbine last updated. | DateTime
-| `sensor.name_power_production_per_share` | Int | The power per wind share that the windturbine currently generates. | Watt (W)
-| `sensor.name_power_production_total` | Int | The total power that the windturbine currently generates. | Kilowatt (kW)
-| `binary_sensor.name_pulsating` | Int | The windturbine is at max power. | Boolean
-| `sensor.name_revolutions_per_minute` | Int | The speed at which the blades of the windturbine rotate. | Revolutions Per minute (RPM)
-| `sensor.name_run_percentage` | Int | The percentage of the wind turbine is operational since the start date. | Percentage (%)
-| `sensor.name_wind_direction` | String | The direction of the wind at the windturbine. | Wind rose
-| `sensor.name_wind_speed` | Int | The speed of the wind at the windturbine. | Beaufort scale (BFT)
+| `sensor.name_energy` | Int | The energy that the wind turbine has produced this year. | Kilowatt-hour (kWh)
+| `sensor.name_energy_prognoses_this_year` | Float | The percentage of how much the wind turbine should produce in a year. | Percentage (%)
+| `sensor.name_energy_shares` | Float | The energy that your shares of the wind turbine has produced this year. | Kilowatt-hour (kWh)
+| `sensor.name_hours_run_this_year` | Int | The number of hours the wind turbine has operated this year. | Hours (h)
+| `sensor.name_hours_run_total` | Int | The number of hours the wind turbine has operated in total. | Hours (h)
+| `sensor.name_last_update` | DateTime | Returns when the wind turbine last updated. | DateTime
+| `sensor.name_power_per_share` | Int | The power per wind share that the wind turbine currently generates. | Watt (W)
+| `sensor.name_power_percentage` | Int | The ability in percentage the wind turbine can generate power. | Percentage (%)
+| `sensor.name_power_total` | Int | The total power that the wind turbine currently generates. | Kilowatt (kW)
+| `binary_sensor.name_pulsating` | Bool | The wind turbine is at max power. | Boolean
+| `sensor.name_revolutions_per_minute` | Float | The speed at which the blades of the wind turbine rotate. | Revolutions Per minute (RPM)
+| `sensor.name_run_percentage` | Float | The percentage of the wind turbine is operational since the start date. | Percentage (%)
+| `sensor.name_wind_direction` | String | The direction of the wind at the wind turbine. | Wind rose
+| `sensor.name_wind_speed` | Int | The speed of the wind at the wind turbine. | Beaufort scale (BFT)
 
 ### History
 
+Are not available at this time
+
+<!--
 These sensors show how much power the wind turbine has delivered over a certain time.
 
 |ID|Type|Description|Decimals|Unit of Measurement
@@ -54,6 +60,7 @@ These sensors show how much power the wind turbine has delivered over a certain 
 | `sensor.name_month_production` | Int | The amount of power deliverd by the wind turbine this month. | 2 | Kilowatt-hour (kWh)
 | `sensor.name_year_production` | Int | The amount of power deliverd by the wind turbine this year. | 3 | Megawatt-hour (MWh)
 | `sensor.name_total_production` | Int | The amount of power deliverd by the wind turbine all time. | 3 | Megawatt-hour (MWh)
+ -->
 
 ### News
 
@@ -64,7 +71,7 @@ The value of `sensor.the_windcentrale_news` doesn't change because the news stri
 The attributes have no limit on characters there for I made a solution.
 
 Create a markdown card with the following content: 
-```
+``` yaml
 type: markdown
 content: '{{ state_attr(''sensor.the_windcentrale_news'', ''News Item'') }}'
 ```
