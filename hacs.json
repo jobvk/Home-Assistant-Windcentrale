@@ -1,6 +1,7 @@
 {
   "name": "Windcentrale",
-  "homeassistant": "2022.8.0",
   "zip_release": true,
-  "filename": "windcentrale.zip"
+  "filename": "windcentrale.zip",
+  "render_readme" : false,
+  "homeassistant": "2022.8.0"
 }
