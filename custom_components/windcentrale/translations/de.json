@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Die Windcentrale Einrichten",
-        "description": "Die Windcentrale Integration einrichten. https://www.windcentrale.nl\n\nWenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: https://github.com/jobvk/Home-Assistant-Windcentrale\n\nFülle die Anzahl der Windteile dass Sie von der Spezifische Windkraftanlage besitzt ein:",
+        "description": "Wenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: https://github.com/jobvk/Home-Assistant-Windcentrale",
         "data": {
           "email": "Geben Sie Ihre E-Mailadresse ein",
           "password": "Geben Sie Ihr Passwort ein"
@@ -22,7 +22,7 @@
     "step": {
       "init": {
         "title": "De Windcentrale Anpassen",
-        "description": "Optionen für die Windcentrale Integration. https://www.windcentrale.nl\n\nWenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: https://github.com/jobvk/Home-Assistant-Windcentrale\n",
+        "description": "Wenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: https://github.com/jobvk/Home-Assistant-Windcentrale",
         "data": {
           "show_on_map": "Zeige die Windkraftanlage(n) auf der Karte"
         }
