@@ -2,19 +2,16 @@ name: Validate with HACS
 
 on:
   push:
-    branches:
-      - master
   pull_request:
   schedule:
     - cron: "0 0 * * *"
 
 jobs:
-  hacs:
-      name: HACS Action
-      runs-on: "ubuntu-latest"
-      steps:
-        - uses: "actions/checkout@v2"
-        - name: HACS Action
-          uses: "hacs/action@main"
-          with:
-            category: "integration"
+  validate:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: HACS validation
+        uses: "hacs/action@main"
+        with:
+          category: "integration"
