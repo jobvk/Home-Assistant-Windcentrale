@@ -77,20 +77,26 @@ These sensors show live data from the wind turbine.
 |ID|Type|Description|Unit of Measurement
 |------------|------------|------------|------------|
 | `sensor.name` | Int | The total amount of power you currently generate with the number of wind shares. | Watt (W)
-| `sensor.name_current_power` | Int | The ability in percentage the wind turbine can generate power. | Percentage (%)
-| `sensor.name_hours_run_this_year` | Int | The number of hours that the windturbine has been running this year. | Hours (h)
-| `sensor.name_kwh` | Int | The amount of engery production by the windturbine this year. | Kilowatt-hour (kWh)
-| `sensor.name_last_updated` | DateTime | Returns when the windturbine last updated. | DateTime
-| `sensor.name_power_production_per_share` | Int | The power per wind share that the windturbine currently generates. | Watt (W)
-| `sensor.name_power_production_total` | Int | The total power that the windturbine currently generates. | Kilowatt (kW)
-| `binary_sensor.name_pulsating` | Int | The windturbine is at max power. | Boolean
-| `sensor.name_revolutions_per_minute` | Int | The speed at which the blades of the windturbine rotate. | Revolutions Per minute (RPM)
-| `sensor.name_run_percentage` | Int | The percentage of the wind turbine is operational since the start date. | Percentage (%)
+| `sensor.name_energy` | Int | The energy that the windturbine has produced this year. | Kilowatt-hour (kWh)
+| `sensor.name_prognoses_this_year` | Float | ??? | Percentage (%)
+| `sensor.name_energy_shares` | Float | ?? | Kilowatt-hour (kWh)
+| `sensor.name_hours_run_this_year` | Int | The number of hours the wind turbine has operated this year. | Hours (h)
+| `sensor.name_hours_run_total` | Int | The number of hours the wind turbine has operated in total. | Hours (h)
+| `sensor.name_last_update` | DateTime | Returns when the windturbine last updated. | DateTime
+| `sensor.name_power_per_share` | Int | The power per wind share that the windturbine currently generates. | Watt (W)
+| `sensor.name_power_percentage` | Int | The ability in percentage the wind turbine can generate power. | Percentage (%)
+| `sensor.name_power_total` | Int | The total power that the windturbine currently generates. | Kilowatt (kW)
+| `binary_sensor.name_pulsating` | Bool | The windturbine is at max power. | Boolean
+| `sensor.name_revolutions_per_minute` | Float | The speed at which the blades of the windturbine rotate. | Revolutions Per minute (RPM)
+| `sensor.name_run_percentage` | Float | The percentage of the wind turbine is operational since the start date. | Percentage (%)
 | `sensor.name_wind_direction` | String | The direction of the wind at the windturbine. | Wind rose
 | `sensor.name_wind_speed` | Int | The speed of the wind at the windturbine. | Beaufort scale (BFT)
 
 ### History
 
+Are not available at this time
+
+<!--
 These sensors show how much power the wind turbine has delivered over a certain time.
 
 |ID|Type|Description|Decimals|Unit of Measurement
@@ -100,6 +106,7 @@ These sensors show how much power the wind turbine has delivered over a certain 
 | `sensor.name_month_production` | Int | The amount of power deliverd by the wind turbine this month. | 2 | Kilowatt-hour (kWh)
 | `sensor.name_year_production` | Int | The amount of power deliverd by the wind turbine this year. | 3 | Megawatt-hour (MWh)
 | `sensor.name_total_production` | Int | The amount of power deliverd by the wind turbine all time. | 3 | Megawatt-hour (MWh)
+ -->
 
 ### News
 
@@ -127,7 +134,7 @@ Below is an example of the sensors.
 
 ## Energy Management tab
 
-To use of Energy Management tab you need to use the sensor `sensor.name_day_production` 
+To use of Energy Management tab you need to use the sensor `sensor.name_energy_shares` 
 
 The sensor state_class is "total" and not "total_increasing" because of energy use of the windturbine. If the windturbine is not spinning the windturbine can use more power than it produces. Found this on their site:
 
