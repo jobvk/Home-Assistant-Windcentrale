@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "The Windcentrale Set Up",
-        "description": "Set up the Windcentrale integration. https://www.windcentrale.nl\n\nIf you need help with the configuration have a look over here: https://github.com/jobvk/Home-Assistant-Windcentrale\n\nFill in the amount of windshares you own off the specific wind turbine:",
+        "description": "If you need help with the configuration have a look over here: https://github.com/jobvk/Home-Assistant-Windcentrale",
         "data": {
           "email": "Enter your email address",
           "password": "Enter your password"
@@ -22,7 +22,7 @@
     "step": {
       "init": {
         "title": "The Windcentrale Options",
-        "description": "Options for the Windcentrale integration. https://www.windcentrale.nl\n\nIf you need help with the configuration, have a look over here: https://github.com/jobvk/Home-Assistant-Windcentrale\n",
+        "description": "If you need help with the configuration have a look over here: https://github.com/jobvk/Home-Assistant-Windcentrale",
         "data": {
           "show_on_map": "Show the windturbine(s) on the map"
         }

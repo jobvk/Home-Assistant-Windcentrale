@@ -57,16 +57,16 @@ The official website https://www.windcentrale.nl
 
 The Windcentrale component can be configured by config flow.
 
-Go to Configuration and then Devices & Services, select Integrations and click on the `+ add integration`, select Windcentrale and configure the setup on the form.
+Go to Settings and then Devices & Services, select Integrations and click on the `+ add integration`, select Windcentrale and configure the setup on the form.
 Fill in your email address and password that you use for signing in to the website, and press submit.
 
-![image](https://user-images.githubusercontent.com/32730202/148293698-ea461760-da64-424a-b797-34fff7dcce41.PNG)
+![image](https://user-images.githubusercontent.com/32730202/194356727-0d3c03f3-28b8-4a87-a940-7f42ebb69bea.png)
 
 ### Options
 
-Go to Configuration and then Devices & Service, select Integrations and search for the integration `Windcentrale` and click on configure. Here you can filter the news and show wind trubines on the map.
+Go to Settings and then Devices & Service, select Integrations and search for the integration `Windcentrale` and click on configure. Here you change if you want to show the wind trubine(s) on the map.
 
-![image](https://user-images.githubusercontent.com/32730202/148293494-814a6173-daf2-4a84-91ae-70601b1961d7.PNG)
+![image](https://user-images.githubusercontent.com/32730202/194356933-d5cae789-c919-4b07-a4d6-a9db4471ac17.png)
 
 ## Sensors
 
@@ -77,20 +77,26 @@ These sensors show live data from the wind turbine.
 |ID|Type|Description|Unit of Measurement
 |------------|------------|------------|------------|
 | `sensor.name` | Int | The total amount of power you currently generate with the number of wind shares. | Watt (W)
-| `sensor.name_current_power` | Int | The ability in percentage the wind turbine can generate power. | Percentage (%)
-| `sensor.name_hours_run_this_year` | Int | The number of hours that the windturbine has been running this year. | Hours (h)
-| `sensor.name_kwh` | Int | The amount of engery production by the windturbine this year. | Kilowatt-hour (kWh)
-| `sensor.name_last_updated` | DateTime | Returns when the windturbine last updated. | DateTime
-| `sensor.name_power_production_per_share` | Int | The power per wind share that the windturbine currently generates. | Watt (W)
-| `sensor.name_power_production_total` | Int | The total power that the windturbine currently generates. | Kilowatt (kW)
-| `binary_sensor.name_pulsating` | Int | The windturbine is at max power. | Boolean
-| `sensor.name_revolutions_per_minute` | Int | The speed at which the blades of the windturbine rotate. | Revolutions Per minute (RPM)
-| `sensor.name_run_percentage` | Int | The percentage of the wind turbine is operational since the start date. | Percentage (%)
-| `sensor.name_wind_direction` | String | The direction of the wind at the windturbine. | Wind rose
-| `sensor.name_wind_speed` | Int | The speed of the wind at the windturbine. | Beaufort scale (BFT)
+| `sensor.name_energy` | Int | The energy that the wind turbine has produced this year. | Kilowatt-hour (kWh)
+| `sensor.name_energy_prognoses_this_year` | Float | The percentage of how much the wind turbine should produce in a year. | Percentage (%)
+| `sensor.name_energy_shares` | Float | The energy that your shares of the wind turbine has produced this year. | Kilowatt-hour (kWh)
+| `sensor.name_hours_run_this_year` | Int | The number of hours the wind turbine has operated this year. | Hours (h)
+| `sensor.name_hours_run_total` | Int | The number of hours the wind turbine has operated in total. | Hours (h)
+| `sensor.name_last_update` | DateTime | Returns when the wind turbine last updated. | DateTime
+| `sensor.name_power_per_share` | Int | The power per wind share that the wind turbine currently generates. | Watt (W)
+| `sensor.name_power_percentage` | Int | The ability in percentage the wind turbine can generate power. | Percentage (%)
+| `sensor.name_power_total` | Int | The total power that the wind turbine currently generates. | Kilowatt (kW)
+| `binary_sensor.name_pulsating` | Bool | The wind turbine is at max power. | Boolean
+| `sensor.name_revolutions_per_minute` | Float | The speed at which the blades of the wind turbine rotate. | Revolutions Per minute (RPM)
+| `sensor.name_run_percentage` | Float | The percentage of the wind turbine is operational since the start date. | Percentage (%)
+| `sensor.name_wind_direction` | String | The direction of the wind at the wind turbine. | Wind rose
+| `sensor.name_wind_speed` | Int | The speed of the wind at the wind turbine. | Beaufort scale (BFT)
 
 ### History
 
+Are not available at this time
+
+<!--
 These sensors show how much power the wind turbine has delivered over a certain time.
 
 |ID|Type|Description|Decimals|Unit of Measurement
@@ -100,6 +106,7 @@ These sensors show how much power the wind turbine has delivered over a certain 
 | `sensor.name_month_production` | Int | The amount of power deliverd by the wind turbine this month. | 2 | Kilowatt-hour (kWh)
 | `sensor.name_year_production` | Int | The amount of power deliverd by the wind turbine this year. | 3 | Megawatt-hour (MWh)
 | `sensor.name_total_production` | Int | The amount of power deliverd by the wind turbine all time. | 3 | Megawatt-hour (MWh)
+ -->
 
 ### News
 
@@ -110,7 +117,7 @@ The value of `sensor.the_windcentrale_news` doesn't change because the news stri
 The attributes have no limit on characters there for I made a solution.
 
 Create a markdown card with the following content: 
-```
+``` yaml
 type: markdown
 content: '{{ state_attr(''sensor.the_windcentrale_news'', ''News Item'') }}'
 ```
@@ -123,27 +130,19 @@ An example of what it should look like:
 
 Below is an example of the sensors.
 
-![image](https://user-images.githubusercontent.com/32730202/131559255-c2e7cd9f-6951-47be-9ae7-fd65dd8a5f85.png)
+<img src="https://user-images.githubusercontent.com/32730202/194361335-60f094cd-480e-4d7e-9c12-c9c9d538037e.png" width="668" height="541">
 
 ## Energy Management tab
 
-To use of Energy Management tab you need to use the sensor `sensor.name_day_production` 
+To use of Energy Management tab you need to use the sensor `sensor.name_energy_shares` 
 
-The sensor state_class is "total" and not "total_increasing" because of energy use of the windturbine. If the windturbine is not spinning the windturbine can use more power than it produces. Found this on their site:
+The sensor state_class is "total" and not "total_increasing" because of energy use of the wind turbine. If the wind turbine is not spinning the wind turbine can use more power than it produces. Found this on their site:
 
-![image](https://user-images.githubusercontent.com/32730202/140643066-aa6679d9-82de-4316-8627-3339c1475b67.png)
+![image](https://user-images.githubusercontent.com/32730202/194364186-bf6ce362-11df-4471-9f1e-014b80835a3b.png)
 
-But there is also one problem. The API of the production history updates every couple of minutes. But 5 minutes after the hour/day has passed they change some data. I haven't found a solution for this yet. But this means there is a difference between the graph of Home Assistant energy management tab and the original app. This also means that when the day is over, the total will not align with the correct values. When I have found a solution I will certainly update it.
+But there is also a problem. The API uses live data for the power management tab. But for the graph on the official site has a small correction. But this means there is a difference between the graph of energy management tab and the official site. This also means that when the day is past, the total does not match the correct values. When I have found a solution I will certainly update it.
 
-If you found a solution please contact me on [discord](https://discord.com/users/311908841459810316/) or make a pull request.
-
-Home Assistant
-
-![image](https://user-images.githubusercontent.com/32730202/140643312-0836568f-5acf-4369-a135-9a6b7a6629ac.png)
-
-Windcentrale app
-
-![image](https://user-images.githubusercontent.com/32730202/140643292-7ea72af5-0846-4c2a-8ffb-5ce837486b6e.png)
+If you found a solution please contact me on [discord](https://discord.com/users/311908841459810316/) or start a [Discussion](https://github.com/jobvk/Home-Assistant-Windcentrale/discussions).
 
 ## Contributors
 Special Thanks to all contributors
