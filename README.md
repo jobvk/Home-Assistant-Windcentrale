@@ -117,7 +117,7 @@ The value of `sensor.the_windcentrale_news` doesn't change because the news stri
 The attributes have no limit on characters there for I made a solution.
 
 Create a markdown card with the following content: 
-```
+``` yaml
 type: markdown
 content: '{{ state_attr(''sensor.the_windcentrale_news'', ''News Item'') }}'
 ```
