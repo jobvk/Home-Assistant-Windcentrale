@@ -94,19 +94,17 @@ These sensors show live data from the wind turbine.
 
 ### History
 
-Are not available at this time
-
-<!--
 These sensors show how much power the wind turbine has delivered over a certain time.
+These sensors are not displaying live data. These senors are updated around noon the following day.
 
-|ID|Type|Description|Decimals|Unit of Measurement
-|----------|------------|------------|------------|------------|
-| `sensor.name_day_production` | Int | The amount of power deliverd by the wind turbine this day. | 1 | Watt-hour (Wh)
-| `sensor.name_week_production` | Int | The amount of power deliverd by the wind turbine last 7 days. | 1 | Kilowatt-hour (kWh)
-| `sensor.name_month_production` | Int | The amount of power deliverd by the wind turbine this month. | 2 | Kilowatt-hour (kWh)
-| `sensor.name_year_production` | Int | The amount of power deliverd by the wind turbine this year. | 3 | Megawatt-hour (MWh)
-| `sensor.name_total_production` | Int | The amount of power deliverd by the wind turbine all time. | 3 | Megawatt-hour (MWh)
- -->
+|ID|Type|Description|Unit of Measurement
+|----------|------------|------------|------------|
+| `sensor.name_production_year_total` | Int | The energy produced by the wind turbine total this year. | Kilowatt-hour (kWh)
+| `sensor.name_production_month_total` | Int | The energy produced by the wind turbine total this month. | Kilowatt-hour (kWh)
+| `sensor.name_production_week_total` | Int | The energy produced by the wind turbine total this week. | Kilowatt-hour (kWh)
+| `sensor.name_production_year_shares` | Int | The energy produced by your shares of the wind turbine this year. | Kilowatt-hour (kWh)
+| `sensor.name_production_month_shares` | Int | The energy produced by your shares of the wind turbine this month. | Kilowatt-hour (kWh)
+| `sensor.name_production_week_shares` | Int | The energy produced by your shares of the wind turbine this week. | Kilowatt-hour (kWh)
 
 ### News
 
@@ -130,7 +128,7 @@ An example of what it should look like:
 
 Below is an example of the sensors.
 
-<img src="https://user-images.githubusercontent.com/32730202/194361335-60f094cd-480e-4d7e-9c12-c9c9d538037e.png" width="668" height="541">
+![image](https://user-images.githubusercontent.com/32730202/195425402-9ecdb159-898e-4a13-a0a8-c406d5b3ccf8.png)
 
 ## Energy Management tab
 
