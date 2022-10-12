@@ -57,6 +57,10 @@ class Wind:
         self.tokens = await self.credentialsapi.authenticate_user_credentails()
         await self.schedule_update_token(timedelta(minutes=TOKEN_INTERVAL))
 
+    async def update_token_now(self):
+        "Start update and schedule update based on token interval"
+        self.tokens = await self.credentialsapi.authenticate_user_credentails()
+
 class Windturbine:
     "Create windturbine and collect data"
     def __init__(self, wind, hass, windturbine_name, windturbine_code, windturbine_shares):
@@ -74,22 +78,47 @@ class Windturbine:
         self.start_date = WINDTURBINES_LIST[windturbine_name][6]
         self.energy_prognoses = WINDTURBINES_LIST[windturbine_name][7]
         self.liveapi = LiveAPI(self.hass, self.wind, self.id, self.name)
-        #self.productionapi = ProductionAPI(self.hass, self.name, self.id, self.shares)
+        self.production_windtrubine_year_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR3_YEARS", 0, "TOTAL_PROJECT")
+        self.production_windtrubine_month_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR_MONTHS", 0, "TOTAL_PROJECT")
+        self.production_windtrubine_week_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "WEEK4_WEEKS", 0, "TOTAL_PROJECT")
+        self.production_shares_year_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR3_YEARS", 0, "SHARES_IN_PROJECT")
+        self.production_shares_month_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR_MONTHS", 0, "SHARES_IN_PROJECT")
+        self.production_shares_week_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "WEEK4_WEEKS", 0, "SHARES_IN_PROJECT")
 
     @property
     def live_data(self):
         "Set live data form live api result"
         return self.liveapi.response_data
 
-    # @property
-    # def production_status(self):
-    #     "Set production status as result of api"
-    #     return self.productionapi.status
+    @property
+    def production_windtrubine_year_data(self):
+        "Set production data form production api result"
+        return self.production_windtrubine_year_api.response_data
 
-    # @property
-    # def production_data(self):
-    #     "Set production data form production api result"
-    #     return self.productionapi.response_data
+    @property
+    def production_windtrubine_month_data(self):
+        "Set production data form production api result"
+        return self.production_windtrubine_month_api.response_data
+
+    @property
+    def production_windtrubine_week_data(self):
+        "Set production data form production api result"
+        return self.production_windtrubine_week_api.response_data
+
+    @property
+    def production_shares_year_data(self):
+        "Set production data form production api result"
+        return self.production_shares_year_api.response_data
+
+    @property
+    def production_shares_month_data(self):
+        "Set production data form production api result"
+        return self.production_shares_month_api.response_data
+
+    @property
+    def production_shares_week_data(self):
+        "Set production data form production api result"
+        return self.production_shares_week_api.response_data
 
     @property
     def show_on_map(self):
@@ -106,15 +135,20 @@ class Windturbine:
         await self.liveapi.update()
         await self.schedule_update_live(timedelta(seconds=LIVE_INTERVAL))
 
-    # async def schedule_update_production(self, interval):
-    #     "Schedule update based on production interval"
-    #     nxt = dt_util.utcnow() + interval
-    #     async_track_point_in_utc_time(self.hass, self.async_update_production, nxt)
+    async def schedule_update_production(self, interval):
+        "Schedule update based on production interval"
+        nxt = dt_util.utcnow() + interval
+        async_track_point_in_utc_time(self.hass, self.async_update_production, nxt)
 
-    # async def async_update_production(self, *_):
-    #     "Start update and schedule update based on production interval"
-    #     await self.productionapi.update()
-    #     await self.schedule_update_production(timedelta(minutes=PRODUCTION_INTERVAL))
+    async def async_update_production(self, *_):
+        "Start update and schedule update based on production interval"
+        await self.production_windtrubine_year_api.update()
+        await self.production_windtrubine_month_api.update()
+        await self.production_windtrubine_week_api.update()
+        await self.production_shares_year_api.update()
+        await self.production_shares_month_api.update()
+        await self.production_shares_week_api.update()
+        await self.schedule_update_production(timedelta(hours=PRODUCTION_INTERVAL))
 
 class LiveAPI:
     "Collect live data"
@@ -179,76 +213,64 @@ class LiveAPI:
 
 class ProductionAPI:
     "Collect production data"
-    def __init__(self, hass, name, windturbineId, shares):
+    def __init__(self, hass, wind, windturbineId, windturbineName, timeframeType, timeframeOffset, viewType):
         self.hass = hass
-        self.windturbine_name = name
+        self.wind = wind
         self.windturbine_id = windturbineId
-        self.windturbine_shares = shares
-        self.status = None
-        self.winddelen = None
+        self.windturbine_name = windturbineName
+        self.timeframe_type = timeframeType
+        self.timeframe_offset = timeframeOffset
+        self.view_type = viewType
         self.response_data = {}
-        self.value_data = {}
-        self.main_url = "https://zep-api.windcentrale.nl/production/"
+        self.main_url = "https://mijn.windcentrale.nl/api/v0/sustainable/production"
 
     def __get_data(self):
         "Collect data form url"
-        get_url = '{}/{}'.format(self.main_url, self.windturbine_id)
-        return requests.get(get_url, verify=True)
+        get_url = '{}/{}?timeframe_type={}&timeframe_offset={}&view_type={}'.format(self.main_url, self.windturbine_id, self.timeframe_type, self.timeframe_offset, self.view_type)
+        return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
         "Get data ready for home assitant"
         _LOGGER.info('Updating production data of windturbine {} using Rest API'.format(self.windturbine_name))
 
         try:
+            if self.wind.tokens is None:
+                return
+            
             request_data = await self.hass.async_add_executor_job(self.__get_data)
+
             if not request_data.status_code == HTTPStatus.OK:
                 _LOGGER.error('Invalid response from server for collection production data of windturbine {}'.format(self.windturbine_name))
-                self.status = False
                 return
 
             if request_data.text == "":
                 _LOGGER.error('No production data found for windturbine {}'.format(self.windturbine_name))
-                self.status = False
                 return
 
             self.response_data.clear()
-            root = ElementTree.fromstring(request_data.text)
+            json_items = json.loads(json.dumps(request_data.json()))
 
-            self.total_windshares = root[0].attrib.get('winddelen')
+            for json_item in json_items:
 
-            for child in root[0]:
-                value_data = {}
-                value_data[0] = child.attrib.get('tstart')
-                value_data[1] = child.attrib.get('tend')
+                if self.timeframe_type == "YEAR3_YEARS":
+                    date_object = json_item["labels"]["year"]
+                elif self.timeframe_type == "YEAR_MONTHS":
+                    date_object = json_item["labels"]["month"]
+                elif self.timeframe_type == "WEEK4_WEEKS":
+                    date_object = json_item["labels"]["week"]
 
-                total_value = child.attrib.get('sum')
-                value_one_share = float(total_value) / int(self.total_windshares)
+                value = json_item["value"]
 
-                if child.attrib.get('period') == 'DAY':
-                    value_all_shares = value_one_share * (self.windturbine_shares * 1000)
-                    value_data[2] = round(value_all_shares, 1)
-                elif child.attrib.get('period') == 'WEEK':
-                    value_all_shares = value_one_share * self.windturbine_shares
-                    value_data[2] = round(value_all_shares, 1)
-                elif child.attrib.get('period') == 'MONTH':
-                    value_all_shares = value_one_share * self.windturbine_shares
-                    value_data[2] = round(value_all_shares, 2)
-                elif child.attrib.get('period') == 'YEAR' or child.attrib.get('period') == 'LIFETIME':
-                    value_all_shares = value_one_share * (self.windturbine_shares / 1000)
-                    value_data[2] = round(value_all_shares, 3)
-                self.response_data[child.attrib.get('period')] = value_data
-            self.status = True
+                self.response_data[date_object] = value
 
         except requests.exceptions.Timeout:
             """Time out error of server connection"""
             _LOGGER.error('Timeout response from server for collection production data for windturbine {}'.format(self.windturbine_name))
-            self.status = False
             return
 
         except requests.exceptions.RequestException as exc:
             """Error of server RequestException"""
             _LOGGER.error('Error occurred while fetching data: %r', exc)
-            self.status = False
             return
 
 class NewsAPI:

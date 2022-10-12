@@ -8,6 +8,6 @@
   "iot_class": "cloud_polling",
   "dependencies": [],
   "codeowners": ["@jobvk"],
-  "version": "0.2.4",
+  "version": "0.2.5",
   "loggers": ["boto3"]
 }

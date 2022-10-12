@@ -1,5 +1,6 @@
 """Platform for sensor integration."""
 import math
+import dateutil.relativedelta
 from datetime import timedelta, datetime
 from .const import DOMAIN, LIVE_SENSOR_TYPES, PRODUCTION_SENSOR_TYPES
 from homeassistant.const import ATTR_LOCATION, ATTR_LATITUDE, ATTR_LONGITUDE
@@ -16,6 +17,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Add sensors for passed config_entry in HA."""
     wind = hass.data[DOMAIN][config_entry.entry_id]
 
+    await wind.update_token_now()
     await wind.schedule_update_token(timedelta())
     
     new_entities = []
@@ -23,11 +25,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         for live_sensor in LIVE_SENSOR_TYPES:
             new_entities.append(LiveSensor(windturbine, live_sensor.lower()))
 
-        # for production_sensor in PRODUCTION_SENSOR_TYPES:
-        #     new_entities.append(ProductionSensor(windturbine, production_sensor.lower()))
+        for production_sensor in PRODUCTION_SENSOR_TYPES:
+            new_entities.append(ProductionSensor(windturbine, production_sensor.lower()))
 
         await windturbine.schedule_update_live(timedelta())
-        # await windturbine.schedule_update_production(timedelta())
+        await windturbine.schedule_update_production(timedelta())
 
     new_entities.append(NewsSensor(wind))
     await wind.schedule_update_news(timedelta())
@@ -172,10 +174,9 @@ class ProductionSensor(SensorBase):
         self._name = PRODUCTION_SENSOR_TYPES[self.type][0]
         self._unit = PRODUCTION_SENSOR_TYPES[self.type][1]
         self._device_class = PRODUCTION_SENSOR_TYPES[self.type][2]
-        self._sensor = PRODUCTION_SENSOR_TYPES[self.type][3]
+        self._timeframe_type = PRODUCTION_SENSOR_TYPES[self.type][3]
         self._state = None
-        self._tstart = None
-        self._tend = None
+        self.attr = {}
 
     @property
     def unique_id(self) -> str:
@@ -205,26 +206,58 @@ class ProductionSensor(SensorBase):
     @property
     def extra_state_attributes(self):
         """Return the state attributes of the entity."""
-        attr = {}
-        attr["Start Time"] = self._tstart
-        attr["End Time"] = self._tend
-        if self.type == "day":
-            attr["last_reset"] = self._tstart
-            attr["state_class"] = "total"
-        return attr
+        return self.attr
 
-    @property
-    def available(self) -> bool:
-        """Return true if windturbine production sensor is available."""
-        return self._windturbine.production_status
+    async def async_added_to_hass(self):
+        """Call when entity is about to be added to Home Assistant."""
+        if (state := await self.async_get_last_state()) is None:
+            self._state = None
+            return
+
+        self._state = state.state
+        
+        if "Year " + str(datetime.now().year - 1) in state.attributes:
+            for i in range(2):
+                year = "Year " + str(datetime.now().year - i - 1)
+                self.attr[year] = state.attributes[year]
+        elif (datetime.now() - dateutil.relativedelta.relativedelta(months=+1)).strftime("%B") in state.attributes:
+            for i in range(datetime.now().month - 1):
+                month = (datetime.now() - dateutil.relativedelta.relativedelta(months= i+1)).strftime("%B")
+                self.attr[month] = state.attributes[month]
+        elif "Week " + str(datetime.now().isocalendar().week - 1) in state.attributes:
+            for i in range(3):
+                week = "Week " + str(datetime.now().isocalendar().week - i - 1)
+                self.attr[week] = state.attributes[week]
 
     def update(self):
         """Update the sensor."""
-        if self._windturbine.production_data:
-            self._tstart = self._windturbine.production_data[self._sensor][0]
-            self._tend = self._windturbine.production_data[self._sensor][1]
-            self._state = self._windturbine.production_data[self._sensor][2]
-            return self._tstart and self._tend and self._state
+        if datetime.now().year in self._windturbine.production_windtrubine_year_data:
+            if self.type == "yeartotal" :
+                self._state = self._windturbine.production_windtrubine_year_data[datetime.now().year]
+                for i in range(2):
+                    self.attr["Year " + str(datetime.now().year - i - 1)] = self._windturbine.production_windtrubine_year_data[datetime.now().year - i - 1]
+            elif self.type == "monthtotal":
+                self._state = self._windturbine.production_windtrubine_month_data[datetime.now().month]
+                for i in range(datetime.now().month - 1):
+                    month = datetime.now() - dateutil.relativedelta.relativedelta(months= i+1)
+                    self.attr[month.strftime("%B")] = self._windturbine.production_windtrubine_month_data[datetime.now().month - i - 1]
+            elif self.type == "weektotal":
+                self._state = self._windturbine.production_windtrubine_week_data[datetime.now().isocalendar().week]
+                for i in range(3):
+                    self.attr["Week " + str(datetime.now().isocalendar().week - i - 1)] = self._windturbine.production_windtrubine_week_data[datetime.now().isocalendar().week - i - 1]
+            elif self.type == "yearshares" :
+                self._state = self._windturbine.production_shares_year_data[datetime.now().year]
+                for i in range(2):
+                    self.attr["Year " + str(datetime.now().year - i - 1)] = self._windturbine.production_shares_year_data[datetime.now().year - i - 1]
+            elif self.type == "monthshares":
+                self._state = self._windturbine.production_shares_month_data[datetime.now().month]
+                for i in range(datetime.now().month - 1):
+                    month = datetime.now() - dateutil.relativedelta.relativedelta(months= i+1)
+                    self.attr[month.strftime("%B")] = self._windturbine.production_shares_month_data[datetime.now().month - i - 1]
+            elif self.type == "weekshares":
+                self._state = self._windturbine.production_shares_week_data[datetime.now().isocalendar().week]
+                for i in range(3):
+                    self.attr["Week " + str(datetime.now().isocalendar().week - i - 1)] = self._windturbine.production_shares_week_data[datetime.now().isocalendar().week - i - 1]
         else:
             return None
 
@@ -232,7 +265,8 @@ class NewsSensor(RestoreEntity, SensorEntity):
     def __init__(self, wind):
         """Initialize the sensor."""
         self.wind = wind
-        self.news_item = ""
+        self.news_item = self.wind.news_data
+        self._state = "News"
 
     @property
     def unique_id(self) -> str:
@@ -260,11 +294,6 @@ class NewsSensor(RestoreEntity, SensorEntity):
         attr = {}
         attr["News Item"] = self.news_item
         return attr
-
-    @property
-    def available(self) -> bool:
-        """Return true if windturbine news sensor is available."""
-        return True
 
     async def async_added_to_hass(self):
         """Call when entity is about to be added to Home Assistant."""
