@@ -5,7 +5,6 @@ from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.const import (
     POWER_WATT,
     POWER_KILO_WATT,
-    ENERGY_WATT_HOUR,
     ENERGY_KILO_WATT_HOUR,
     TIME_HOURS,
     PERCENTAGE,
@@ -14,17 +13,14 @@ from homeassistant.const import (
 DOMAIN = "windcentrale"
 
 PLATFORMS = ["sensor","binary_sensor"]
-NEWS_FILTER = ["All News", "General + Your Windturbine(s)", "Only Your Windturbine(s)"]
 
 CONF_TOKEN_HEADER = "token_header"
-CONF_NEWS_FILTER = "news_filter"
 
 LIVE_INTERVAL = 10 #sec
-PRODUCTION_INTERVAL = 1 #min
+PRODUCTION_INTERVAL = 1 #hour
 NEWS_INTERVAL = 5 #min
 TOKEN_INTERVAL = 55 #min
 
-DEFAULT_NEWS_FILTER = NEWS_FILTER[0]
 DEFAULT_SHOW_ON_MAP = False
 
 # Format:
@@ -63,13 +59,14 @@ LIVE_SENSOR_TYPES = {
 }
 
 # Format:
-# Id: [Name, Unit Of Measurement, Device Class, XML Key]
+# Id: [Name, Unit Of Measurement, Device Class, Timeframe Type]
 PRODUCTION_SENSOR_TYPES = {
-    "day": ["Day Production", ENERGY_WATT_HOUR, SensorDeviceClass.ENERGY, "DAY"],
-    "week": ["Week Production", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "WEEK"],
-    "month": ["Month Production", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "MONTH"],
-    "year": ["Year Production", "MWh", SensorDeviceClass.ENERGY, "YEAR"],
-    "lifetime": ["Total Production", "MWh", SensorDeviceClass.ENERGY, "LIFETIME"]
+    "yeartotal": ["Production Year Total", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR3_YEARS"],
+    "monthtotal": ["Production Month Total", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR_MONTHS"],
+    "weektotal": ["Production Week Total", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "WEEK4_WEEKS"],
+    "yearshares": ["Production Year Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR3_YEARS"],
+    "monthshares": ["Production Month Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR_MONTHS"],
+    "weekshares": ["Production Week Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "WEEK4_WEEKS"]
 }
 
 class powerProducer: 
