@@ -1,14 +1,16 @@
 # Home Assistant sensor component for Windcentrale
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/integration)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/jobvk/Home-Assistant-Windcentrale)](https://github.com/jobvk/Home-Assistant-Windcentrale/releases)
-[![GitHub](https://img.shields.io/badge/license-Apache-blue)](LICENSE)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/jobvk/Home-Assistant-Windcentrale?label=Release)](https://github.com/jobvk/Home-Assistant-Windcentrale/releases)
+![Downloads](https://img.shields.io/github/downloads/jobvk/Home-Assistant-Windcentrale/total?color=blue&label=Downloads)
 
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/jobvk/Home-Assistant-Windcentrale/graphs/commit-activity)
 [![Maintainer](https://img.shields.io/badge/Maintainer-jobvk-brightgreen.svg)](https://github.com/jobvk/)
-[![](https://dcbadge.vercel.app/api/shield/311908841459810316?style=flat&theme=default-inverted)](https://discordapp.com/users/311908841459810316/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/jobvk/Home-Assistant-Windcentrale/graphs/commit-activity)
+[![Discord](https://img.shields.io/discord/1031889093296140309?color=brightgreen&label=Discord&logo=Discord&logoColor=white)](https://discord.gg/yHTjhJVdJa)
 
-[![Buy me a coffee](https://img.shields.io/static/v1.svg?label=Buy%20me%20a%20coffee&logo=buy%20me%20a%20coffee&logoColor=white&labelColor=orange&message=donate&color=Black)](https://www.buymeacoffee.com/jobvk)
+[![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=flat&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/jobvk?frequency=one-time)
+[![](https://img.shields.io/badge/PayPal-00457C?style=flat&logo=paypal&logoColor=white)](https://paypal.me/jobvankoeveringe)
+[![Buy me a coffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&color=orange)](https://www.buymeacoffee.com/jobvk)
 
 Home Assistant component for the Windcentrale
 
