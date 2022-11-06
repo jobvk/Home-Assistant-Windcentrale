@@ -41,7 +41,7 @@ The official website https://www.windcentrale.nl
 ### Installation through HACS
 
 1. Ensure that [HACS](https://hacs.xyz/) is installed.
-2. Click on the `+ Explore & add repositories`
+2. Click on the `+ Explore & download repositories`
 3. Search for "Windcentrale" and install the integration.
 4. Restart your instance.
 
