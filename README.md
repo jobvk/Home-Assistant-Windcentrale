@@ -8,7 +8,9 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/jobvk/Home-Assistant-Windcentrale/graphs/commit-activity)
 [![Discord](https://img.shields.io/discord/1031889093296140309?color=brightgreen&label=Discord&logo=Discord&logoColor=white)](https://discord.gg/yHTjhJVdJa)
 
-[![Buy me a coffee](https://img.shields.io/static/v1.svg?label=Buy%20me%20a%20coffee&logo=buy%20me%20a%20coffee&logoColor=white&labelColor=orange&message=donate&color=Black)](https://www.buymeacoffee.com/jobvk)
+[![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=flat&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/jobvk?frequency=one-time)
+[![](https://img.shields.io/badge/PayPal-00457C?style=flat&logo=paypal&logoColor=white)](https://paypal.me/jobvankoeveringe)
+[![Buy me a coffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&color=orange)](https://www.buymeacoffee.com/jobvk)
 
 Home Assistant component for the Windcentrale
 
@@ -164,7 +166,6 @@ This integration is not developed, nor supported by the windcentrale company.
 There is put a lot of work into making this repo and component available.
 If you want to make donation as appreciation of my work, you can buy me a coffee. Thank you!
 
-[![Buy me a coffee][buymeacoffee-shield]][buymeacoffee]
-
-[buymeacoffee-shield]: https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg
-[buymeacoffee]: https://www.buymeacoffee.com/jobvk
+[![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=flat&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/jobvk?frequency=one-time)
+[![](https://img.shields.io/badge/PayPal-00457C?style=flat&logo=paypal&logoColor=white)](https://paypal.me/jobvankoeveringe)
+[![Buy me a coffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&color=orange)](https://www.buymeacoffee.com/jobvk)
