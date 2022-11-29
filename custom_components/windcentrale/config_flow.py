@@ -35,11 +35,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 user_input = await validate_input(self.hass, user_input)
                 return self.async_create_entry(title="Windcentrale", data=user_input)
-            except InvalidUserCredentails:
+            except InvalidSignInUserParameters:
+                errors["base"] = "invalid_parameter"
+            except InvalidSignInUserCredentails:
                 errors["base"] = "invalid_user_credentails"
-            except Exception as e:
-                _LOGGER.error(e)
-                # _LOGGER.error("Unexpected exception when submitting windcentrale config")
+            except InvalidSignInTooManyRequests:
+                errors["base"] = "invalid_too_many_requests"
+            except InvalidSignInTooUnknownError:
                 errors["base"] = "unknown"
 
         # If there is no user input or there were errors, show the form again, including any errors that were found with the input.
@@ -70,8 +72,14 @@ async def validate_input(hass, user_input: dict):
     credentails = Credentials(hass, user_input[CONF_EMAIL], user_input[CONF_PASSWORD])
     result_user_credentails = await credentails.authenticate_user_credentails()
     user_input[CONF_TOKEN_HEADER] = json.dumps(result_user_credentails)
-    if result_user_credentails == "invalid_user_credentails":
-        raise InvalidUserCredentails
+    if result_user_credentails == "invalid_parameter":
+        raise InvalidSignInUserParameters
+    elif result_user_credentails == "invalid_user_credentails":
+        raise InvalidSignInUserCredentails
+    elif result_user_credentails == "invalid_too_many_requests":
+        raise InvalidSignInTooManyRequests
+    elif result_user_credentails == "unknown":
+        raise InvalidSignInTooUnknownError
     else:
         result_projects_windshares = await credentails.collect_projects_windshares()
         for windturbine in WINDTURBINES_LIST:
@@ -81,5 +89,14 @@ async def validate_input(hass, user_input: dict):
                 user_input[windturbine] = None
     return user_input
 
-class InvalidUserCredentails(exceptions.HomeAssistantError):
+class InvalidSignInUserParameters(exceptions.HomeAssistantError):
+    """Error to indicate there an username or password not filled in."""
+
+class InvalidSignInUserCredentails(exceptions.HomeAssistantError):
     """Error to indicate there is an incorrect username or password."""
+
+class InvalidSignInTooManyRequests(exceptions.HomeAssistantError):
+    """Error to indicate there to many requests to the server."""
+
+class InvalidSignInTooUnknownError(exceptions.HomeAssistantError):
+    """Error to indicate there is an unknown error."""

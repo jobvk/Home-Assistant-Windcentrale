@@ -329,8 +329,8 @@ class Credentials:
         self.projects_list = None
 
     def __get_tokens(self):
-        boto3_client = boto3.client('cognito-idp', region_name='eu-west-1')
-        aws = AWSSRP(username=self.email, password=self.password, pool_id='eu-west-1_U7eYBPrBd', client_id='715j3r0trk7o8dqg3md57il7q0', client=boto3_client)
+        self.boto3_client = boto3.client('cognito-idp', region_name='eu-west-1')
+        aws = AWSSRP(username=self.email, password=self.password, pool_id='eu-west-1_U7eYBPrBd', client_id='715j3r0trk7o8dqg3md57il7q0', client=self.boto3_client)
         return aws.authenticate_user()
 
     def __get_projects(self):
@@ -345,8 +345,15 @@ class Credentials:
             id_token = tokens['AuthenticationResult']['IdToken']
             self.authorization_header = {'Authorization':token_type + " " + id_token}
             return self.authorization_header
-        except:
+        except self.boto3_client.exceptions.InvalidParameterException:
+            return 'invalid_parameter'
+        except self.boto3_client.exceptions.NotAuthorizedException:
             return 'invalid_user_credentails'
+        except self.boto3_client.exceptions.TooManyRequestsException:
+            return 'invalid_too_many_requests'
+        except Exception as exc:
+            _LOGGER.error('Error occurred while signing in and collecting tokens: {}'.format(exc))
+            return 'unknown'
 
     async def collect_projects_windshares(self):
         _LOGGER.info('Collecting windturbines of which you own shares')
