@@ -58,7 +58,6 @@ class Wind:
         await self.schedule_update_token(timedelta(minutes=TOKEN_INTERVAL))
 
     async def update_token_now(self):
-        "Start update and schedule update based on token interval"
         self.tokens = await self.credentialsapi.authenticate_user_credentails()
 
 class Windturbine:
@@ -133,7 +132,7 @@ class Windturbine:
     async def async_update_live(self, *_):
         "Start update and schedule update based on live interval"
         await self.liveapi.update()
-        await self.schedule_update_live(timedelta(seconds=LIVE_INTERVAL))
+        await self.schedule_update_live(timedelta(minutes=LIVE_INTERVAL))
 
     async def schedule_update_production(self, interval):
         "Schedule update based on production interval"
@@ -177,10 +176,7 @@ class LiveAPI:
             
             if not request_data.status_code == HTTPStatus.OK:
                 _LOGGER.error('Invalid response from server for collection live data of windturbine {} the response data {} and code {}'.format(self.windturbine_name, request_data.text, request_data.status_code))
-                return
-
-            if request_data.text == "":
-                _LOGGER.error('No live data found for windturbine {}'.format(self.windturbine_name))
+                _LOGGER.error('The tokens that we used for the invalid live response {}'.format(self.wind.tokens))
                 return
 
             self.response_data.clear()
@@ -206,10 +202,10 @@ class LiveAPI:
             _LOGGER.error('Timeout response from server for collection history data for windturbine {}'.format(self.windturbine_name))
             return
 
-        except requests.exceptions.RequestException as exc:
-            """Error of server RequestException"""
+        except Exception as exc:
             _LOGGER.error('Error occurred while fetching data: %r', exc)
             return
+
 
 class ProductionAPI:
     "Collect production data"
@@ -240,11 +236,8 @@ class ProductionAPI:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
 
             if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.error('Invalid response from server for collection production data of windturbine {}'.format(self.windturbine_name))
-                return
-
-            if request_data.text == "":
-                _LOGGER.error('No production data found for windturbine {}'.format(self.windturbine_name))
+                _LOGGER.error('Invalid response from server for collection production data the response data {} and code {}'.format(request_data.text, request_data.status_code))
+                _LOGGER.error('The tokens that we used for the invalid production response {}'.format(self.wind.tokens))
                 return
 
             self.response_data.clear()
@@ -264,12 +257,9 @@ class ProductionAPI:
                 self.response_data[date_object] = value
 
         except requests.exceptions.Timeout:
-            """Time out error of server connection"""
             _LOGGER.error('Timeout response from server for collection production data for windturbine {}'.format(self.windturbine_name))
             return
-
-        except requests.exceptions.RequestException as exc:
-            """Error of server RequestException"""
+        except Exception as exc:
             _LOGGER.error('Error occurred while fetching data: %r', exc)
             return
 
@@ -296,11 +286,8 @@ class NewsAPI:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
 
             if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.error('Invalid response from server for collection news data')
-                return
-
-            if request_data.text == "":
-                _LOGGER.error('No news data found')
+                _LOGGER.error('Invalid response from server for collection news data the response data {} and code {}'.format(request_data.text, request_data.status_code))
+                _LOGGER.error('The tokens that we used for the invalid news response {}'.format(self.wind.tokens))
                 return
 
             self.response_data = ""
@@ -310,12 +297,9 @@ class NewsAPI:
             self.response_data = "{}\n---------\n{}\n\nPublicatiedatum: {}".format(news_item['title'], news_item['message'], publication_date)
 
         except requests.exceptions.Timeout:
-            """Time out error of server connection"""
             _LOGGER.error('Timeout response from server for collection news data')
             return
-
-        except requests.exceptions.RequestException as exc:
-            """Error of server RequestException"""
+        except Exception as exc:
             _LOGGER.error('Error occurred while fetching data: %r', exc)
             return
 
@@ -329,8 +313,8 @@ class Credentials:
         self.projects_list = None
 
     def __get_tokens(self):
-        self.boto3_client = boto3.client('cognito-idp', region_name='eu-west-1')
-        aws = AWSSRP(username=self.email, password=self.password, pool_id='eu-west-1_U7eYBPrBd', client_id='715j3r0trk7o8dqg3md57il7q0', client=self.boto3_client)
+        boto3_client = boto3.client('cognito-idp', region_name='eu-west-1')
+        aws = AWSSRP(username=self.email, password=self.password, pool_id='eu-west-1_U7eYBPrBd', client_id='715j3r0trk7o8dqg3md57il7q0', client=boto3_client)
         return aws.authenticate_user()
 
     def __get_projects(self):
@@ -338,22 +322,16 @@ class Credentials:
         return requests.get("https://mijn.windcentrale.nl/api/v0/sustainable/projects", headers=self.authorization_header, verify=True)
 
     async def authenticate_user_credentails(self):
-        _LOGGER.info('Testing if user credentails are correct')
+        _LOGGER.warning('Testing if user credentails are correct')
         try:
             tokens = await self.hass.async_add_executor_job(self.__get_tokens)
             token_type = tokens['AuthenticationResult']['TokenType']
             id_token = tokens['AuthenticationResult']['IdToken']
             self.authorization_header = {'Authorization':token_type + " " + id_token}
+            _LOGGER.warning(self.authorization_header)
             return self.authorization_header
-        except self.boto3_client.exceptions.InvalidParameterException:
-            return 'invalid_parameter'
-        except self.boto3_client.exceptions.NotAuthorizedException:
+        except:
             return 'invalid_user_credentails'
-        except self.boto3_client.exceptions.TooManyRequestsException:
-            return 'invalid_too_many_requests'
-        except Exception as exc:
-            _LOGGER.error('Error occurred while signing in and collecting tokens: {}'.format(exc))
-            return 'unknown'
 
     async def collect_projects_windshares(self):
         _LOGGER.info('Collecting windturbines of which you own shares')
@@ -372,11 +350,9 @@ class Credentials:
                 return None
 
         except requests.exceptions.Timeout:
-            """Time out error of server connection"""
             _LOGGER.error('Timeout response from server when collecting windturbines of which you own shares')
             return None
 
-        except requests.exceptions.RequestException as exc:
-            """Error of server RequestException"""
-            _LOGGER.error('Error occurred while collecting windturbines of which you own shares: %r', exc)
+        except Exception as exc:
+            _LOGGER.error('Error occurred while fetching data: %r', exc)
             return None

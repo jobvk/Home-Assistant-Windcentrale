@@ -1,4 +1,5 @@
 """Platform for sensor integration."""
+import logging
 import math
 import dateutil.relativedelta
 from datetime import timedelta, datetime
@@ -12,6 +13,8 @@ from homeassistant.components.sensor import (
     ATTR_LAST_RESET,
     CONF_STATE_CLASS,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Add sensors for passed config_entry in HA."""
@@ -153,7 +156,7 @@ class LiveSensor(SensorBase):
 
     def update(self):
         """Update the sensor."""
-        if self._windturbine.live_data is not None:
+        try:
             if self.type == "windturbine":
                 self._state = self._windturbine.live_data[self._sensor] * self._windturbine.shares
             elif self.type == "energyshares":
@@ -164,6 +167,8 @@ class LiveSensor(SensorBase):
                 self._state = round((self._windturbine.live_data[self._sensor] / self._windturbine.energy_prognoses) * 100, 2)
             else:
                 self._state = self._windturbine.live_data[self._sensor]
+        except Exception as exc:
+            _LOGGER.error('There was a exception when updating live sensor with type {}.\n\nThe data of the sensor: {}\n\nThe total live data: {}\n\nThe type of the data: {}\n\nWith the exception: {}'.format(self.type, self._windturbine.live_data[self._sensor], self._windturbine.live_data, type(self._windturbine.live_data), exc))
 
 class ProductionSensor(SensorBase):
     """Representation of a Sensor."""
@@ -231,35 +236,67 @@ class ProductionSensor(SensorBase):
 
     def update(self):
         """Update the sensor."""
-        if datetime.now().year in self._windturbine.production_windtrubine_year_data:
+        try:
             if self.type == "yeartotal" :
                 self._state = self._windturbine.production_windtrubine_year_data[datetime.now().year]
                 for i in range(2):
                     self.attr["Year " + str(datetime.now().year - i - 1)] = self._windturbine.production_windtrubine_year_data[datetime.now().year - i - 1]
-            elif self.type == "monthtotal":
+        except KeyError as keyecx:
+            _LOGGER.warning('The year {} is missing in total production data'.format(keyecx))
+        except Exception as exc:
+            _LOGGER.error('There was a exception when updating total year production data. There error: {}'.format(exc))
+
+        try:
+            if self.type == "monthtotal":
                 self._state = self._windturbine.production_windtrubine_month_data[datetime.now().month]
                 for i in range(datetime.now().month - 1):
                     month = datetime.now() - dateutil.relativedelta.relativedelta(months= i+1)
                     self.attr[month.strftime("%B")] = self._windturbine.production_windtrubine_month_data[datetime.now().month - i - 1]
-            elif self.type == "weektotal":
+        except KeyError as keyecx:
+            _LOGGER.warning('The month {} is missing in total production data'.format(keyecx))
+        except Exception as exc:
+            _LOGGER.error('There was a exception when updating total month production data. There error: {}'.format(exc))
+
+        try:
+            if self.type == "weektotal":
                 self._state = self._windturbine.production_windtrubine_week_data[datetime.now().isocalendar().week]
                 for i in range(3):
                     self.attr["Week " + str(datetime.now().isocalendar().week - i - 1)] = self._windturbine.production_windtrubine_week_data[datetime.now().isocalendar().week - i - 1]
-            elif self.type == "yearshares" :
+        except KeyError as keyecx:
+            _LOGGER.warning('The week {} is missing in total production data'.format(keyecx))
+        except Exception as exc:
+            _LOGGER.error('There was a exception when updating total week production data. There error: {}'.format(exc))
+
+        try:
+            if self.type == "yearshares" :
                 self._state = self._windturbine.production_shares_year_data[datetime.now().year]
                 for i in range(2):
                     self.attr["Year " + str(datetime.now().year - i - 1)] = self._windturbine.production_shares_year_data[datetime.now().year - i - 1]
-            elif self.type == "monthshares":
+        except KeyError as keyecx:
+            _LOGGER.warning('The year {} is missing in shares production data'.format(keyecx))
+        except Exception as exc:
+            _LOGGER.error('There was a exception when updating shares year production data. There error: {}'.format(exc))
+
+        try:
+            if self.type == "monthshares":
                 self._state = self._windturbine.production_shares_month_data[datetime.now().month]
                 for i in range(datetime.now().month - 1):
                     month = datetime.now() - dateutil.relativedelta.relativedelta(months= i+1)
                     self.attr[month.strftime("%B")] = self._windturbine.production_shares_month_data[datetime.now().month - i - 1]
-            elif self.type == "weekshares":
+        except KeyError as keyecx:
+            _LOGGER.warning('The month {} is missing in shares production data'.format(keyecx))
+        except Exception as exc:
+            _LOGGER.error('There was a exception when updating shares month production data. There error: {}'.format(exc))
+
+        try:
+            if self.type == "weekshares":
                 self._state = self._windturbine.production_shares_week_data[datetime.now().isocalendar().week]
                 for i in range(3):
                     self.attr["Week " + str(datetime.now().isocalendar().week - i - 1)] = self._windturbine.production_shares_week_data[datetime.now().isocalendar().week - i - 1]
-        else:
-            return None
+        except KeyError as keyecx:
+            _LOGGER.warning('The week {} is missing in shares production data'.format(keyecx))
+        except Exception as exc:
+            _LOGGER.error('There was a exception when updating shares week production data. There error: {}'.format(exc))
 
 class NewsSensor(RestoreEntity, SensorEntity):
     def __init__(self, wind):
@@ -308,5 +345,4 @@ class NewsSensor(RestoreEntity, SensorEntity):
 
     def update(self):
         """Update the sensor."""
-        if self.wind.news_data is not None:
-            self.news_item = self.wind.news_data
+        self.news_item = self.wind.news_data
