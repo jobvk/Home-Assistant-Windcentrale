@@ -58,7 +58,6 @@ class Wind:
         await self.schedule_update_token(timedelta(minutes=TOKEN_INTERVAL))
 
     async def update_token_now(self):
-        "Start update and schedule update based on token interval"
         self.tokens = await self.credentialsapi.authenticate_user_credentails()
 
 class Windturbine:
@@ -133,7 +132,7 @@ class Windturbine:
     async def async_update_live(self, *_):
         "Start update and schedule update based on live interval"
         await self.liveapi.update()
-        await self.schedule_update_live(timedelta(seconds=LIVE_INTERVAL))
+        await self.schedule_update_live(timedelta(minutes=LIVE_INTERVAL))
 
     async def schedule_update_production(self, interval):
         "Schedule update based on production interval"
@@ -176,11 +175,7 @@ class LiveAPI:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
             
             if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.error('Invalid response from server for collection live data of windturbine {} the response data {} and code {}'.format(self.windturbine_name, request_data.text, request_data.status_code))
-                return
-
-            if request_data.text == "":
-                _LOGGER.error('No live data found for windturbine {}'.format(self.windturbine_name))
+                _LOGGER.warning('Invalid response from server when collecting live data of windturbine "{}" with the response data "{}" and status code {}'.format(self.windturbine_name, request_data.text, request_data.status_code))
                 return
 
             self.response_data.clear()
@@ -206,10 +201,10 @@ class LiveAPI:
             _LOGGER.error('Timeout response from server for collection history data for windturbine {}'.format(self.windturbine_name))
             return
 
-        except requests.exceptions.RequestException as exc:
-            """Error of server RequestException"""
+        except Exception as exc:
             _LOGGER.error('Error occurred while fetching data: %r', exc)
             return
+
 
 class ProductionAPI:
     "Collect production data"
@@ -240,11 +235,7 @@ class ProductionAPI:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
 
             if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.error('Invalid response from server for collection production data of windturbine {}'.format(self.windturbine_name))
-                return
-
-            if request_data.text == "":
-                _LOGGER.error('No production data found for windturbine {}'.format(self.windturbine_name))
+                _LOGGER.warning('Invalid response from server when collecting production data with the response data "{}" and status code {}'.format(request_data.text, request_data.status_code))
                 return
 
             self.response_data.clear()
@@ -264,12 +255,9 @@ class ProductionAPI:
                 self.response_data[date_object] = value
 
         except requests.exceptions.Timeout:
-            """Time out error of server connection"""
             _LOGGER.error('Timeout response from server for collection production data for windturbine {}'.format(self.windturbine_name))
             return
-
-        except requests.exceptions.RequestException as exc:
-            """Error of server RequestException"""
+        except Exception as exc:
             _LOGGER.error('Error occurred while fetching data: %r', exc)
             return
 
@@ -296,11 +284,7 @@ class NewsAPI:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
 
             if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.error('Invalid response from server for collection news data')
-                return
-
-            if request_data.text == "":
-                _LOGGER.error('No news data found')
+                _LOGGER.warning('Invalid response from server when collecting news data with the response data "{}" and status code {}'.format(request_data.text, request_data.status_code))
                 return
 
             self.response_data = ""
@@ -310,13 +294,10 @@ class NewsAPI:
             self.response_data = "{}\n---------\n{}\n\nPublicatiedatum: {}".format(news_item['title'], news_item['message'], publication_date)
 
         except requests.exceptions.Timeout:
-            """Time out error of server connection"""
             _LOGGER.error('Timeout response from server for collection news data')
             return
-
-        except requests.exceptions.RequestException as exc:
-            """Error of server RequestException"""
-            _LOGGER.error('Error occurred while fetching data: %r', exc)
+        except Exception as exc:
+            _LOGGER.error('While fetching the news data an error occurred: {}'.format(exc))
             return
 
 class Credentials:
@@ -365,11 +346,9 @@ class Credentials:
                 return None
 
         except requests.exceptions.Timeout:
-            """Time out error of server connection"""
             _LOGGER.error('Timeout response from server when collecting windturbines of which you own shares')
             return None
 
-        except requests.exceptions.RequestException as exc:
-            """Error of server RequestException"""
-            _LOGGER.error('Error occurred while collecting windturbines of which you own shares: %r', exc)
+        except Exception as exc:
+            _LOGGER.error('Error occurred while fetching data: %r', exc)
             return None

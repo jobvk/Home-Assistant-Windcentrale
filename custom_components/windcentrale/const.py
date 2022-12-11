@@ -16,7 +16,7 @@ PLATFORMS = ["sensor","binary_sensor"]
 
 CONF_TOKEN_HEADER = "token_header"
 
-LIVE_INTERVAL = 10 #sec
+LIVE_INTERVAL = 1 #min
 PRODUCTION_INTERVAL = 1 #hour
 NEWS_INTERVAL = 5 #min
 TOKEN_INTERVAL = 55 #min

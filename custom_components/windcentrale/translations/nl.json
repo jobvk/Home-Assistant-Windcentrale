@@ -11,8 +11,10 @@
       }
     },
     "error": {
+      "invalid_parameter": "Onjuiste parameters: Controleer of u uw e-mailadres en wachtwoord heeft ingevuld en probeer het opnieuw.",
       "invalid_user_credentails": "Onjuiste Inloggegevens: Controleer uw e-mailadres en wachtwoord en probeer het opnieuw.",
-      "unknown": "De fout is niet bekend."
+      "invalid_too_many_requests": "Teveel aanvragen: Er zijn te veel aanvragen gedaan bij de server, probeer het opnieuw over 30 minuten.",
+      "unknown": "De fout is onbekend, controleer de log voor meer details."
     },
     "abort": {
       "already_configured": "De windcentrale is al geconfigureerd."
