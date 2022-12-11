@@ -175,8 +175,7 @@ class LiveAPI:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
             
             if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.error('Invalid response from server for collection live data of windturbine {} the response data {} and code {}'.format(self.windturbine_name, request_data.text, request_data.status_code))
-                _LOGGER.error('The tokens that we used for the invalid live response {}'.format(self.wind.tokens))
+                _LOGGER.warning('Invalid response from server when collecting live data of windturbine "{}" with the response data "{}" and status code {}'.format(self.windturbine_name, request_data.text, request_data.status_code))
                 return
 
             self.response_data.clear()
@@ -236,8 +235,7 @@ class ProductionAPI:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
 
             if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.error('Invalid response from server for collection production data the response data {} and code {}'.format(request_data.text, request_data.status_code))
-                _LOGGER.error('The tokens that we used for the invalid production response {}'.format(self.wind.tokens))
+                _LOGGER.warning('Invalid response from server when collecting production data with the response data "{}" and status code {}'.format(request_data.text, request_data.status_code))
                 return
 
             self.response_data.clear()
@@ -286,8 +284,7 @@ class NewsAPI:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
 
             if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.error('Invalid response from server for collection news data the response data {} and code {}'.format(request_data.text, request_data.status_code))
-                _LOGGER.error('The tokens that we used for the invalid news response {}'.format(self.wind.tokens))
+                _LOGGER.warning('Invalid response from server when collecting news data with the response data "{}" and status code {}'.format(request_data.text, request_data.status_code))
                 return
 
             self.response_data = ""
@@ -300,7 +297,7 @@ class NewsAPI:
             _LOGGER.error('Timeout response from server for collection news data')
             return
         except Exception as exc:
-            _LOGGER.error('Error occurred while fetching data: %r', exc)
+            _LOGGER.error('While fetching the news data an error occurred: {}'.format(exc))
             return
 
 class Credentials:
@@ -322,13 +319,12 @@ class Credentials:
         return requests.get("https://mijn.windcentrale.nl/api/v0/sustainable/projects", headers=self.authorization_header, verify=True)
 
     async def authenticate_user_credentails(self):
-        _LOGGER.warning('Testing if user credentails are correct')
+        _LOGGER.info('Testing if user credentails are correct')
         try:
             tokens = await self.hass.async_add_executor_job(self.__get_tokens)
             token_type = tokens['AuthenticationResult']['TokenType']
             id_token = tokens['AuthenticationResult']['IdToken']
             self.authorization_header = {'Authorization':token_type + " " + id_token}
-            _LOGGER.warning(self.authorization_header)
             return self.authorization_header
         except:
             return 'invalid_user_credentails'
