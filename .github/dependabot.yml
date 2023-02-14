@@ -3,13 +3,13 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     labels:
-      - "pr: dependency-update"
+      - "dependency-update"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "pip"
     directory: "/"
     labels:
-      - "pr: dependency-update"
+      - "dependency-update"
     schedule:
       interval: "weekly"
