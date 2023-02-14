@@ -15,11 +15,3 @@ updates:
       - "dependency-update"
     schedule:
       interval: "weekly"
-
-  - package-ecosystem: "pip"
-    directory: "/custom_components/windcentrale/"
-    target-branch: "development"
-    labels:
-      - "dependency-update"
-    schedule:
-      interval: "weekly"
