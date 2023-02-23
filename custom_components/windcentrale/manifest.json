@@ -10,6 +10,5 @@
   "issue_tracker": "https://github.com/jobvk/Home-Assistant-Windcentrale/issues",
   "loggers": ["boto3"],
   "requirements": ["boto3==1.26.27", "pycognito==2022.11.2"],
-  "version": "0.2.6",
-  "loggers": ["boto3"]
+  "version": "0.2.6"
 }
