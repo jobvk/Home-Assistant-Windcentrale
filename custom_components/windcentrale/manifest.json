@@ -1,13 +1,14 @@
 {
   "domain": "windcentrale",
   "name": "Windcentrale",
-  "config_flow": true,
-  "documentation": "https://github.com/jobvk/Home-Assistant-Windcentrale",
-  "issue_tracker": "https://github.com/jobvk/Home-Assistant-Windcentrale/issues",
-  "requirements": ["boto3==1.26.27", "pycognito==2022.11.2"],
-  "iot_class": "cloud_polling",
-  "dependencies": [],
+  "after_dependencies": [],
   "codeowners": ["@jobvk"],
-  "version": "0.2.6",
-  "loggers": ["boto3"]
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/jobvk/Home-Assistant-Windcentrale",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/jobvk/Home-Assistant-Windcentrale/issues",
+  "loggers": ["boto3"],
+  "requirements": ["boto3==1.26.70", "pycognito==2022.12.0"],
+  "version": "0.2.6"
 }
