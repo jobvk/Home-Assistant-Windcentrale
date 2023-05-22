@@ -21,7 +21,16 @@ PRODUCTION_INTERVAL = 1 #hour
 NEWS_INTERVAL = 5 #min
 TOKEN_INTERVAL = 55 #min
 
+PLATFORM_SELECT = ["Windcentrale", "Winddelen"]
 DEFAULT_SHOW_ON_MAP = False
+
+WINDCENTRALE_BASE_URL = "mijn.windcentrale.nl"
+WINDCENTRALE_POOL_ID = "eu-west-1_U7eYBPrBd"
+WINDCENTRALE_CLIENT_ID = "715j3r0trk7o8dqg3md57il7q0"
+
+WINDDELEN_BASE_URL = "mijn.winddelen.nl"
+WINDDELEN_POOL_ID = "eu-west-1_3ujjjPxxH"
+WINDDELEN_CLIENT_ID = "11edho7vncqa74o1bju4tlgnt0"
 
 # Format:
 # Name: [Manufacturer, Model, Location, Latitude, Longitude, Total Shares, Start Date, Energy Prognoses (kWh)]

@@ -6,7 +6,8 @@
         "description": "Als je hulp nodig hebt bij de configuratie, kijk dan hier: https://github.com/jobvk/Home-Assistant-Windcentrale",
         "data": {
           "email": "Vul je e-mailadres in",
-          "password": "Vul je wachtwoord in"
+          "password": "Vul je wachtwoord in",
+          "platform": "Selecteer je website"
         }
       }
     },

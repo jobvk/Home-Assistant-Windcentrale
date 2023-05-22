@@ -6,7 +6,8 @@
         "description": "Wenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: https://github.com/jobvk/Home-Assistant-Windcentrale",
         "data": {
           "email": "Geben Sie Ihre E-Mailadresse ein",
-          "password": "Geben Sie Ihr Passwort ein"
+          "password": "Geben Sie Ihr Passwort ein",
+          "platform": "Wählen Sie Ihre Website aus"
         }
       }
     },
