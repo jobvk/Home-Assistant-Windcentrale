@@ -12,11 +12,11 @@
 [![](https://img.shields.io/badge/PayPal-00457C?style=flat&logo=paypal&logoColor=white)](https://paypal.me/jobvankoeveringe)
 [![Buy me a coffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&color=orange)](https://www.buymeacoffee.com/jobvk)
 
-Home Assistant component for the Windcentrale
+Home Assistant component for the Windcentrale & Winddelen
 
 The `Windcentrale` component is a Home Assistant component which lets you get sensor and news data from all wind turbines.
 
-The official website https://www.windcentrale.nl
+The official websites are https://www.windcentrale.nl and https://winddelen.nl
 
 ## Example
 
