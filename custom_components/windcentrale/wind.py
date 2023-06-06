@@ -22,8 +22,9 @@ class Wind:
         self.id = DOMAIN
         self.tokens = None
         self.show_on_map = self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)
+        self.platform = self.config_entry.data.get(CONF_PLATFORM, "Windcentrale")
         self.base_url = self.get_base_url()
-        self.credentialsapi = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD], self.config_entry.data[CONF_PLATFORM])
+        self.credentialsapi = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD], self.platform)
 
         self.windturbines = []
         for windturbine in WINDTURBINES_LIST:
@@ -62,9 +63,9 @@ class Wind:
         self.tokens = await self.credentialsapi.authenticate_user_credentails()
 
     def get_base_url(self):
-        if self.config_entry.data.get(CONF_PLATFORM) == "Windcentrale":
+        if self.platform == "Windcentrale":
             return WINDCENTRALE_BASE_URL
-        elif self.config_entry.data.get(CONF_PLATFORM) == "Winddelen":
+        elif self.platform == "Winddelen":
             return WINDDELEN_BASE_URL
 
 class Windturbine:
