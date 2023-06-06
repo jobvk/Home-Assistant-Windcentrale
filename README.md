@@ -12,11 +12,11 @@
 [![](https://img.shields.io/badge/PayPal-00457C?style=flat&logo=paypal&logoColor=white)](https://paypal.me/jobvankoeveringe)
 [![Buy me a coffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&color=orange)](https://www.buymeacoffee.com/jobvk)
 
-Home Assistant component for the Windcentrale
+Home Assistant component for the Windcentrale & Winddelen
 
 The `Windcentrale` component is a Home Assistant component which lets you get sensor and news data from all wind turbines.
 
-The official website https://www.windcentrale.nl
+The official websites are https://www.windcentrale.nl and https://winddelen.nl
 
 ## Table of Contents
 
@@ -63,7 +63,7 @@ The Windcentrale component can be configured by config flow.
 Go to Settings and then Devices & Services, select Integrations and click on the `+ add integration`, select Windcentrale and configure the setup on the form.
 Fill in your email address and password that you use for signing in to the website, and press submit.
 
-![image](https://user-images.githubusercontent.com/32730202/194356727-0d3c03f3-28b8-4a87-a940-7f42ebb69bea.png)
+![image](https://github.com/jobvk/Home-Assistant-Windcentrale/assets/32730202/30b7a02e-b5c5-45bf-8a16-ec325a441ed5)
 
 ### Options
 

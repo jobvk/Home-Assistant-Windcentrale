@@ -6,7 +6,8 @@
         "description": "If you need help with the configuration have a look over here: https://github.com/jobvk/Home-Assistant-Windcentrale",
         "data": {
           "email": "Enter your email address",
-          "password": "Enter your password"
+          "password": "Enter your password",
+          "platform": "Select your website"
         }
       }
     },

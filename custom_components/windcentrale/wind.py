@@ -9,7 +9,7 @@ from datetime import timedelta
 from defusedxml import ElementTree
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.util import dt as dt_util
-from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SHOW_ON_MAP
+from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_PLATFORM, CONF_SHOW_ON_MAP
 from .const import *
 
 _LOGGER = logging.getLogger(__name__)
@@ -22,7 +22,9 @@ class Wind:
         self.id = DOMAIN
         self.tokens = None
         self.show_on_map = self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)
-        self.credentialsapi = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD])
+        self.platform = self.config_entry.data.get(CONF_PLATFORM, "Windcentrale")
+        self.base_url = self.get_base_url()
+        self.credentialsapi = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD], self.platform)
 
         self.windturbines = []
         for windturbine in WINDTURBINES_LIST:
@@ -59,6 +61,12 @@ class Wind:
 
     async def update_token_now(self):
         self.tokens = await self.credentialsapi.authenticate_user_credentails()
+
+    def get_base_url(self):
+        if self.platform == "Windcentrale":
+            return WINDCENTRALE_BASE_URL
+        elif self.platform == "Winddelen":
+            return WINDDELEN_BASE_URL
 
 class Windturbine:
     "Create windturbine and collect data"
@@ -157,11 +165,10 @@ class LiveAPI:
         self.windturbine_id = windturbineId
         self.windturbine_name = windturbineName
         self.response_data = {}
-        self.main_url = "https://mijn.windcentrale.nl/api/v0/livedata"
 
     def __get_data(self):
         "Collect data form url"
-        get_url = '{}?projects={}'.format(self.main_url, self.windturbine_id)
+        get_url = 'https://{}/api/v0/livedata?projects={}'.format(self.wind.base_url, self.windturbine_id)
         return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
@@ -217,11 +224,10 @@ class ProductionAPI:
         self.timeframe_offset = timeframeOffset
         self.view_type = viewType
         self.response_data = {}
-        self.main_url = "https://mijn.windcentrale.nl/api/v0/sustainable/production"
 
     def __get_data(self):
         "Collect data form url"
-        get_url = '{}/{}?timeframe_type={}&timeframe_offset={}&view_type={}'.format(self.main_url, self.windturbine_id, self.timeframe_type, self.timeframe_offset, self.view_type)
+        get_url = 'https://{}/api/v0/sustainable/production/{}?timeframe_type={}&timeframe_offset={}&view_type={}'.format(self.wind.base_url, self.windturbine_id, self.timeframe_type, self.timeframe_offset, self.view_type)
         return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
@@ -267,11 +273,11 @@ class NewsAPI:
         self.wind = wind
         self.hass = hass
         self.response_data = ""
-        self.main_url = "https://mijn.windcentrale.nl/api/v0/sustainable/notices"
 
     def __get_data(self):
         "Collect data form url"
-        return requests.get(self.main_url, headers=self.wind.tokens, verify=True)
+        get_url = 'https://{}/api/v0/sustainable/notices'.format(self.wind.base_url)
+        return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
         "Get data ready for home assitant"
@@ -302,21 +308,33 @@ class NewsAPI:
 
 class Credentials:
     "Checking credentials & collecting windturbines of which you own shares"
-    def __init__(self, hass, email, password):
+    def __init__(self, hass, email, password, platform):
         self.hass = hass
         self.email = email
         self.password = password
+        self.platform = platform
         self.authorization_header = None
         self.projects_list = None
 
     def __get_tokens(self):
         boto3_client = boto3.client('cognito-idp', region_name='eu-west-1')
-        aws = AWSSRP(username=self.email, password=self.password, pool_id='eu-west-1_U7eYBPrBd', client_id='715j3r0trk7o8dqg3md57il7q0', client=boto3_client)
+        if self.platform == "Windcentrale":
+            pool_id = WINDCENTRALE_POOL_ID
+            client_id = WINDCENTRALE_CLIENT_ID
+        elif self.platform == "Winddelen":
+            pool_id = WINDDELEN_POOL_ID
+            client_id = WINDDELEN_CLIENT_ID
+        aws = AWSSRP(username=self.email, password=self.password, pool_id=pool_id, client_id=client_id, client=boto3_client)
         return aws.authenticate_user()
 
     def __get_projects(self):
         "Collect windturbine's form projects url"
-        return requests.get("https://mijn.windcentrale.nl/api/v0/sustainable/projects", headers=self.authorization_header, verify=True)
+        if self.platform == "Windcentrale":
+            base_url = WINDCENTRALE_BASE_URL
+        elif self.platform == "Winddelen":
+            base_url = WINDDELEN_BASE_URL
+        get_url = 'https://{}/api/v0/sustainable/projects'.format(base_url)
+        return requests.get(get_url, headers=self.authorization_header, verify=True)
 
     async def authenticate_user_credentails(self):
         _LOGGER.info('Testing if user credentails are correct')
