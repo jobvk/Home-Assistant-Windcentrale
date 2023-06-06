@@ -3,7 +3,7 @@ import logging
 import json
 import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
-from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SHOW_ON_MAP 
+from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_PLATFORM, CONF_SHOW_ON_MAP 
 from homeassistant.core import callback
 from .const import *
 from .wind import Credentials
@@ -13,6 +13,7 @@ _LOGGER = logging.getLogger(__name__)
 WINDTURBINE_SCHEMA = vol.Schema({
     vol.Required(CONF_EMAIL): str,
     vol.Required(CONF_PASSWORD): str,
+    vol.Required(CONF_PLATFORM, default=PLATFORM_SELECT[0]): vol.In(PLATFORM_SELECT),
 })
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -69,7 +70,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
 async def validate_input(hass, user_input: dict):
     """Validate the user input"""
-    credentails = Credentials(hass, user_input[CONF_EMAIL], user_input[CONF_PASSWORD])
+    credentails = Credentials(hass, user_input[CONF_EMAIL], user_input[CONF_PASSWORD], user_input[CONF_PLATFORM])
     result_user_credentails = await credentails.authenticate_user_credentails()
     user_input[CONF_TOKEN_HEADER] = json.dumps(result_user_credentails)
     if result_user_credentails == "invalid_parameter":
