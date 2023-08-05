@@ -12,7 +12,7 @@ from homeassistant.const import (
 
 DOMAIN = "windcentrale"
 
-PLATFORMS = ["sensor","binary_sensor"]
+PLATFORMS = ["sensor","binary_sensor","button"]
 
 CONF_TOKEN_HEADER = "token_header"
 

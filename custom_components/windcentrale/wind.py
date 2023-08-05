@@ -28,7 +28,7 @@ class Wind:
 
         self.windturbines = []
         for windturbine in WINDTURBINES_LIST:
-            if self.config_entry.data[windturbine] is not None:
+            if windturbine in self.config_entry.data:
                 project = json.loads(self.config_entry.data[windturbine])
                 self.windturbines.append(Windturbine(self, self.hass, project["name"], project["code"], project["shares"]))
     
@@ -38,6 +38,53 @@ class Wind:
     def news_data(self):
         "Set news data form news api result"
         return self.newsapi.response_data
+
+    async def update_windturbines(self):
+        "Update windturbines after button press"
+        _LOGGER.info('Update windshares')
+
+        # Create a copy of the existing data
+        config_entry_data = dict(self.config_entry.data)
+
+        result_projects_windshares = await self.credentialsapi.collect_projects_windshares()
+        for windturbine in WINDTURBINES_LIST:
+            if windturbine in config_entry_data:
+                del config_entry_data[windturbine]
+            if windturbine in result_projects_windshares:
+                config_entry_data[windturbine] = result_projects_windshares[windturbine].toJSON()
+
+        # Assign the updated data back to the config_entry
+        self.config_entry.data = config_entry_data
+
+        for windturbine_name in WINDTURBINES_LIST:
+            found_in_self_windturbines = False
+            for windturbine in self.windturbines:
+                if windturbine.name == windturbine_name:
+                    found_in_self_windturbines = True
+                    break
+            
+            if windturbine_name in self.config_entry.data:
+                project = json.loads(self.config_entry.data[windturbine_name])
+                if found_in_self_windturbines:
+                    # Update the wind turbine
+                    for windturbine in self.windturbines:
+                        if windturbine.name == windturbine_name:
+                            index = self.windturbines.index(windturbine)
+                            _LOGGER.info('update windturbine {}'.format(windturbine_name))
+                            self.windturbines[index].shares = project["shares"]
+                            break
+                else:
+                    # Add the wind turbine to self.windturbines
+                    _LOGGER.info('add windturbine {}'.format(windturbine_name))
+                    self.windturbines.append(Windturbine(self, self.hass, project["name"], project["code"], project["shares"]))
+            else:
+                # Wind turbine is not in self.config_entry.data, delete it from self.windturbines
+                if found_in_self_windturbines:
+                    _LOGGER.info('delete windturbine {}'.format(windturbine_name))
+                    self.windturbines = [windturbine for windturbine in self.windturbines if windturbine.name != windturbine_name]
+
+        self.hass.config_entries.async_update_entry(self.config_entry, data=self.config_entry.data)
+        await self.hass.config_entries.async_reload(self.config_entry.entry_id)
 
     async def schedule_update_news(self, interval):
         "Schedule update based on news interval"
