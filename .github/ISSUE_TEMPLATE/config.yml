@@ -6,9 +6,6 @@ contact_links:
   - name: I have a question or need support, Ask the community for help
     url: https://github.com/jobvk/Home-Assistant-Windcentrale/discussions/categories/support
     about: Let the people of our community help you.
-  - name: Contact me privately
-    url: https://discordapp.com/users/311908841459810316/
-    about: Contact me by sending a message to me on Discord.
   - name: Offical Windcentrale website
     url: https://www.windcentrale.nl/
     about: For people who want to know more about the windturbines; I'm not related to this company.

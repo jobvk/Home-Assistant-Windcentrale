@@ -3,16 +3,16 @@ from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from .const import DOMAIN
 
-async def async_setup_entry(hass, config_entry, async_add_devices):
+async def async_setup_entry(hass, config_entry, async_add_entities):
     """Add sensors for passed config_entry in HA."""
     wind = hass.data[DOMAIN][config_entry.entry_id]
 
-    new_devices = []
+    new_entities = []
     for windturbine in wind.windturbines:
-        new_devices.append(PulsingSensor(windturbine))
+        new_entities.append(PulsingSensor(windturbine))
 
-    if new_devices:
-        async_add_devices(new_devices)
+    if new_entities:
+        async_add_entities(new_entities)
 
 class SensorBase(RestoreEntity, BinarySensorEntity):
     """Base representation of a windcentrale turbine."""

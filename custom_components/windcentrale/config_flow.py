@@ -86,8 +86,6 @@ async def validate_input(hass, user_input: dict):
         for windturbine in WINDTURBINES_LIST:
             if windturbine in result_projects_windshares:
                 user_input[windturbine] = result_projects_windshares[windturbine].toJSON()
-            else:
-                user_input[windturbine] = None
     return user_input
 
 class InvalidSignInUserParameters(exceptions.HomeAssistantError):
