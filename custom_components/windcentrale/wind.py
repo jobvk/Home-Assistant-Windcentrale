@@ -6,7 +6,6 @@ import datetime
 from pycognito.aws_srp import AWSSRP
 from http import HTTPStatus
 from datetime import timedelta
-from defusedxml import ElementTree
 from homeassistant.core import callback
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.event import async_track_point_in_utc_time
@@ -24,16 +23,13 @@ class Wind:
         self.id = DOMAIN
         self.tokens = None
         self.show_on_map = self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)
-        self.platform = self.config_entry.data.get(CONF_PLATFORM, "Windcentrale")
         self.base_url = self.get_base_url()
-        self.credentialsapi = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD], self.platform)
+        self.credentialsapi = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD], self.config_entry.data[CONF_PLATFORM])
 
         self.windturbines = []
-        for windturbine in WINDTURBINES_LIST:
-            if windturbine in self.config_entry.data:
-                project = json.loads(self.config_entry.data[windturbine])
-                self.windturbines.append(Windturbine(self, self.hass, project["name"], project["code"], project["shares"]))
-    
+        for windturbine in self.config_entry.data[CONF_WINDTUBINES]:
+            self.windturbines.append(Windturbine(self, self.hass, windturbine["name"], windturbine["code"], windturbine["shares"]))
+
         self.newsapi = NewsAPI(self, self.hass)
 
     @property
@@ -48,12 +44,10 @@ class Wind:
         # Create a copy of the existing data
         config_entry_data = dict(self.config_entry.data)
 
+        config_entry_data[CONF_WINDTUBINES] = []
         result_projects_windshares = await self.credentialsapi.collect_projects_windshares()
-        for windturbine in WINDTURBINES_LIST:
-            if windturbine in config_entry_data:
-                del config_entry_data[windturbine]
-            if windturbine in result_projects_windshares:
-                config_entry_data[windturbine] = result_projects_windshares[windturbine].toJSON()
+        for windturbine in result_projects_windshares.keys():
+            config_entry_data[CONF_WINDTUBINES].append(result_projects_windshares[windturbine].to_dict())
 
         # Assign the updated data back to the config_entry
         self.config_entry.data = config_entry_data
@@ -65,28 +59,29 @@ class Wind:
                     found_in_self_windturbines = True
                     break
             
-            if windturbine_name in self.config_entry.data:
-                project = json.loads(self.config_entry.data[windturbine_name])
-                if found_in_self_windturbines:
-                    # Update the wind turbine
-                    for windturbine in self.windturbines:
-                        if windturbine.name == windturbine_name:
-                            index = self.windturbines.index(windturbine)
-                            _LOGGER.info('Update Windturbine {}'.format(windturbine_name))
-                            self.windturbines[index].shares = project["shares"]
-                            break
+            for config_windturbine in self.config_entry.data[CONF_WINDTUBINES]:
+                if windturbine_name == config_windturbine["name"]:
+                    if found_in_self_windturbines:
+                        # Update the wind turbine
+                        for windturbine in self.windturbines:
+                            if windturbine.name == windturbine_name:
+                                index = self.windturbines.index(windturbine)
+                                _LOGGER.info('Update Windturbine {}'.format(windturbine_name))
+                                self.windturbines[index].shares = config_windturbine["shares"]
+                                break
+                    else:
+                        # Add the wind turbine to self.windturbines
+                        _LOGGER.info('Add Windturbine {}'.format(windturbine_name))
+                        self.windturbines.append(Windturbine(self, self.hass, config_windturbine["name"], config_windturbine["code"], config_windturbine["shares"]))
                 else:
-                    # Add the wind turbine to self.windturbines
-                    _LOGGER.info('Add Windturbine {}'.format(windturbine_name))
-                    self.windturbines.append(Windturbine(self, self.hass, project["name"], project["code"], project["shares"]))
-            else:
-                # Wind turbine is not in self.config_entry.data, delete it from self.windturbines
-                if found_in_self_windturbines:
-                    _LOGGER.info('Delete Windturbine {}'.format(windturbine_name))
-                    for windturbine in self.windturbines:
-                        if windturbine.name == windturbine_name:
-                            self.hass.add_job(self.async_remove_device, windturbine.id)
-                    self.windturbines = [windturbine for windturbine in self.windturbines if windturbine.name != windturbine_name]
+                    # Delete the wind turbine from self.windturbines
+                    if found_in_self_windturbines:
+                        _LOGGER.info('Delete Windturbine {}'.format(windturbine_name))
+                        for windturbine in self.windturbines:
+                            if windturbine.name == windturbine_name:
+                                windturbine.cancel_scheduled_updates()
+                                self.hass.add_job(self.async_remove_device, windturbine.id)
+                        self.windturbines = [windturbine for windturbine in self.windturbines if windturbine.name != windturbine_name]
 
         self.hass.config_entries.async_update_entry(self.config_entry, data=self.config_entry.data)
         await self.hass.config_entries.async_reload(self.config_entry.entry_id)
@@ -126,9 +121,10 @@ class Wind:
         self.tokens = await self.credentialsapi.authenticate_user_credentails()
 
     def get_base_url(self):
-        if self.platform == "Windcentrale":
+        platform = self.config_entry.data[CONF_PLATFORM]
+        if platform == "Windcentrale":
             return WINDCENTRALE_BASE_URL
-        elif self.platform == "Winddelen":
+        elif platform == "Winddelen":
             return WINDDELEN_BASE_URL
 
 class Windturbine:
@@ -148,12 +144,14 @@ class Windturbine:
         self.start_date = WINDTURBINES_LIST[windturbine_name][6]
         self.energy_prognoses = WINDTURBINES_LIST[windturbine_name][7]
         self.liveapi = LiveAPI(self.hass, self.wind, self.id, self.name)
+        self.live_update_task = None
         self.production_windtrubine_year_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR3_YEARS", 0, "TOTAL_PROJECT")
         self.production_windtrubine_month_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR_MONTHS", 0, "TOTAL_PROJECT")
         self.production_windtrubine_week_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "WEEK4_WEEKS", 0, "TOTAL_PROJECT")
         self.production_shares_year_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR3_YEARS", 0, "SHARES_IN_PROJECT")
         self.production_shares_month_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR_MONTHS", 0, "SHARES_IN_PROJECT")
         self.production_shares_week_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "WEEK4_WEEKS", 0, "SHARES_IN_PROJECT")
+        self.production_update_task = None
 
     @property
     def live_data(self):
@@ -198,7 +196,7 @@ class Windturbine:
     async def schedule_update_live(self, interval):
         "Schedule update based on live interval"
         nxt = dt_util.utcnow() + interval
-        async_track_point_in_utc_time(self.hass, self.async_update_live, nxt)
+        self.live_update_task = async_track_point_in_utc_time(self.hass, self.async_update_live, nxt)
 
     async def async_update_live(self, *_):
         "Start update and schedule update based on live interval"
@@ -208,7 +206,7 @@ class Windturbine:
     async def schedule_update_production(self, interval):
         "Schedule update based on production interval"
         nxt = dt_util.utcnow() + interval
-        async_track_point_in_utc_time(self.hass, self.async_update_production, nxt)
+        self.production_update_task = async_track_point_in_utc_time(self.hass, self.async_update_production, nxt)
 
     async def async_update_production(self, *_):
         "Start update and schedule update based on production interval"
@@ -219,6 +217,16 @@ class Windturbine:
         await self.production_shares_month_api.update()
         await self.production_shares_week_api.update()
         await self.schedule_update_production(timedelta(hours=PRODUCTION_INTERVAL))
+
+    def cancel_scheduled_updates(self):
+        "Cancel scheduled live and production updates"
+        if self.live_update_task:
+            self.live_update_task()
+            self.live_update_task = None
+
+        if self.production_update_task:
+            self.production_update_task()
+            self.production_update_task = None
 
 class LiveAPI:
     "Collect live data"

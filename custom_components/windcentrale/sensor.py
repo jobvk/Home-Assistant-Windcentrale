@@ -1,6 +1,5 @@
 """Platform for sensor integration."""
 import logging
-import math
 import dateutil.relativedelta
 from datetime import timedelta, datetime
 from .const import DOMAIN, LIVE_SENSOR_TYPES, PRODUCTION_SENSOR_TYPES
