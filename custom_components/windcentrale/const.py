@@ -8,11 +8,16 @@ from homeassistant.const import (
     ENERGY_KILO_WATT_HOUR,
     TIME_HOURS,
     PERCENTAGE,
+    Platform
 )
 
 DOMAIN = "windcentrale"
 
-PLATFORMS = ["sensor","binary_sensor","button"]
+PLATFORMS: list[Platform] = [
+    Platform.SENSOR,
+    Platform.BINARY_SENSOR,
+    Platform.BUTTON
+]
 
 CONF_TOKEN_HEADER = "token_header"
 
