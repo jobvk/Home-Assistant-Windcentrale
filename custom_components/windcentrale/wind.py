@@ -7,6 +7,8 @@ from pycognito.aws_srp import AWSSRP
 from http import HTTPStatus
 from datetime import timedelta
 from defusedxml import ElementTree
+from homeassistant.core import callback
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.util import dt as dt_util
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_PLATFORM, CONF_SHOW_ON_MAP
@@ -70,21 +72,35 @@ class Wind:
                     for windturbine in self.windturbines:
                         if windturbine.name == windturbine_name:
                             index = self.windturbines.index(windturbine)
-                            _LOGGER.info('update windturbine {}'.format(windturbine_name))
+                            _LOGGER.info('Update Windturbine {}'.format(windturbine_name))
                             self.windturbines[index].shares = project["shares"]
                             break
                 else:
                     # Add the wind turbine to self.windturbines
-                    _LOGGER.info('add windturbine {}'.format(windturbine_name))
+                    _LOGGER.info('Add Windturbine {}'.format(windturbine_name))
                     self.windturbines.append(Windturbine(self, self.hass, project["name"], project["code"], project["shares"]))
             else:
                 # Wind turbine is not in self.config_entry.data, delete it from self.windturbines
                 if found_in_self_windturbines:
-                    _LOGGER.info('delete windturbine {}'.format(windturbine_name))
+                    _LOGGER.info('Delete Windturbine {}'.format(windturbine_name))
+                    for windturbine in self.windturbines:
+                        if windturbine.name == windturbine_name:
+                            self.hass.add_job(self.async_remove_device, windturbine.id)
                     self.windturbines = [windturbine for windturbine in self.windturbines if windturbine.name != windturbine_name]
 
         self.hass.config_entries.async_update_entry(self.config_entry, data=self.config_entry.data)
         await self.hass.config_entries.async_reload(self.config_entry.entry_id)
+
+    @callback
+    def async_remove_device(self, device_id: str) -> None:
+        """Remove device from Home Assistant."""
+        _LOGGER.info("Remove device: %s", device_id)
+        device_registry = dr.async_get(self.hass)
+        device_entry = device_registry.async_get_device(
+            identifiers={(DOMAIN, device_id)}
+        )
+        if device_entry is not None:
+            device_registry.async_remove_device(device_entry.id)
 
     async def schedule_update_news(self, interval):
         "Schedule update based on news interval"

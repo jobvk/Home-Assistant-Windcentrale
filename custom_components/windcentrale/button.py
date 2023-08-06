@@ -28,7 +28,7 @@ class ButtonRefreshWindShares(ButtonEntity):
     @property
     def name(self) -> str:
         """Name for the button."""
-        return "Update Wind Shares"
+        return "The Windcentrale Update Wind Shares"
 
     @property
     def device_class(self) -> ButtonDeviceClass:
