@@ -66,23 +66,22 @@ class Wind:
                         for windturbine in self.windturbines:
                             if windturbine.name == windturbine_name:
                                 index = self.windturbines.index(windturbine)
-                                _LOGGER.info('Update Windturbine {}'.format(windturbine_name))
+                                _LOGGER.info('Update the shares of windturbine {} from {} to {} shares'.format(windturbine_name, self.windturbines[index].shares, config_windturbine["shares"]))
                                 self.windturbines[index].shares = config_windturbine["shares"]
                                 break
                     else:
                         # Add the wind turbine to self.windturbines
-                        _LOGGER.info('Add Windturbine {}'.format(windturbine_name))
+                        _LOGGER.info('Add windturbine {} with {} shares'.format(windturbine_name, config_windturbine["shares"]))
                         self.windturbines.append(Windturbine(self, self.hass, config_windturbine["name"], config_windturbine["code"], config_windturbine["shares"]))
                 else:
                     # Delete the wind turbine from self.windturbines
                     if found_in_self_windturbines:
-                        _LOGGER.info('Delete Windturbine {}'.format(windturbine_name))
+                        _LOGGER.info('Delete windturbine {}'.format(windturbine_name))
                         for windturbine in self.windturbines:
                             if windturbine.name == windturbine_name:
                                 windturbine.cancel_scheduled_updates()
                                 self.hass.add_job(self.async_remove_device, windturbine.id)
                         self.windturbines = [windturbine for windturbine in self.windturbines if windturbine.name != windturbine_name]
-
         self.hass.config_entries.async_update_entry(self.config_entry, data=self.config_entry.data)
         await self.hass.config_entries.async_reload(self.config_entry.entry_id)
 
@@ -244,7 +243,7 @@ class LiveAPI:
 
     async def update(self):
         "Get data ready for home assitant"
-        _LOGGER.info('Updating live data of windturbine {} using Rest API'.format(self.windturbine_name))
+        _LOGGER.info('Collecting live data of windturbine {}'.format(self.windturbine_name))
 
         try:
             if self.wind.tokens is None:
@@ -253,7 +252,7 @@ class LiveAPI:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
             
             if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.warning('Invalid response from server when collecting live data of windturbine "{}" with the response data "{}" and status code {}'.format(self.windturbine_name, request_data.text, request_data.status_code))
+                _LOGGER.warning('Invalid response from server when collecting live data of windturbine {} with the response data {} and status code {}'.format(self.windturbine_name, request_data.text, request_data.status_code))
                 return
 
             self.response_data.clear()
@@ -303,7 +302,7 @@ class ProductionAPI:
 
     async def update(self):
         "Get data ready for home assitant"
-        _LOGGER.info('Updating production data of windturbine {} using Rest API'.format(self.windturbine_name))
+        _LOGGER.info('Collecting production data of windturbine {} with view_type: {}, timeframe_type: {}'.format(self.windturbine_name, self.view_type, self.timeframe_type))
 
         try:
             if self.wind.tokens is None:
@@ -312,7 +311,7 @@ class ProductionAPI:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
 
             if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.warning('Invalid response from server when collecting production data with the response data "{}" and status code {}'.format(request_data.text, request_data.status_code))
+                _LOGGER.warning('Invalid response from server when collecting production data with the response data {} and status code {}'.format(request_data.text, request_data.status_code))
                 return
 
             self.response_data.clear()
@@ -352,7 +351,7 @@ class NewsAPI:
 
     async def update(self):
         "Get data ready for home assitant"
-        _LOGGER.info('Updating news data sensor')
+        _LOGGER.info('Collecting news data sensor')
 
         try:
             if self.wind.tokens is None:
@@ -361,7 +360,7 @@ class NewsAPI:
             request_data = await self.hass.async_add_executor_job(self.__get_data)
 
             if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.warning('Invalid response from server when collecting news data with the response data "{}" and status code {}'.format(request_data.text, request_data.status_code))
+                _LOGGER.warning('Invalid response from server when collecting news data with the response data {} and status code {}'.format(request_data.text, request_data.status_code))
                 return
 
             self.response_data = ""
@@ -419,7 +418,7 @@ class Credentials:
             return 'invalid_user_credentails'
 
     async def collect_projects_windshares(self):
-        _LOGGER.info('Collecting windturbines of which you own shares')
+        _LOGGER.info('Collecting windturbines shares')
         try:
             result_projects = await self.hass.async_add_executor_job(self.__get_projects)
             if result_projects.status_code == HTTPStatus.OK:
@@ -431,7 +430,7 @@ class Credentials:
                     self.projects_list[json_windturbine["project_name"]] = powerProducer(json_windturbine["project_name"], json_windturbine["project_code"], shares)
                 return self.projects_list
             else:
-                _LOGGER.error("HTTP status code was not 200 while collecting windturbines of which you own shares, Result: %r", result_projects)
+                _LOGGER.error("HTTP status code was not 200 while collecting windturbines shares, Result: %r", result_projects)
                 return None
 
         except requests.exceptions.Timeout:

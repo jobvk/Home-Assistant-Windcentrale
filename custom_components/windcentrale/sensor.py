@@ -21,7 +21,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     await wind.update_token_now()
     await wind.schedule_update_token(timedelta())
-    
+
     new_entities = []
     for windturbine in wind.windturbines:
         for live_sensor in LIVE_SENSOR_TYPES:
