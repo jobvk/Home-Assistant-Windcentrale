@@ -1,7 +1,10 @@
 """Platform for binary_sensor integration."""
+import logging
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from .const import DOMAIN
+
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Add sensors for passed config_entry in HA."""
