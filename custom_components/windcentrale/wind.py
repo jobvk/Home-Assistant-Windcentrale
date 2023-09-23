@@ -16,7 +16,7 @@ from .const import *
 _LOGGER = logging.getLogger(__name__)
 
 class Wind:
-    "Create Wind and windturbines and collect all data form config entry"
+    """Create Wind and windturbines and collect all data form config entry"""
     def __init__(self, hass, config_entry):
         self.config_entry = config_entry
         self.hass = hass
@@ -32,11 +32,11 @@ class Wind:
 
     @property
     def news_data(self):
-        "Set news data form news api result"
+        """Set news data form news api result"""
         return self.newsapi.response_data
 
     async def update_windturbines(self):
-        "Update windturbines after button press"
+        """Update windturbines after button press"""
         _LOGGER.info('Update windshares')
 
         # Create a copy of the existing data
@@ -85,7 +85,7 @@ class Wind:
 
     @callback
     def async_remove_device(self, device_id: str) -> None:
-        "Remove device from Home Assistant."
+        """Remove device from Home Assistant."""
         _LOGGER.info("Remove device: %s", device_id)
         device_registry = dr.async_get(self.hass)
         device_entry = device_registry.async_get_device(
@@ -95,22 +95,22 @@ class Wind:
             device_registry.async_remove_device(device_entry.id)
 
     async def schedule_update_news(self, interval):
-        "Schedule update based on news interval"
+        """Schedule update based on news interval"""
         nxt = dt_util.utcnow() + interval
         async_track_point_in_utc_time(self.hass, self.async_update_news, nxt)
 
     async def async_update_news(self, *_):
-        "Start update and schedule update based on news interval"
+        """Start update and schedule update based on news interval"""
         await self.newsapi.update()
         await self.schedule_update_news(timedelta(minutes=NEWS_INTERVAL))
 
     async def schedule_update_token(self, interval):
-        "Schedule update based on token interval"
+        """Schedule update based on token interval"""
         nxt = dt_util.utcnow() + interval
         async_track_point_in_utc_time(self.hass, self.async_update_token, nxt)
 
     async def async_update_token(self, *_):
-        "Start update and schedule update based on token interval"
+        """Start update and schedule update based on token interval"""
         self.tokens = await self.credentialsapi.authenticate_user_credentials()
         await self.schedule_update_token(timedelta(minutes=TOKEN_INTERVAL))
 
@@ -118,7 +118,7 @@ class Wind:
         self.tokens = await self.credentialsapi.authenticate_user_credentials()
 
 class Windturbine:
-    "Create windturbine and collect data"
+    """Create windturbine and collect data"""
     def __init__(self, wind, hass, windturbine_name, windturbine_code, windturbine_shares):
         self.wind = wind
         self.hass = hass
@@ -145,61 +145,61 @@ class Windturbine:
 
     @property
     def live_data(self):
-        "Set live data form live api result"
+        """Set live data form live api result"""
         return self.liveapi.response_data
 
     @property
     def production_windtrubine_year_data(self):
-        "Set production data form production api result"
+        """Set production data form production api result"""
         return self.production_windtrubine_year_api.response_data
 
     @property
     def production_windtrubine_month_data(self):
-        "Set production data form production api result"
+        """Set production data form production api result"""
         return self.production_windtrubine_month_api.response_data
 
     @property
     def production_windtrubine_week_data(self):
-        "Set production data form production api result"
+        """Set production data form production api result"""
         return self.production_windtrubine_week_api.response_data
 
     @property
     def production_shares_year_data(self):
-        "Set production data form production api result"
+        """Set production data form production api result"""
         return self.production_shares_year_api.response_data
 
     @property
     def production_shares_month_data(self):
-        "Set production data form production api result"
+        """Set production data form production api result"""
         return self.production_shares_month_api.response_data
 
     @property
     def production_shares_week_data(self):
-        "Set production data form production api result"
+        """Set production data form production api result"""
         return self.production_shares_week_api.response_data
 
     @property
     def show_on_map(self):
-        "Return if the windturbine has to be shown on the map"
+        """Return if the windturbine has to be shown on the map"""
         return self.wind.show_on_map
 
     async def schedule_update_live(self, interval):
-        "Schedule update based on live interval"
+        """Schedule update based on live interval"""
         nxt = dt_util.utcnow() + interval
         self.live_update_task = async_track_point_in_utc_time(self.hass, self.async_update_live, nxt)
 
     async def async_update_live(self, *_):
-        "Start update and schedule update based on live interval"
+        """Start update and schedule update based on live interval"""
         await self.liveapi.update()
         await self.schedule_update_live(timedelta(minutes=LIVE_INTERVAL))
 
     async def schedule_update_production(self, interval):
-        "Schedule update based on production interval"
+        """Schedule update based on production interval"""
         nxt = dt_util.utcnow() + interval
         self.production_update_task = async_track_point_in_utc_time(self.hass, self.async_update_production, nxt)
 
     async def async_update_production(self, *_):
-        "Start update and schedule update based on production interval"
+        """Start update and schedule update based on production interval"""
         await self.production_windtrubine_year_api.update()
         await self.production_windtrubine_month_api.update()
         await self.production_windtrubine_week_api.update()
@@ -209,7 +209,7 @@ class Windturbine:
         await self.schedule_update_production(timedelta(hours=PRODUCTION_INTERVAL))
 
     def cancel_scheduled_updates(self):
-        "Cancel scheduled live and production updates"
+        """Cancel scheduled live and production updates"""
         if self.live_update_task:
             self.live_update_task()
             self.live_update_task = None
@@ -219,7 +219,7 @@ class Windturbine:
             self.production_update_task = None
 
 class LiveAPI:
-    "Collect live data"
+    """Collect live data"""
     def __init__(self, hass, wind, windturbineId, windturbineName):
         self.hass = hass
         self.wind = wind
@@ -228,12 +228,12 @@ class LiveAPI:
         self.response_data = {}
 
     def __get_data(self):
-        "Collect data form url"
+        """Collect data form url"""
         get_url = 'https://{}/api/v0/livedata?projects={}'.format(self.wind.base_url, self.windturbine_id)
         return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
-        "Get data ready for home assitant"
+        """Get data ready for home assitant"""
         _LOGGER.info('Collecting live data of windturbine {}'.format(self.windturbine_name))
 
         try:
@@ -265,7 +265,7 @@ class LiveAPI:
                     self.response_data[key] = value
 
         except requests.exceptions.Timeout:
-            "Time out error of server connection"
+            """Time out error of server connection"""
             _LOGGER.error('Timeout response from server for collection history data for windturbine {}'.format(self.windturbine_name))
             return
 
@@ -275,7 +275,7 @@ class LiveAPI:
 
 
 class ProductionAPI:
-    "Collect production data"
+    """Collect production data"""
     def __init__(self, hass, wind, windturbineId, windturbineName, timeframeType, timeframeOffset, viewType):
         self.hass = hass
         self.wind = wind
@@ -287,12 +287,12 @@ class ProductionAPI:
         self.response_data = {}
 
     def __get_data(self):
-        "Collect data form url"
+        """Collect data form url"""
         get_url = 'https://{}/api/v0/sustainable/production/{}?timeframe_type={}&timeframe_offset={}&view_type={}'.format(self.wind.base_url, self.windturbine_id, self.timeframe_type, self.timeframe_offset, self.view_type)
         return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
-        "Get data ready for home assitant"
+        """Get data ready for home assitant"""
         _LOGGER.info('Collecting production data of windturbine {} with view_type: {}, timeframe_type: {}'.format(self.windturbine_name, self.view_type, self.timeframe_type))
 
         try:
@@ -329,19 +329,19 @@ class ProductionAPI:
             return
 
 class NewsAPI:
-    "Collect news data"
+    """Collect news data"""
     def __init__(self, wind, hass):
         self.wind = wind
         self.hass = hass
         self.response_data = ""
 
     def __get_data(self):
-        "Collect data form url"
+        """Collect data form url"""
         get_url = 'https://{}/api/v0/sustainable/notices'.format(self.wind.base_url)
         return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
-        "Get data ready for home assitant"
+        """Get data ready for home assitant"""
         _LOGGER.info('Collecting news data sensor')
 
         try:
@@ -368,7 +368,7 @@ class NewsAPI:
             return
 
 class Credentials:
-    "Check credentials & collecting windturbines of which you own shares"
+    """Check credentials & collecting windturbines of which you own shares"""
     def __init__(self, hass, email, password, platform):
         self.hass = hass
         self.email = email
@@ -386,7 +386,7 @@ class Credentials:
         return aws.authenticate_user()
 
     def __get_projects(self):
-        "Collect windturbine's form projects url"
+        """Collect windturbine's form projects url"""
         get_url = 'https://{}/api/v0/sustainable/projects'.format(self.base_url)
         return requests.get(get_url, headers=self.authorization_header, verify=True)
 
