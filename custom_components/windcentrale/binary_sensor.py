@@ -6,13 +6,11 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
-    """Add sensors for passed config_entry in HA."""
+async def async_setup_entry(hass, config_entry, async_add_entities) -> None:
+    """Add sensors for the passed config_entry in HA."""
     wind = hass.data[DOMAIN][config_entry.entry_id]
 
-    new_entities = []
-    for windturbine in wind.windturbines:
-        new_entities.append(PulsingSensor(windturbine))
+    new_entities = [PulsingSensor(windturbine) for windturbine in wind.windturbines]
 
     if new_entities:
         async_add_entities(new_entities)
@@ -20,12 +18,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class SensorBase(RestoreEntity, BinarySensorEntity):
     """Base representation of a windcentrale turbine."""
 
-    def __init__(self, windturbine):
+    def __init__(self, windturbine) -> None:
         """Initialize the sensor."""
         self._windturbine = windturbine
 
     @property
-    def device_info(self):
+    def device_info(self) -> dict[str, str]:
         """Information about this wind turbine"""
         return {
             "identifiers": {(DOMAIN, self._windturbine.id)},
@@ -66,15 +64,15 @@ class PulsingSensor(SensorBase):
         """Icon for the sensor."""
         return "mdi:pulse"
 
-    async def async_added_to_hass(self):
-        """Call when entity is about to be added to Home Assistant."""
+    async def async_added_to_hass(self) -> None:
+        """Call when the entity is about to be added to Home Assistant."""
         if (state := await self.async_get_last_state()) is None:
             self._state = None
             return
 
         self._state = state.state
 
-    def update(self):
+    def update(self) -> None:
         """Update the sensor."""
         try:
             self._state = self._windturbine.live_data["pulsating"]
