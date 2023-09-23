@@ -25,9 +25,7 @@ class Wind:
         self.show_on_map = self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)
         self.base_url = WINDCENTRALE_BASE_URL if self.config_entry.data[CONF_PLATFORM] == "Windcentrale" else WINDDELEN_BASE_URL
         self.credentialsapi = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD], self.config_entry.data[CONF_PLATFORM])
-        self.windturbines = []
-        for windturbine in self.config_entry.data[CONF_WINDTURBINES]:
-            self.windturbines.append(Windturbine(self, self.hass, windturbine["name"], windturbine["code"], windturbine["shares"]))
+        self.windturbines = [Windturbine(self, self.hass, windturbine["name"], windturbine["code"], windturbine["shares"]) for windturbine in self.config_entry.data[CONF_WINDTURBINES]]
         self.newsapi = NewsAPI(self, self.hass)
 
     @property
@@ -228,12 +226,12 @@ class LiveAPI:
         self.response_data = {}
 
     def __get_data(self):
-        """Collect data form url"""
+        """Collect data form URL"""
         get_url = 'https://{}/api/v0/livedata?projects={}'.format(self.wind.base_url, self.windturbine_id)
         return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
-        """Get data ready for home assitant"""
+        """Get data ready for Home Assitant"""
         _LOGGER.info('Collecting live data of windturbine {}'.format(self.windturbine_name))
 
         try:
@@ -265,14 +263,12 @@ class LiveAPI:
                     self.response_data[key] = value
 
         except requests.exceptions.Timeout:
-            """Time out error of server connection"""
             _LOGGER.error('Timeout response from server for collection history data for windturbine {}'.format(self.windturbine_name))
             return
 
         except Exception as exc:
             _LOGGER.error('Error occurred while fetching data: %r', exc)
             return
-
 
 class ProductionAPI:
     """Collect production data"""
@@ -287,12 +283,12 @@ class ProductionAPI:
         self.response_data = {}
 
     def __get_data(self):
-        """Collect data form url"""
+        """Collect data form URL"""
         get_url = 'https://{}/api/v0/sustainable/production/{}?timeframe_type={}&timeframe_offset={}&view_type={}'.format(self.wind.base_url, self.windturbine_id, self.timeframe_type, self.timeframe_offset, self.view_type)
         return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
-        """Get data ready for home assitant"""
+        """Get data ready for Home Assistant"""
         _LOGGER.info('Collecting production data of windturbine {} with view_type: {}, timeframe_type: {}'.format(self.windturbine_name, self.view_type, self.timeframe_type))
 
         try:
@@ -361,7 +357,7 @@ class NewsAPI:
             self.response_data = "{}\n---------\n{}\n\nPublicatiedatum: {}".format(news_item['title'], news_item['message'], publication_date)
 
         except requests.exceptions.Timeout:
-            _LOGGER.error('Timeout response from server for collection news data')
+            _LOGGER.error('Timeout response from server for collecting news data')
             return
         except Exception as exc:
             _LOGGER.error('While fetching the news data an error occurred: {}'.format(exc))
@@ -396,7 +392,7 @@ class Credentials:
             tokens = await self.hass.async_add_executor_job(self.__get_tokens)
             token_type = tokens['AuthenticationResult']['TokenType']
             id_token = tokens['AuthenticationResult']['IdToken']
-            self.authorization_header = {'Authorization':token_type + " " + id_token}
+            self.authorization_header = {'Authorization': token_type + " " + id_token}
             return self.authorization_header
         except:
             return 'invalid_user_credentials'

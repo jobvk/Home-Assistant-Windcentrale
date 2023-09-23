@@ -5,13 +5,7 @@ from datetime import timedelta, datetime
 from .const import DOMAIN, LIVE_SENSOR_TYPES, PRODUCTION_SENSOR_TYPES
 from homeassistant.const import ATTR_LOCATION, ATTR_LATITUDE, ATTR_LONGITUDE
 from homeassistant.helpers.restore_state import RestoreEntity
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorStateClass,
-    SensorEntity,
-    ATTR_LAST_RESET,
-    CONF_STATE_CLASS,
-)
+from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass, SensorEntity, ATTR_LAST_RESET, CONF_STATE_CLASS
 
 _LOGGER = logging.getLogger(__name__)
 
