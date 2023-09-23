@@ -23,13 +23,11 @@ class Wind:
         self.id = DOMAIN
         self.tokens = None
         self.show_on_map = self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)
-        self.base_url = self.get_base_url()
+        self.base_url = WINDCENTRALE_BASE_URL if self.config_entry.data[CONF_PLATFORM] == "Windcentrale" else WINDDELEN_BASE_URL
         self.credentialsapi = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD], self.config_entry.data[CONF_PLATFORM])
-
         self.windturbines = []
         for windturbine in self.config_entry.data[CONF_WINDTUBINES]:
             self.windturbines.append(Windturbine(self, self.hass, windturbine["name"], windturbine["code"], windturbine["shares"]))
-
         self.newsapi = NewsAPI(self, self.hass)
 
     @property
@@ -118,13 +116,6 @@ class Wind:
 
     async def update_token_now(self):
         self.tokens = await self.credentialsapi.authenticate_user_credentails()
-
-    def get_base_url(self):
-        platform = self.config_entry.data[CONF_PLATFORM]
-        if platform == "Windcentrale":
-            return WINDCENTRALE_BASE_URL
-        elif platform == "Winddelen":
-            return WINDDELEN_BASE_URL
 
 class Windturbine:
     "Create windturbine and collect data"
@@ -383,27 +374,20 @@ class Credentials:
         self.email = email
         self.password = password
         self.platform = platform
+        self.pool_id = WINDCENTRALE_POOL_ID if self.platform == "Windcentrale" else WINDDELEN_POOL_ID
+        self.client_id = WINDCENTRALE_CLIENT_ID if self.platform == "Windcentrale" else WINDDELEN_CLIENT_ID
+        self.base_url = WINDCENTRALE_BASE_URL if self.platform == "Windcentrale" else WINDDELEN_BASE_URL
         self.authorization_header = None
         self.projects_list = None
 
     def __get_tokens(self):
         boto3_client = boto3.client('cognito-idp', region_name='eu-west-1')
-        if self.platform == "Windcentrale":
-            pool_id = WINDCENTRALE_POOL_ID
-            client_id = WINDCENTRALE_CLIENT_ID
-        elif self.platform == "Winddelen":
-            pool_id = WINDDELEN_POOL_ID
-            client_id = WINDDELEN_CLIENT_ID
-        aws = AWSSRP(username=self.email, password=self.password, pool_id=pool_id, client_id=client_id, client=boto3_client)
+        aws = AWSSRP(username=self.email, password=self.password, pool_id=self.pool_id, client_id=self.client_id, client=boto3_client)
         return aws.authenticate_user()
 
     def __get_projects(self):
         "Collect windturbine's form projects url"
-        if self.platform == "Windcentrale":
-            base_url = WINDCENTRALE_BASE_URL
-        elif self.platform == "Winddelen":
-            base_url = WINDDELEN_BASE_URL
-        get_url = 'https://{}/api/v0/sustainable/projects'.format(base_url)
+        get_url = 'https://{}/api/v0/sustainable/projects'.format(self.base_url)
         return requests.get(get_url, headers=self.authorization_header, verify=True)
 
     async def authenticate_user_credentails(self):
