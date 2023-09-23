@@ -7,5 +7,8 @@ contact_links:
     url: https://github.com/jobvk/Home-Assistant-Windcentrale/discussions/categories/support
     about: Let the people of our community help you.
   - name: Offical Windcentrale website
-    url: https://www.windcentrale.nl/
+    url: https://www.windcentrale.nl
+    about: For people who want to know more about the windturbines; I'm not related to this company.
+  - name: Offical Winddelen website
+    url: https://winddelen.nl
     about: For people who want to know more about the windturbines; I'm not related to this company.
