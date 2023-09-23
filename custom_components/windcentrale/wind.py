@@ -16,7 +16,7 @@ from .const import *
 _LOGGER = logging.getLogger(__name__)
 
 class Wind:
-    """Create Wind and windturbines and collect all data form config entry"""
+    "Create Wind and windturbines and collect all data form config entry"
     def __init__(self, hass, config_entry):
         self.config_entry = config_entry
         self.hass = hass
@@ -85,7 +85,7 @@ class Wind:
 
     @callback
     def async_remove_device(self, device_id: str) -> None:
-        """Remove device from Home Assistant."""
+        "Remove device from Home Assistant."
         _LOGGER.info("Remove device: %s", device_id)
         device_registry = dr.async_get(self.hass)
         device_entry = device_registry.async_get_device(
@@ -111,11 +111,11 @@ class Wind:
 
     async def async_update_token(self, *_):
         "Start update and schedule update based on token interval"
-        self.tokens = await self.credentialsapi.authenticate_user_credentails()
+        self.tokens = await self.credentialsapi.authenticate_user_credentials()
         await self.schedule_update_token(timedelta(minutes=TOKEN_INTERVAL))
 
     async def update_token_now(self):
-        self.tokens = await self.credentialsapi.authenticate_user_credentails()
+        self.tokens = await self.credentialsapi.authenticate_user_credentials()
 
 class Windturbine:
     "Create windturbine and collect data"
@@ -265,7 +265,7 @@ class LiveAPI:
                     self.response_data[key] = value
 
         except requests.exceptions.Timeout:
-            """Time out error of server connection"""
+            "Time out error of server connection"
             _LOGGER.error('Timeout response from server for collection history data for windturbine {}'.format(self.windturbine_name))
             return
 
@@ -368,7 +368,7 @@ class NewsAPI:
             return
 
 class Credentials:
-    "Checking credentials & collecting windturbines of which you own shares"
+    "Check credentials & collecting windturbines of which you own shares"
     def __init__(self, hass, email, password, platform):
         self.hass = hass
         self.email = email
@@ -390,8 +390,8 @@ class Credentials:
         get_url = 'https://{}/api/v0/sustainable/projects'.format(self.base_url)
         return requests.get(get_url, headers=self.authorization_header, verify=True)
 
-    async def authenticate_user_credentails(self):
-        _LOGGER.info('Testing if user credentails are correct')
+    async def authenticate_user_credentials(self):
+        _LOGGER.info('Testing if user credentials are correct')
         try:
             tokens = await self.hass.async_add_executor_job(self.__get_tokens)
             token_type = tokens['AuthenticationResult']['TokenType']
@@ -399,7 +399,7 @@ class Credentials:
             self.authorization_header = {'Authorization':token_type + " " + id_token}
             return self.authorization_header
         except:
-            return 'invalid_user_credentails'
+            return 'invalid_user_credentials'
 
     async def collect_projects_windshares(self):
         _LOGGER.info('Collecting windturbines shares')

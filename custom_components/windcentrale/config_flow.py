@@ -37,8 +37,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title="Windcentrale", data=user_input)
             except InvalidSignInUserParameters:
                 errors["base"] = "invalid_parameter"
-            except InvalidSignInUserCredentails:
-                errors["base"] = "invalid_user_credentails"
+            except InvalidSignInUserCredentials:
+                errors["base"] = "invalid_user_credentials"
             except InvalidSignInTooManyRequests:
                 errors["base"] = "invalid_too_many_requests"
             except InvalidSignInTooUnknownError:
@@ -69,19 +69,19 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
 async def validate_input(hass, user_input: dict):
     """Validate the user input"""
-    credentails = Credentials(hass, user_input[CONF_EMAIL], user_input[CONF_PASSWORD], user_input[CONF_PLATFORM])
-    result_user_credentails = await credentails.authenticate_user_credentails()
-    if result_user_credentails == "invalid_parameter":
+    credentials = Credentials(hass, user_input[CONF_EMAIL], user_input[CONF_PASSWORD], user_input[CONF_PLATFORM])
+    result_user_credentials = await credentials.authenticate_user_credentials()
+    if result_user_credentials == "invalid_parameter":
         raise InvalidSignInUserParameters
-    elif result_user_credentails == "invalid_user_credentails":
-        raise InvalidSignInUserCredentails
-    elif result_user_credentails == "invalid_too_many_requests":
+    elif result_user_credentials == "invalid_user_credentials":
+        raise InvalidSignInUserCredentials
+    elif result_user_credentials == "invalid_too_many_requests":
         raise InvalidSignInTooManyRequests
-    elif result_user_credentails == "unknown":
+    elif result_user_credentials == "unknown":
         raise InvalidSignInTooUnknownError
     else:
         user_input[CONF_WINDTUBINES] = []
-        result_projects_windshares = await credentails.collect_projects_windshares()
+        result_projects_windshares = await credentials.collect_projects_windshares()
         for windturbine in result_projects_windshares.keys():
             user_input[CONF_WINDTUBINES].append(result_projects_windshares[windturbine].to_dict())
     return user_input
@@ -89,7 +89,7 @@ async def validate_input(hass, user_input: dict):
 class InvalidSignInUserParameters(exceptions.HomeAssistantError):
     """Error to indicate there an username or password not filled in."""
 
-class InvalidSignInUserCredentails(exceptions.HomeAssistantError):
+class InvalidSignInUserCredentials(exceptions.HomeAssistantError):
     """Error to indicate there is an incorrect username or password."""
 
 class InvalidSignInTooManyRequests(exceptions.HomeAssistantError):
