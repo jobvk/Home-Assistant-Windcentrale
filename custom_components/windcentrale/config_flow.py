@@ -80,20 +80,19 @@ async def validate_input(hass, user_input: dict):
     elif result_user_credentials == "unknown":
         raise InvalidSignInTooUnknownError
     else:
-        user_input[CONF_WINDTUBINES] = []
+        user_input[CONF_WINDTURBINES] = []
         result_projects_windshares = await credentials.collect_projects_windshares()
         for windturbine in result_projects_windshares.keys():
-            user_input[CONF_WINDTUBINES].append(result_projects_windshares[windturbine].to_dict())
+            user_input[CONF_WINDTURBINES].append(result_projects_windshares[windturbine].to_dict())
     return user_input
 
 class InvalidSignInUserParameters(exceptions.HomeAssistantError):
-    """Error to indicate there an username or password not filled in."""
+    """Error to indicate there's a missing username or password."""
 
 class InvalidSignInUserCredentials(exceptions.HomeAssistantError):
-    """Error to indicate there is an incorrect username or password."""
+    """Error to indicate incorrect username or password."""
 
 class InvalidSignInTooManyRequests(exceptions.HomeAssistantError):
-    """Error to indicate there to many requests to the server."""
+    """Error to indicate there are too many requests to the server."""
 
 class InvalidSignInTooUnknownError(exceptions.HomeAssistantError):
-    """Error to indicate there is an unknown error."""

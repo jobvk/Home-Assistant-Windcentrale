@@ -26,7 +26,7 @@ class Wind:
         self.base_url = WINDCENTRALE_BASE_URL if self.config_entry.data[CONF_PLATFORM] == "Windcentrale" else WINDDELEN_BASE_URL
         self.credentialsapi = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD], self.config_entry.data[CONF_PLATFORM])
         self.windturbines = []
-        for windturbine in self.config_entry.data[CONF_WINDTUBINES]:
+        for windturbine in self.config_entry.data[CONF_WINDTURBINES]:
             self.windturbines.append(Windturbine(self, self.hass, windturbine["name"], windturbine["code"], windturbine["shares"]))
         self.newsapi = NewsAPI(self, self.hass)
 
@@ -42,10 +42,10 @@ class Wind:
         # Create a copy of the existing data
         config_entry_data = dict(self.config_entry.data)
 
-        config_entry_data[CONF_WINDTUBINES] = []
+        config_entry_data[CONF_WINDTURBINES] = []
         result_projects_windshares = await self.credentialsapi.collect_projects_windshares()
         for windturbine in result_projects_windshares.keys():
-            config_entry_data[CONF_WINDTUBINES].append(result_projects_windshares[windturbine].to_dict())
+            config_entry_data[CONF_WINDTURBINES].append(result_projects_windshares[windturbine].to_dict())
 
         # Assign the updated data back to the config_entry
         self.config_entry.data = config_entry_data
@@ -57,7 +57,7 @@ class Wind:
                     found_in_self_windturbines = True
                     break
             
-            for config_windturbine in self.config_entry.data[CONF_WINDTUBINES]:
+            for config_windturbine in self.config_entry.data[CONF_WINDTURBINES]:
                 if windturbine_name == config_windturbine["name"]:
                     if found_in_self_windturbines:
                         # Update the wind turbine

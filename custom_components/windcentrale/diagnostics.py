@@ -45,7 +45,7 @@ async def async_get_config_entry_diagnostics(hass, config_entry) -> dict[str, An
         "const": {
             "domain": DOMAIN,
             "default_show_on_map": DEFAULT_SHOW_ON_MAP,
-            "conf_windtubines": CONF_WINDTUBINES,
+            "conf_windtubines": CONF_WINDTURBINES,
             "intervals": {
                 "live": LIVE_INTERVAL,
                 "production": PRODUCTION_INTERVAL,
