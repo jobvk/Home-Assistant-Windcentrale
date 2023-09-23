@@ -79,6 +79,10 @@ An example of what it should look like:
 
 ![image](https://user-images.githubusercontent.com/32730202/126724281-7634e278-093d-4ab9-bd04-5e73448b7d61.png)
 
+## Button
+
+This button `button.the_windcentrale_update_wind_shares` updates your shares. The reason this a button and doesn't update automatically is because your shares doesn't change that often.
+
 ## License
 
 [Apache License 2.0](https://github.com/jobvk/Home-Assistant-Windcentrale/blob/main/LICENSE)

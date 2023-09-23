@@ -34,11 +34,16 @@ body:
           required: true
         - label: I have filled out the issue template to the best of my ability.
           required: true
+  - type: markdown
+    attributes:
+      value: |
+        # Problem
   - type: textarea
+    id:  problem
     validations:
       required: true
     attributes:
-      label: The problem
+      label: The Problem
       description: >-
         Describe the issue you are experiencing here to communicate to the
         maintainer. Tell me what you were trying to do and what happened.
@@ -47,60 +52,26 @@ body:
   - type: markdown
     attributes:
       value: |
-        # Environment
-  - type: input
-    id: version-core
-    validations:
-      required: true
-    attributes:
-      label: What is version of Home Assistant Core did you recieve the bug?
-      placeholder: core-
-      description: >
-        Can be found in the Configuration panel -> Info.
-  - type: input
-    id: version-supervisor
-    validations:
-      required: true
-    attributes:
-      label: What is version of Home Assistant Supervisor did you recieve the bug?
-      placeholder: supervisor-
-      description: >
-        Can be found in the Configuration panel -> Info.
-  - type: input
-    id: host-operating-system
-    validations:
-      required: true
-    attributes:
-      label: What is version of Home Assistant Supervisor?
-      placeholder: Home Assistant OS 
-      description: >
-        Can be found in the Configuration panel -> Info.
-  - type: input
-    id: version-windcentrale
-    validations:
-      required: true
-    attributes:
-      label: What is version of the Windcentrale integration?
-      placeholder:
-      description: >
-        Can be found in the `/config/custom_components/windcentrale/manifest.json`
-
-  - type: markdown
-    attributes:
-      value: |
-        # Details
+        # Diagnostics & Logs
   - type: textarea
-    id: code-snippet
+    id: diagnostics
+    validations:
+      required: true
     attributes:
-      label: Example Code snippet
-      description: |
-        If this issue has an example piece of code that can help reproducing this problem, please provide.
-        This can be an piece of code from, e.g., an automation, script, scene or configuration.
+      label: Diagnostics
+      description: >-
+        Download the diagnostics from the windcentrale integration.
+
+        The diagnostics tells us what is going on with the integration.
   - type: textarea
     id: logs
     attributes:
       label: Anything in the logs that might be useful for us?
       description: For example, error message, or stack traces.
+  - type: markdown
+    attributes:
+      value: |
+        # Details
   - type: textarea
     id: additional-information
     attributes:

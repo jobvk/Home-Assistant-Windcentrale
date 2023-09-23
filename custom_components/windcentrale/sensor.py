@@ -1,6 +1,5 @@
 """Platform for sensor integration."""
 import logging
-import math
 import dateutil.relativedelta
 from datetime import timedelta, datetime
 from .const import DOMAIN, LIVE_SENSOR_TYPES, PRODUCTION_SENSOR_TYPES
@@ -22,7 +21,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     await wind.update_token_now()
     await wind.schedule_update_token(timedelta())
-    
+
     new_entities = []
     for windturbine in wind.windturbines:
         for live_sensor in LIVE_SENSOR_TYPES:

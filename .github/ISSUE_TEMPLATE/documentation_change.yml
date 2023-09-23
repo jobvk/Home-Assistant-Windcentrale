@@ -23,8 +23,6 @@ body:
     attributes:
       label: Checklist
       options:
-        - label: I checked if it hasn't already been improved in the [latest](https://github.com/jobvk/Home-Assistant-Windcentrale/releases/latest) version of the Windcentrale integration.
-          required: true
         - label: I checked if there is not a duplicate documentation issue issue with the same question.
           required: true
         - label:  This documentation issue is a bug related to the Windcentrale integration.
@@ -33,32 +31,24 @@ body:
           required: true
         - label: I have filled out the documentation issue template to the best of my ability.
           required: true
+  - type: markdown
+    attributes:
+      value: |
+        # Problem
   - type: textarea
+    id: the-problem
     validations:
       required: true
     attributes:
-      label: The problem
+      label: The Problem
       description: >-
         Describe the documentation issue you are experiencing here to communicate to the maintainer.
         
         Provide a clear and concise description of what the problem is.
-
   - type: markdown
     attributes:
       value: |
         # Details
-  - type: textarea
-    id: code-snippet
-    attributes:
-      label: Example Code snippet
-      description: |
-        If this issue has an example piece of code that can help reproducing this problem, please provide.
-        This can be an piece of code from, e.g., an automation, script, scene or configuration.
-  - type: textarea
-    id: logs
-    attributes:
-      label: Anything in the logs that might be useful for us?
-      description: For example, error message, or stack traces.
   - type: textarea
     id: additional-information
     attributes:

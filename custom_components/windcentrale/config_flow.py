@@ -1,8 +1,7 @@
 """Config flow for windcentrale integration."""
 import logging
-import json
 import voluptuous as vol
-from homeassistant import config_entries, core, exceptions
+from homeassistant import config_entries, exceptions
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_PLATFORM, CONF_SHOW_ON_MAP 
 from homeassistant.core import callback
 from .const import *
@@ -72,7 +71,6 @@ async def validate_input(hass, user_input: dict):
     """Validate the user input"""
     credentails = Credentials(hass, user_input[CONF_EMAIL], user_input[CONF_PASSWORD], user_input[CONF_PLATFORM])
     result_user_credentails = await credentails.authenticate_user_credentails()
-    user_input[CONF_TOKEN_HEADER] = json.dumps(result_user_credentails)
     if result_user_credentails == "invalid_parameter":
         raise InvalidSignInUserParameters
     elif result_user_credentails == "invalid_user_credentails":
@@ -82,10 +80,10 @@ async def validate_input(hass, user_input: dict):
     elif result_user_credentails == "unknown":
         raise InvalidSignInTooUnknownError
     else:
+        user_input[CONF_WINDTUBINES] = []
         result_projects_windshares = await credentails.collect_projects_windshares()
-        for windturbine in WINDTURBINES_LIST:
-            if windturbine in result_projects_windshares:
-                user_input[windturbine] = result_projects_windshares[windturbine].toJSON()
+        for windturbine in result_projects_windshares.keys():
+            user_input[CONF_WINDTUBINES].append(result_projects_windshares[windturbine].to_dict())
     return user_input
 
 class InvalidSignInUserParameters(exceptions.HomeAssistantError):

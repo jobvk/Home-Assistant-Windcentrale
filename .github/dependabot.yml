@@ -6,7 +6,7 @@ updates:
     labels:
       - "dependency-update"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
 
   - package-ecosystem: "pip"
     directory: "/"
@@ -14,4 +14,4 @@ updates:
     labels:
       - "dependency-update"
     schedule:
-      interval: "weekly"
+      interval: "monthly"

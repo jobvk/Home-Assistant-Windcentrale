@@ -29,6 +29,7 @@ The official websites are https://www.windcentrale.nl and https://winddelen.nl
   * [Live](#live)
   * [History](#history)
   * [News](#news)
+* [Button](#button)
 * [Example](#example)
 * [Energy Management tab](#energy-management-tab)
 * [Contributors](#contributors)
@@ -76,37 +77,37 @@ Go to Settings and then Devices & Service, select Integrations and search for th
 
 These sensors show live data from the wind turbine.
 
-|ID|Type|Description|Unit of Measurement
+|ID|Type|Description|Unit of Measurement|
 |------------|------------|------------|------------|
-| `sensor.name` | Int | The total amount of power you currently generate with the number of wind shares. | Watt (W)
-| `sensor.name_energy` | Int | The energy that the wind turbine has produced this year. | Kilowatt-hour (kWh)
-| `sensor.name_energy_prognoses_this_year` | Float | The percentage of how much the wind turbine should produce in a year. | Percentage (%)
-| `sensor.name_energy_shares` | Float | The energy that your shares of the wind turbine has produced this year. | Kilowatt-hour (kWh)
-| `sensor.name_hours_run_this_year` | Int | The number of hours the wind turbine has operated this year. | Hours (h)
-| `sensor.name_hours_run_total` | Int | The number of hours the wind turbine has operated in total. | Hours (h)
-| `sensor.name_last_update` | DateTime | Returns when the wind turbine last updated. | DateTime
-| `sensor.name_power_per_share` | Int | The power per wind share that the wind turbine currently generates. | Watt (W)
-| `sensor.name_power_percentage` | Int | The ability in percentage the wind turbine can generate power. | Percentage (%)
-| `sensor.name_power_total` | Int | The total power that the wind turbine currently generates. | Kilowatt (kW)
-| `binary_sensor.name_pulsating` | Bool | The wind turbine is at max power. | Boolean
-| `sensor.name_revolutions_per_minute` | Float | The speed at which the blades of the wind turbine rotate. | Revolutions Per minute (RPM)
-| `sensor.name_run_percentage` | Float | The percentage of the wind turbine is operational since the start date. | Percentage (%)
-| `sensor.name_wind_direction` | String | The direction of the wind at the wind turbine. | Wind rose
-| `sensor.name_wind_speed` | Int | The speed of the wind at the wind turbine. | Beaufort scale (BFT)
+| `sensor.name` | Int | The total amount of power you currently generate with the number of wind shares. | Watt (W) |
+| `sensor.name_energy` | Int | The energy that the wind turbine has produced this year. | Kilowatt-hour (kWh) |
+| `sensor.name_energy_prognoses_this_year` | Float | The percentage of how much the wind turbine should produce in a year. | Percentage (%) |
+| `sensor.name_energy_shares` | Float | The energy that your shares of the wind turbine has produced this year. | Kilowatt-hour (kWh) |
+| `sensor.name_hours_run_this_year` | Int | The number of hours the wind turbine has operated this year. | Hours (h) |
+| `sensor.name_hours_run_total` | Int | The number of hours the wind turbine has operated in total. | Hours (h) |
+| `sensor.name_last_update` | DateTime | Returns when the wind turbine last updated. | DateTime |
+| `sensor.name_power_per_share` | Int | The power per wind share that the wind turbine currently generates. | Watt (W) |
+| `sensor.name_power_percentage` | Int | The ability in percentage the wind turbine can generate power. | Percentage (%) |
+| `sensor.name_power_total` | Int | The total power that the wind turbine currently generates. | Kilowatt (kW) |
+| `binary_sensor.name_pulsating` | Bool | The wind turbine is at max power. | Boolean |
+| `sensor.name_revolutions_per_minute` | Float | The speed at which the blades of the wind turbine rotate. | Revolutions Per minute (RPM) |
+| `sensor.name_run_percentage` | Float | The percentage of the wind turbine is operational since the start date. | Percentage (%) |
+| `sensor.name_wind_direction` | String | The direction of the wind at the wind turbine. | Wind rose |
+| `sensor.name_wind_speed` | Int | The speed of the wind at the wind turbine. | Beaufort scale (BFT) |
 
 ### History
 
 These sensors show how much power the wind turbine has delivered over a certain time.
 These sensors are not displaying live data. These senors are updated around noon the following day.
 
-|ID|Type|Description|Unit of Measurement
+|ID|Type|Description|Unit of Measurement|
 |----------|------------|------------|------------|
-| `sensor.name_production_year_total` | Int | The energy produced by the wind turbine total this year. | Kilowatt-hour (kWh)
-| `sensor.name_production_month_total` | Int | The energy produced by the wind turbine total this month. | Kilowatt-hour (kWh)
-| `sensor.name_production_week_total` | Int | The energy produced by the wind turbine total this week. | Kilowatt-hour (kWh)
-| `sensor.name_production_year_shares` | Int | The energy produced by your shares of the wind turbine this year. | Kilowatt-hour (kWh)
-| `sensor.name_production_month_shares` | Int | The energy produced by your shares of the wind turbine this month. | Kilowatt-hour (kWh)
-| `sensor.name_production_week_shares` | Int | The energy produced by your shares of the wind turbine this week. | Kilowatt-hour (kWh)
+| `sensor.name_production_year_total` | Int | The energy produced by the wind turbine total this year. | Kilowatt-hour (kWh) |
+| `sensor.name_production_month_total` | Int | The energy produced by the wind turbine total this month. | Kilowatt-hour (kWh) |
+| `sensor.name_production_week_total` | Int | The energy produced by the wind turbine total this week. | Kilowatt-hour (kWh) |
+| `sensor.name_production_year_shares` | Int | The energy produced by your shares of the wind turbine this year. | Kilowatt-hour (kWh) |
+| `sensor.name_production_month_shares` | Int | The energy produced by your shares of the wind turbine this month. | Kilowatt-hour (kWh) |
+| `sensor.name_production_week_shares` | Int | The energy produced by your shares of the wind turbine this week. | Kilowatt-hour (kWh) |
 
 ### News
 
@@ -125,6 +126,10 @@ content: '{{ state_attr(''sensor.the_windcentrale_news'', ''News Item'') }}'
 An example of what it should look like:
 
 ![image](https://user-images.githubusercontent.com/32730202/126724281-7634e278-093d-4ab9-bd04-5e73448b7d61.png)
+
+## Button
+
+This button `button.the_windcentrale_update_wind_shares` updates your shares. The reason this a button and doesn't update automatically is because your shares doesn't change that often.
 
 ### Example
 
