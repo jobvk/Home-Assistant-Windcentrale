@@ -74,15 +74,15 @@ class LiveSensor(SensorBase):
         self._icon = LIVE_SENSOR_TYPES[self.type][3]
         self._sensor = LIVE_SENSOR_TYPES[self.type][4]
         self.degrees = {
-                "N":0,
-                "NO":45,
-                "O":90,
-                "ZO":135,
-                "Z":180,
-                "ZW":225,
-                "W":270,
-                "NW":315
-            }
+            "N": 0,
+            "NO": 45,
+            "O": 90,
+            "ZO": 135,
+            "Z": 180,
+            "ZW": 225,
+            "W": 270,
+            "NW": 315
+        }
 
     @property
     def unique_id(self) -> str:
@@ -133,14 +133,14 @@ class LiveSensor(SensorBase):
                 attr[ATTR_LATITUDE] = self._windturbine.latitude
                 attr[ATTR_LONGITUDE] = self._windturbine.longitude
             else:
-                attr["Latitude"]  = self._windturbine.latitude
+                attr["Latitude"] = self._windturbine.latitude
                 attr["Longitude"] = self._windturbine.longitude
             attr[CONF_STATE_CLASS] = SensorStateClass.MEASUREMENT
         elif self.type == "winddirection":
             attr["Degrees"] = self.degrees.get(self._state)
-        elif self.type == "windspeed" or self.type == "powertotal" or self.type == "powerpershare" or self.type == "powerpercentage" or self.type == "rpm":
+        elif self.type in ["windspeed", "powertotal", "powerpershare", "powerpercentage", "rpm"]:
             attr[CONF_STATE_CLASS] = SensorStateClass.MEASUREMENT
-        elif self.type == "energy" or self.type == "energyshares":
+        elif self.type in ["energy", "energyshares"]:
             attr[ATTR_LAST_RESET] = datetime(datetime.now().year, 1, 1)
             attr[CONF_STATE_CLASS] = SensorStateClass.TOTAL
         return attr
@@ -167,7 +167,7 @@ class LiveSensor(SensorBase):
             else:
                 self._state = self._windturbine.live_data[self._sensor]
         except Exception as exc:
-            _LOGGER.error('There was a exception when updating live sensor with type {}.\n\nThe data of the sensor: {}\n\nThe total live data: {}\n\nThe type of the data: {}\n\nWith the exception: {}'.format(self.type, self._windturbine.live_data[self._sensor], self._windturbine.live_data, type(self._windturbine.live_data), exc))
+            _LOGGER.error('There was an exception when updating live sensor with type {}.\n\nThe data of the sensor: {}\n\nThe total live data: {}\n\nThe type of the data: {}\n\nWith the exception: {}'.format(self.type, self._windturbine.live_data[self._sensor], self._windturbine.live_data, type(self._windturbine.live_data), exc))
 
 class ProductionSensor(SensorBase):
     """Representation of a Sensor."""
@@ -219,7 +219,7 @@ class ProductionSensor(SensorBase):
             return
 
         self._state = state.state
-        
+
         if "Year " + str(datetime.now().year - 1) in state.attributes:
             for i in range(2):
                 year = "Year " + str(datetime.now().year - i - 1)
@@ -243,7 +243,7 @@ class ProductionSensor(SensorBase):
         except KeyError as keyecx:
             _LOGGER.warning('The year {} is missing in total production data'.format(keyecx))
         except Exception as exc:
-            _LOGGER.error('There was a exception when updating total year production data. There error: {}'.format(exc))
+            _LOGGER.error('There was an exception when updating total year production data. The error: {}'.format(exc))
 
         try:
             if self.type == "monthtotal":
@@ -254,7 +254,7 @@ class ProductionSensor(SensorBase):
         except KeyError as keyecx:
             _LOGGER.warning('The month {} is missing in total production data'.format(keyecx))
         except Exception as exc:
-            _LOGGER.error('There was a exception when updating total month production data. There error: {}'.format(exc))
+            _LOGGER.error('There was an exception when updating total month production data. The error: {}'.format(exc))
 
         try:
             if self.type == "weektotal":
@@ -264,7 +264,7 @@ class ProductionSensor(SensorBase):
         except KeyError as keyecx:
             _LOGGER.warning('The week {} is missing in total production data'.format(keyecx))
         except Exception as exc:
-            _LOGGER.error('There was a exception when updating total week production data. There error: {}'.format(exc))
+            _LOGGER.error('There was an exception when updating total week production data. The error: {}'.format(exc))
 
         try:
             if self.type == "yearshares" :
@@ -274,7 +274,7 @@ class ProductionSensor(SensorBase):
         except KeyError as keyecx:
             _LOGGER.warning('The year {} is missing in shares production data'.format(keyecx))
         except Exception as exc:
-            _LOGGER.error('There was a exception when updating shares year production data. There error: {}'.format(exc))
+            _LOGGER.error('There was an exception when updating shares year production data. The error: {}'.format(exc))
 
         try:
             if self.type == "monthshares":
@@ -285,7 +285,7 @@ class ProductionSensor(SensorBase):
         except KeyError as keyecx:
             _LOGGER.warning('The month {} is missing in shares production data'.format(keyecx))
         except Exception as exc:
-            _LOGGER.error('There was a exception when updating shares month production data. There error: {}'.format(exc))
+            _LOGGER.error('There was an exception when updating shares month production data. The error: {}'.format(exc))
 
         try:
             if self.type == "weekshares":
@@ -295,7 +295,7 @@ class ProductionSensor(SensorBase):
         except KeyError as keyecx:
             _LOGGER.warning('The week {} is missing in shares production data'.format(keyecx))
         except Exception as exc:
-            _LOGGER.error('There was a exception when updating shares week production data. There error: {}'.format(exc))
+            _LOGGER.error('There was an exception when updating shares week production data. The error: {}'.format(exc))
 
 class NewsSensor(RestoreEntity, SensorEntity):
     def __init__(self, wind):
