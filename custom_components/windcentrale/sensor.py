@@ -151,15 +151,15 @@ class LiveSensor(SensorBase):
         """Update the sensor."""
         try:
             if self.type == "windturbine":
-                self._state = self._windturbine.live_data[self._sensor] * self._windturbine.shares
+                self._state = self._windturbine.liveapi.response_data[self._sensor] * self._windturbine.shares
             elif self.type == "energyshares":
-                self._state = self._windturbine.live_data[self._sensor] / self._windturbine.total_shares * self._windturbine.shares
+                self._state = self._windturbine.liveapi.response_data[self._sensor] / self._windturbine.total_shares * self._windturbine.shares
             elif self.type == "runpercentage":
-                self._state = round(timedelta(hours=self._windturbine.live_data[self._sensor]) / (datetime.now() - datetime(datetime.now().year, 1, 1)) * 100, 2)
+                self._state = round(timedelta(hours=self._windturbine.liveapi.response_data[self._sensor]) / (datetime.now() - datetime(datetime.now().year, 1, 1)) * 100, 2)
             elif self.type == "energyprognoses":
-                self._state = round((self._windturbine.live_data[self._sensor] / self._windturbine.energy_prognoses) * 100, 2)
+                self._state = round((self._windturbine.liveapi.response_data[self._sensor] / self._windturbine.energy_prognoses) * 100, 2)
             else:
-                self._state = self._windturbine.live_data[self._sensor]
+                self._state = self._windturbine.liveapi.response_data[self._sensor]
         except Exception as exc:
             _LOGGER.error('There was an exception when updating live sensor with type {}.\n\nThe data of the sensor: {}\n\nThe total live data: {}\n\nThe type of the data: {}\n\nWith the exception: {}'.format(self.type, self._windturbine.live_data[self._sensor], self._windturbine.live_data, type(self._windturbine.live_data), exc))
 
@@ -231,9 +231,9 @@ class ProductionSensor(SensorBase):
         """Update the sensor."""
         try:
             if self.type == "yeartotal" :
-                self._state = self._windturbine.production_windtrubine_year_data[datetime.now().year]
+                self._state = self._windturbine.production_windtrubine_year_api.response_data[datetime.now().year]
                 for i in range(2):
-                    self.attr["Year " + str(datetime.now().year - i - 1)] = self._windturbine.production_windtrubine_year_data[datetime.now().year - i - 1]
+                    self.attr["Year " + str(datetime.now().year - i - 1)] = self._windturbine.production_windtrubine_year_api.response_data[datetime.now().year - i - 1]
         except KeyError as keyecx:
             _LOGGER.warning('The year {} is missing in total production data'.format(keyecx))
         except Exception as exc:
@@ -241,10 +241,10 @@ class ProductionSensor(SensorBase):
 
         try:
             if self.type == "monthtotal":
-                self._state = self._windturbine.production_windtrubine_month_data[datetime.now().month]
+                self._state = self._windturbine.production_windtrubine_month_api.response_data[datetime.now().month]
                 for i in range(datetime.now().month - 1):
                     month = datetime.now() - dateutil.relativedelta.relativedelta(months= i+1)
-                    self.attr[month.strftime("%B")] = self._windturbine.production_windtrubine_month_data[datetime.now().month - i - 1]
+                    self.attr[month.strftime("%B")] = self._windturbine.production_windtrubine_month_api.response_data[datetime.now().month - i - 1]
         except KeyError as keyecx:
             _LOGGER.warning('The month {} is missing in total production data'.format(keyecx))
         except Exception as exc:
@@ -252,9 +252,9 @@ class ProductionSensor(SensorBase):
 
         try:
             if self.type == "weektotal":
-                self._state = self._windturbine.production_windtrubine_week_data[datetime.now().isocalendar().week]
+                self._state = self._windturbine.production_windtrubine_week_api.response_data[datetime.now().isocalendar().week]
                 for i in range(3):
-                    self.attr["Week " + str(datetime.now().isocalendar().week - i - 1)] = self._windturbine.production_windtrubine_week_data[datetime.now().isocalendar().week - i - 1]
+                    self.attr["Week " + str(datetime.now().isocalendar().week - i - 1)] = self._windturbine.production_windtrubine_week_api.response_data[datetime.now().isocalendar().week - i - 1]
         except KeyError as keyecx:
             _LOGGER.warning('The week {} is missing in total production data'.format(keyecx))
         except Exception as exc:
@@ -262,9 +262,9 @@ class ProductionSensor(SensorBase):
 
         try:
             if self.type == "yearshares" :
-                self._state = self._windturbine.production_shares_year_data[datetime.now().year]
+                self._state = self._windturbine.production_shares_year_api.response_data[datetime.now().year]
                 for i in range(2):
-                    self.attr["Year " + str(datetime.now().year - i - 1)] = self._windturbine.production_shares_year_data[datetime.now().year - i - 1]
+                    self.attr["Year " + str(datetime.now().year - i - 1)] = self._windturbine.production_shares_year_api.response_data[datetime.now().year - i - 1]
         except KeyError as keyecx:
             _LOGGER.warning('The year {} is missing in shares production data'.format(keyecx))
         except Exception as exc:
@@ -272,10 +272,10 @@ class ProductionSensor(SensorBase):
 
         try:
             if self.type == "monthshares":
-                self._state = self._windturbine.production_shares_month_data[datetime.now().month]
+                self._state = self._windturbine.production_shares_month_api.response_data[datetime.now().month]
                 for i in range(datetime.now().month - 1):
                     month = datetime.now() - dateutil.relativedelta.relativedelta(months= i+1)
-                    self.attr[month.strftime("%B")] = self._windturbine.production_shares_month_data[datetime.now().month - i - 1]
+                    self.attr[month.strftime("%B")] = self._windturbine.production_shares_month_api.response_data[datetime.now().month - i - 1]
         except KeyError as keyecx:
             _LOGGER.warning('The month {} is missing in shares production data'.format(keyecx))
         except Exception as exc:
@@ -283,9 +283,9 @@ class ProductionSensor(SensorBase):
 
         try:
             if self.type == "weekshares":
-                self._state = self._windturbine.production_shares_week_data[datetime.now().isocalendar().week]
+                self._state = self._windturbine.production_shares_week_api.response_data[datetime.now().isocalendar().week]
                 for i in range(3):
-                    self.attr["Week " + str(datetime.now().isocalendar().week - i - 1)] = self._windturbine.production_shares_week_data[datetime.now().isocalendar().week - i - 1]
+                    self.attr["Week " + str(datetime.now().isocalendar().week - i - 1)] = self._windturbine.production_shares_week_api.response_data[datetime.now().isocalendar().week - i - 1]
         except KeyError as keyecx:
             _LOGGER.warning('The week {} is missing in shares production data'.format(keyecx))
         except Exception as exc:
@@ -295,7 +295,7 @@ class NewsSensor(RestoreEntity, SensorEntity):
     def __init__(self, wind):
         """Initialize the sensor."""
         self.wind = wind
-        self.news_item = self.wind.news_data
+        self.news_item = self.wind.newsapi.response_data
         self._state = "News"
 
     @property
@@ -338,4 +338,4 @@ class NewsSensor(RestoreEntity, SensorEntity):
 
     def update(self):
         """Update the sensor."""
-        self.news_item = self.wind.news_data
+        self.news_item = self.wind.newsapi.response_data

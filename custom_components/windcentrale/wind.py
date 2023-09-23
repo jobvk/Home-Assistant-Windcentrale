@@ -28,11 +28,6 @@ class Wind:
         self.windturbines = [Windturbine(self, self.hass, windturbine["name"], windturbine["code"], windturbine["shares"]) for windturbine in self.config_entry.data[CONF_WINDTURBINES]]
         self.newsapi = NewsAPI(self, self.hass)
 
-    @property
-    def news_data(self):
-        """Set news data form news api result"""
-        return self.newsapi.response_data
-
     async def update_windturbines(self):
         """Update windturbines after button press"""
         _LOGGER.info('Update windshares')
@@ -123,6 +118,7 @@ class Windturbine:
         self.name = windturbine_name
         self.id = windturbine_code
         self.shares = windturbine_shares
+        self.show_on_map = self.wind.show_on_map
         self.manufacturer = WINDTURBINES_LIST[windturbine_name][0]
         self.model = WINDTURBINES_LIST[windturbine_name][1]
         self.location = WINDTURBINES_LIST[windturbine_name][2]
@@ -140,46 +136,6 @@ class Windturbine:
         self.production_shares_month_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR_MONTHS", 0, "SHARES_IN_PROJECT")
         self.production_shares_week_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "WEEK4_WEEKS", 0, "SHARES_IN_PROJECT")
         self.production_update_task = None
-
-    @property
-    def live_data(self):
-        """Set live data form live api result"""
-        return self.liveapi.response_data
-
-    @property
-    def production_windtrubine_year_data(self):
-        """Set production data form production api result"""
-        return self.production_windtrubine_year_api.response_data
-
-    @property
-    def production_windtrubine_month_data(self):
-        """Set production data form production api result"""
-        return self.production_windtrubine_month_api.response_data
-
-    @property
-    def production_windtrubine_week_data(self):
-        """Set production data form production api result"""
-        return self.production_windtrubine_week_api.response_data
-
-    @property
-    def production_shares_year_data(self):
-        """Set production data form production api result"""
-        return self.production_shares_year_api.response_data
-
-    @property
-    def production_shares_month_data(self):
-        """Set production data form production api result"""
-        return self.production_shares_month_api.response_data
-
-    @property
-    def production_shares_week_data(self):
-        """Set production data form production api result"""
-        return self.production_shares_week_api.response_data
-
-    @property
-    def show_on_map(self):
-        """Return if the windturbine has to be shown on the map"""
-        return self.wind.show_on_map
 
     async def schedule_update_live(self, interval):
         """Schedule update based on live interval"""

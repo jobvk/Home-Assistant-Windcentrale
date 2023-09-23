@@ -75,6 +75,6 @@ class PulsingSensor(SensorBase):
     def update(self) -> None:
         """Update the sensor."""
         try:
-            self._state = self._windturbine.live_data["pulsating"]
+            self._state = self._windturbine.liveapi.response_data["pulsating"]
         except Exception as exc:
             _LOGGER.error('There was a exception when updating live binary_sensor with type pulsating.\n\nThe data of the sensor: {}\n\nThe total live data: {}\n\nThe type of the data: {}\n\nWith the exception: {}'.format(self._windturbine.live_data["pulsating"], self._windturbine.live_data, type(self._windturbine.live_data), exc))
