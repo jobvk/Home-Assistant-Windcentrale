@@ -13,7 +13,7 @@
     },
     "error": {
       "invalid_parameter": "Falsche Parameter: Überprüfen Sie, ob Sie Ihre E-Mailadresse und Ihr Passwort eingegeben haben, und versuchen Sie es erneut.",
-      "invalid_user_credentails": "Falsche Anmeldedaten: Bitte überprüfen Sie Ihre E-Mailadresse und Ihr Passwort und versuchen Sie es erneut.",
+      "invalid_user_credentials": "Falsche Anmeldedaten: Bitte überprüfen Sie Ihre E-Mailadresse und Ihr Passwort und versuchen Sie es erneut.",
       "invalid_too_many_requests": "Zu viele Anfragen: Es wurden zu viele Anfragen an den Server gestellt, versuchen Sie es in 30 Minuten erneut.",
       "unknown": "Der Fehler ist nicht bekannt, überprüfen Sie das Protokoll für weitere Details."
     },

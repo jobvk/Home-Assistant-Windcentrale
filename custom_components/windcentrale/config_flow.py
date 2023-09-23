@@ -2,7 +2,7 @@
 import logging
 import voluptuous as vol
 from homeassistant import config_entries, exceptions
-from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_PLATFORM, CONF_SHOW_ON_MAP 
+from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_PLATFORM, CONF_SHOW_ON_MAP
 from homeassistant.core import callback
 from .const import *
 from .wind import Credentials
@@ -26,7 +26,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Get the options flow for this handler."""
         return OptionsFlowHandler(config_entry)
 
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(self, user_input=None) -> dict:
         """Handle the initial step."""
         errors = {}
         if user_input is not None:
@@ -48,29 +48,30 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(step_id="user", data_schema=WINDTURBINE_SCHEMA, errors=errors)
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
-    def __init__(self, config_entry):
+    def __init__(self, config_entry) -> None:
         """Initialize The Windcentrale options flow."""
         self.config_entry = config_entry
 
-    async def async_step_init(self, user_input=None):
+    async def async_step_init(self, user_input=None) -> dict:
         """Manage the Windcentrale options."""
         errors = {}
         if user_input is not None:
             try:
                 return self.async_create_entry(title="", data=user_input)
-            except Exception:
-                _LOGGER.error("Unexpected exception when changing windcentrale options")
+            except Exception as exc:
+                _LOGGER.error(f"Unexpected exception when changing windcentrale options: {exc}")
                 errors["base"] = "unknown"
 
-        return self.async_show_form(step_id="init", data_schema= vol.Schema({
+        return self.async_show_form(step_id="init", data_schema=vol.Schema({
             vol.Optional(CONF_SHOW_ON_MAP, default=self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)): bool
         }),
         errors=errors)
 
-async def validate_input(hass, user_input: dict):
-    """Validate the user input"""
+async def validate_input(hass, user_input: dict) -> dict:
+    """Validate the user input."""
     credentials = Credentials(hass, user_input[CONF_EMAIL], user_input[CONF_PASSWORD], user_input[CONF_PLATFORM])
     result_user_credentials = await credentials.authenticate_user_credentials()
+    
     if result_user_credentials == "invalid_parameter":
         raise InvalidSignInUserParameters
     elif result_user_credentials == "invalid_user_credentials":
@@ -96,3 +97,4 @@ class InvalidSignInTooManyRequests(exceptions.HomeAssistantError):
     """Error to indicate there are too many requests to the server."""
 
 class InvalidSignInTooUnknownError(exceptions.HomeAssistantError):
+    """Error to indicate an unknown error occurred."""
