@@ -4,11 +4,10 @@ from homeassistant.const import EntityCategory
 from .const import DOMAIN
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-    """Add button for passed config_entry in HA."""
+    """Add a button for the passed config_entry in HA."""
     wind = hass.data[DOMAIN][config_entry.entry_id]
 
-    new_entities = []
-    new_entities.append(ButtonRefreshWindShares(wind))
+    new_entities = [ButtonRefreshWindShares(wind)]
 
     if new_entities:
         async_add_entities(new_entities)
@@ -16,7 +15,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class ButtonRefreshWindShares(ButtonEntity):
     """Representation of a wind share refresh button."""
 
-    def __init__(self, wind):
+    def __init__(self, wind) -> None:
         """Initialize the button."""
         self.wind = wind
 

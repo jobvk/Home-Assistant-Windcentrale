@@ -1,24 +1,13 @@
 """Constants for the Windcentrale integration."""
 import datetime as dt
 from homeassistant.components.sensor import SensorDeviceClass
-from homeassistant.const import (
-    POWER_WATT,
-    POWER_KILO_WATT,
-    ENERGY_KILO_WATT_HOUR,
-    TIME_HOURS,
-    PERCENTAGE,
-    Platform
-)
+from homeassistant.const import POWER_WATT, POWER_KILO_WATT, ENERGY_KILO_WATT_HOUR, TIME_HOURS, PERCENTAGE, latform
 
 DOMAIN = "windcentrale"
 
-PLATFORMS: list[Platform] = [
-    Platform.SENSOR,
-    Platform.BINARY_SENSOR,
-    Platform.BUTTON
-]
+PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.BUTTON]
 
-CONF_WINDTUBINES = "windturbines"
+CONF_WINDTURBINES = "windturbines"
 
 LIVE_INTERVAL = 1 #min
 PRODUCTION_INTERVAL = 1 #hour
@@ -83,12 +72,12 @@ PRODUCTION_SENSOR_TYPES = {
 }
 
 class powerProducer: 
-    def __init__(self, windturbine_name, windturbine_code, windturbine_shares):
+    def __init__(self, windturbine_name, windturbine_code, windturbine_shares) -> None:
         self.name = windturbine_name
         self.code = windturbine_code
         self.shares = windturbine_shares
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return {
             'name': self.name,
             'code': self.code,

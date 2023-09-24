@@ -23,31 +23,22 @@ class Wind:
         self.id = DOMAIN
         self.tokens = None
         self.show_on_map = self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)
-        self.base_url = self.get_base_url()
+        self.base_url = WINDCENTRALE_BASE_URL if self.config_entry.data[CONF_PLATFORM] == "Windcentrale" else WINDDELEN_BASE_URL
         self.credentialsapi = Credentials(self.hass, self.config_entry.data[CONF_EMAIL], self.config_entry.data[CONF_PASSWORD], self.config_entry.data[CONF_PLATFORM])
-
-        self.windturbines = []
-        for windturbine in self.config_entry.data[CONF_WINDTUBINES]:
-            self.windturbines.append(Windturbine(self, self.hass, windturbine["name"], windturbine["code"], windturbine["shares"]))
-
+        self.windturbines = [Windturbine(self, self.hass, windturbine["name"], windturbine["code"], windturbine["shares"]) for windturbine in self.config_entry.data[CONF_WINDTURBINES]]
         self.newsapi = NewsAPI(self, self.hass)
 
-    @property
-    def news_data(self):
-        "Set news data form news api result"
-        return self.newsapi.response_data
-
     async def update_windturbines(self):
-        "Update windturbines after button press"
+        """Update windturbines after button press"""
         _LOGGER.info('Update windshares')
 
         # Create a copy of the existing data
         config_entry_data = dict(self.config_entry.data)
 
-        config_entry_data[CONF_WINDTUBINES] = []
+        config_entry_data[CONF_WINDTURBINES] = []
         result_projects_windshares = await self.credentialsapi.collect_projects_windshares()
         for windturbine in result_projects_windshares.keys():
-            config_entry_data[CONF_WINDTUBINES].append(result_projects_windshares[windturbine].to_dict())
+            config_entry_data[CONF_WINDTURBINES].append(result_projects_windshares[windturbine].to_dict())
 
         # Assign the updated data back to the config_entry
         self.config_entry.data = config_entry_data
@@ -59,7 +50,7 @@ class Wind:
                     found_in_self_windturbines = True
                     break
             
-            for config_windturbine in self.config_entry.data[CONF_WINDTUBINES]:
+            for config_windturbine in self.config_entry.data[CONF_WINDTURBINES]:
                 if windturbine_name == config_windturbine["name"]:
                     if found_in_self_windturbines:
                         # Update the wind turbine
@@ -97,43 +88,37 @@ class Wind:
             device_registry.async_remove_device(device_entry.id)
 
     async def schedule_update_news(self, interval):
-        "Schedule update based on news interval"
+        """Schedule update based on news interval"""
         nxt = dt_util.utcnow() + interval
         async_track_point_in_utc_time(self.hass, self.async_update_news, nxt)
 
     async def async_update_news(self, *_):
-        "Start update and schedule update based on news interval"
+        """Start update and schedule update based on news interval"""
         await self.newsapi.update()
         await self.schedule_update_news(timedelta(minutes=NEWS_INTERVAL))
 
     async def schedule_update_token(self, interval):
-        "Schedule update based on token interval"
+        """Schedule update based on token interval"""
         nxt = dt_util.utcnow() + interval
         async_track_point_in_utc_time(self.hass, self.async_update_token, nxt)
 
     async def async_update_token(self, *_):
-        "Start update and schedule update based on token interval"
-        self.tokens = await self.credentialsapi.authenticate_user_credentails()
+        """Start update and schedule update based on token interval"""
+        self.tokens = await self.credentialsapi.authenticate_user_credentials()
         await self.schedule_update_token(timedelta(minutes=TOKEN_INTERVAL))
 
     async def update_token_now(self):
-        self.tokens = await self.credentialsapi.authenticate_user_credentails()
-
-    def get_base_url(self):
-        platform = self.config_entry.data[CONF_PLATFORM]
-        if platform == "Windcentrale":
-            return WINDCENTRALE_BASE_URL
-        elif platform == "Winddelen":
-            return WINDDELEN_BASE_URL
+        self.tokens = await self.credentialsapi.authenticate_user_credentials()
 
 class Windturbine:
-    "Create windturbine and collect data"
+    """Create windturbine and collect data"""
     def __init__(self, wind, hass, windturbine_name, windturbine_code, windturbine_shares):
         self.wind = wind
         self.hass = hass
         self.name = windturbine_name
         self.id = windturbine_code
         self.shares = windturbine_shares
+        self.show_on_map = self.wind.show_on_map
         self.manufacturer = WINDTURBINES_LIST[windturbine_name][0]
         self.model = WINDTURBINES_LIST[windturbine_name][1]
         self.location = WINDTURBINES_LIST[windturbine_name][2]
@@ -152,63 +137,23 @@ class Windturbine:
         self.production_shares_week_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "WEEK4_WEEKS", 0, "SHARES_IN_PROJECT")
         self.production_update_task = None
 
-    @property
-    def live_data(self):
-        "Set live data form live api result"
-        return self.liveapi.response_data
-
-    @property
-    def production_windtrubine_year_data(self):
-        "Set production data form production api result"
-        return self.production_windtrubine_year_api.response_data
-
-    @property
-    def production_windtrubine_month_data(self):
-        "Set production data form production api result"
-        return self.production_windtrubine_month_api.response_data
-
-    @property
-    def production_windtrubine_week_data(self):
-        "Set production data form production api result"
-        return self.production_windtrubine_week_api.response_data
-
-    @property
-    def production_shares_year_data(self):
-        "Set production data form production api result"
-        return self.production_shares_year_api.response_data
-
-    @property
-    def production_shares_month_data(self):
-        "Set production data form production api result"
-        return self.production_shares_month_api.response_data
-
-    @property
-    def production_shares_week_data(self):
-        "Set production data form production api result"
-        return self.production_shares_week_api.response_data
-
-    @property
-    def show_on_map(self):
-        "Return if the windturbine has to be shown on the map"
-        return self.wind.show_on_map
-
     async def schedule_update_live(self, interval):
-        "Schedule update based on live interval"
+        """Schedule update based on live interval"""
         nxt = dt_util.utcnow() + interval
         self.live_update_task = async_track_point_in_utc_time(self.hass, self.async_update_live, nxt)
 
     async def async_update_live(self, *_):
-        "Start update and schedule update based on live interval"
+        """Start update and schedule update based on live interval"""
         await self.liveapi.update()
         await self.schedule_update_live(timedelta(minutes=LIVE_INTERVAL))
 
     async def schedule_update_production(self, interval):
-        "Schedule update based on production interval"
+        """Schedule update based on production interval"""
         nxt = dt_util.utcnow() + interval
         self.production_update_task = async_track_point_in_utc_time(self.hass, self.async_update_production, nxt)
 
     async def async_update_production(self, *_):
-        "Start update and schedule update based on production interval"
+        """Start update and schedule update based on production interval"""
         await self.production_windtrubine_year_api.update()
         await self.production_windtrubine_month_api.update()
         await self.production_windtrubine_week_api.update()
@@ -218,7 +163,7 @@ class Windturbine:
         await self.schedule_update_production(timedelta(hours=PRODUCTION_INTERVAL))
 
     def cancel_scheduled_updates(self):
-        "Cancel scheduled live and production updates"
+        """Cancel scheduled live and production updates"""
         if self.live_update_task:
             self.live_update_task()
             self.live_update_task = None
@@ -228,7 +173,7 @@ class Windturbine:
             self.production_update_task = None
 
 class LiveAPI:
-    "Collect live data"
+    """Collect live data"""
     def __init__(self, hass, wind, windturbineId, windturbineName):
         self.hass = hass
         self.wind = wind
@@ -237,12 +182,12 @@ class LiveAPI:
         self.response_data = {}
 
     def __get_data(self):
-        "Collect data form url"
+        """Collect data form URL"""
         get_url = 'https://{}/api/v0/livedata?projects={}'.format(self.wind.base_url, self.windturbine_id)
         return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
-        "Get data ready for home assitant"
+        """Get data ready for Home Assitant"""
         _LOGGER.info('Collecting live data of windturbine {}'.format(self.windturbine_name))
 
         try:
@@ -274,7 +219,6 @@ class LiveAPI:
                     self.response_data[key] = value
 
         except requests.exceptions.Timeout:
-            """Time out error of server connection"""
             _LOGGER.error('Timeout response from server for collection history data for windturbine {}'.format(self.windturbine_name))
             return
 
@@ -282,9 +226,8 @@ class LiveAPI:
             _LOGGER.error('Error occurred while fetching data: %r', exc)
             return
 
-
 class ProductionAPI:
-    "Collect production data"
+    """Collect production data"""
     def __init__(self, hass, wind, windturbineId, windturbineName, timeframeType, timeframeOffset, viewType):
         self.hass = hass
         self.wind = wind
@@ -296,12 +239,12 @@ class ProductionAPI:
         self.response_data = {}
 
     def __get_data(self):
-        "Collect data form url"
+        """Collect data form URL"""
         get_url = 'https://{}/api/v0/sustainable/production/{}?timeframe_type={}&timeframe_offset={}&view_type={}'.format(self.wind.base_url, self.windturbine_id, self.timeframe_type, self.timeframe_offset, self.view_type)
         return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
-        "Get data ready for home assitant"
+        """Get data ready for Home Assistant"""
         _LOGGER.info('Collecting production data of windturbine {} with view_type: {}, timeframe_type: {}'.format(self.windturbine_name, self.view_type, self.timeframe_type))
 
         try:
@@ -338,19 +281,19 @@ class ProductionAPI:
             return
 
 class NewsAPI:
-    "Collect news data"
+    """Collect news data"""
     def __init__(self, wind, hass):
         self.wind = wind
         self.hass = hass
         self.response_data = ""
 
     def __get_data(self):
-        "Collect data form url"
+        """Collect data form url"""
         get_url = 'https://{}/api/v0/sustainable/notices'.format(self.wind.base_url)
         return requests.get(get_url, headers=self.wind.tokens, verify=True)
 
     async def update(self):
-        "Get data ready for home assitant"
+        """Get data ready for home assitant"""
         _LOGGER.info('Collecting news data sensor')
 
         try:
@@ -370,52 +313,45 @@ class NewsAPI:
             self.response_data = "{}\n---------\n{}\n\nPublicatiedatum: {}".format(news_item['title'], news_item['message'], publication_date)
 
         except requests.exceptions.Timeout:
-            _LOGGER.error('Timeout response from server for collection news data')
+            _LOGGER.error('Timeout response from server for collecting news data')
             return
         except Exception as exc:
             _LOGGER.error('While fetching the news data an error occurred: {}'.format(exc))
             return
 
 class Credentials:
-    "Checking credentials & collecting windturbines of which you own shares"
+    """Check credentials & collecting windturbines of which you own shares"""
     def __init__(self, hass, email, password, platform):
         self.hass = hass
         self.email = email
         self.password = password
         self.platform = platform
+        self.pool_id = WINDCENTRALE_POOL_ID if self.platform == "Windcentrale" else WINDDELEN_POOL_ID
+        self.client_id = WINDCENTRALE_CLIENT_ID if self.platform == "Windcentrale" else WINDDELEN_CLIENT_ID
+        self.base_url = WINDCENTRALE_BASE_URL if self.platform == "Windcentrale" else WINDDELEN_BASE_URL
         self.authorization_header = None
         self.projects_list = None
 
     def __get_tokens(self):
         boto3_client = boto3.client('cognito-idp', region_name='eu-west-1')
-        if self.platform == "Windcentrale":
-            pool_id = WINDCENTRALE_POOL_ID
-            client_id = WINDCENTRALE_CLIENT_ID
-        elif self.platform == "Winddelen":
-            pool_id = WINDDELEN_POOL_ID
-            client_id = WINDDELEN_CLIENT_ID
-        aws = AWSSRP(username=self.email, password=self.password, pool_id=pool_id, client_id=client_id, client=boto3_client)
+        aws = AWSSRP(username=self.email, password=self.password, pool_id=self.pool_id, client_id=self.client_id, client=boto3_client)
         return aws.authenticate_user()
 
     def __get_projects(self):
-        "Collect windturbine's form projects url"
-        if self.platform == "Windcentrale":
-            base_url = WINDCENTRALE_BASE_URL
-        elif self.platform == "Winddelen":
-            base_url = WINDDELEN_BASE_URL
-        get_url = 'https://{}/api/v0/sustainable/projects'.format(base_url)
+        """Collect windturbine's form projects url"""
+        get_url = 'https://{}/api/v0/sustainable/projects'.format(self.base_url)
         return requests.get(get_url, headers=self.authorization_header, verify=True)
 
-    async def authenticate_user_credentails(self):
-        _LOGGER.info('Testing if user credentails are correct')
+    async def authenticate_user_credentials(self):
+        _LOGGER.info('Testing if user credentials are correct')
         try:
             tokens = await self.hass.async_add_executor_job(self.__get_tokens)
             token_type = tokens['AuthenticationResult']['TokenType']
             id_token = tokens['AuthenticationResult']['IdToken']
-            self.authorization_header = {'Authorization':token_type + " " + id_token}
+            self.authorization_header = {'Authorization': token_type + " " + id_token}
             return self.authorization_header
         except:
-            return 'invalid_user_credentails'
+            return 'invalid_user_credentials'
 
     async def collect_projects_windshares(self):
         _LOGGER.info('Collecting windturbines shares')
