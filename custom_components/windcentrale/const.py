@@ -1,7 +1,7 @@
 """Constants for the Windcentrale integration."""
 import datetime as dt
 from homeassistant.components.sensor import SensorDeviceClass
-from homeassistant.const import POWER_WATT, POWER_KILO_WATT, ENERGY_KILO_WATT_HOUR, TIME_HOURS, PERCENTAGE, latform
+from homeassistant.const import POWER_WATT, POWER_KILO_WATT, ENERGY_KILO_WATT_HOUR, TIME_HOURS, PERCENTAGE, Platform
 
 DOMAIN = "windcentrale"
 
