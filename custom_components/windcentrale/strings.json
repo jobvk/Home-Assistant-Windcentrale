@@ -13,7 +13,7 @@
     },
     "error": {
       "invalid_parameter": "Incorrect Parameters: Verify you filled in your e-mail address and password and try again.",
-      "invalid_user_credentails": "Incorrect Credentials: Verify your e-mail address and password and try again.",
+      "invalid_user_credentials": "Incorrect Credentials: Verify your e-mail address and password and try again.",
       "invalid_too_many_requests": "Too Many Requests: There where to many request made to the server, try again in 30 minutes.",
       "unknown": "The error is unknown, Check the log for more details."
     },
