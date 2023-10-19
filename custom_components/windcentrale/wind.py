@@ -151,7 +151,7 @@ class Windturbine:
         await self.schedule_update_production(timedelta(hours=PRODUCTION_INTERVAL))
 
     def cancel_scheduled_updates(self):
-        """Cancel scheduled and production updates"""
+        """Cancel scheduled production updates"""
         if self.production_update_task:
             self.production_update_task()
             self.production_update_task = None
