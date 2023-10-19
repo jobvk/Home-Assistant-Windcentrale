@@ -127,8 +127,6 @@ class Windturbine:
         self.total_shares = WINDTURBINES_LIST[windturbine_name][5]
         self.start_date = WINDTURBINES_LIST[windturbine_name][6]
         self.energy_prognoses = WINDTURBINES_LIST[windturbine_name][7]
-        self.liveapi = LiveAPI(self.hass, self.wind, self.id, self.name)
-        self.live_update_task = None
         self.production_windtrubine_year_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR3_YEARS", 0, "TOTAL_PROJECT")
         self.production_windtrubine_month_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR_MONTHS", 0, "TOTAL_PROJECT")
         self.production_windtrubine_week_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "WEEK4_WEEKS", 0, "TOTAL_PROJECT")
@@ -136,16 +134,6 @@ class Windturbine:
         self.production_shares_month_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR_MONTHS", 0, "SHARES_IN_PROJECT")
         self.production_shares_week_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "WEEK4_WEEKS", 0, "SHARES_IN_PROJECT")
         self.production_update_task = None
-
-    async def schedule_update_live(self, interval):
-        """Schedule update based on live interval"""
-        nxt = dt_util.utcnow() + interval
-        self.live_update_task = async_track_point_in_utc_time(self.hass, self.async_update_live, nxt)
-
-    async def async_update_live(self, *_):
-        """Start update and schedule update based on live interval"""
-        await self.liveapi.update()
-        await self.schedule_update_live(timedelta(minutes=LIVE_INTERVAL))
 
     async def schedule_update_production(self, interval):
         """Schedule update based on production interval"""
@@ -163,68 +151,10 @@ class Windturbine:
         await self.schedule_update_production(timedelta(hours=PRODUCTION_INTERVAL))
 
     def cancel_scheduled_updates(self):
-        """Cancel scheduled live and production updates"""
-        if self.live_update_task:
-            self.live_update_task()
-            self.live_update_task = None
-
+        """Cancel scheduled production updates"""
         if self.production_update_task:
             self.production_update_task()
             self.production_update_task = None
-
-class LiveAPI:
-    """Collect live data"""
-    def __init__(self, hass, wind, windturbineId, windturbineName):
-        self.hass = hass
-        self.wind = wind
-        self.windturbine_id = windturbineId
-        self.windturbine_name = windturbineName
-        self.response_data = {}
-
-    def __get_data(self):
-        """Collect data form URL"""
-        get_url = 'https://{}/api/v0/livedata?projects={}'.format(self.wind.base_url, self.windturbine_id)
-        return requests.get(get_url, headers=self.wind.tokens, verify=True)
-
-    async def update(self):
-        """Get data ready for Home Assitant"""
-        _LOGGER.info('Collecting live data of windturbine {}'.format(self.windturbine_name))
-
-        try:
-            if self.wind.tokens is None:
-                return
-
-            request_data = await self.hass.async_add_executor_job(self.__get_data)
-            
-            if not request_data.status_code == HTTPStatus.OK:
-                _LOGGER.warning('Invalid response from server when collecting live data of windturbine {} with the response data {} and status code {}'.format(self.windturbine_name, request_data.text, request_data.status_code))
-                return
-
-            self.response_data.clear()
-            json_items = json.loads(json.dumps(request_data.json()))
-
-            for key, value in json_items[self.windturbine_id].items():
-                if key == "wind_power" or key == "power" or key == "power_per_share" or key == "power_percentage" or key == "year_production" or key == "total_runtime":
-                    self.response_data[key] = int(value)
-                elif key == "rpm" or key == "year_runtime":
-                    self.response_data[key] = float(value)
-                elif key == "timestamp":
-                    self.response_data[key] = datetime.datetime.fromtimestamp(int(value))
-                elif key == "pulsating":
-                    if value == "1":
-                        self.response_data[key] = True
-                    else:
-                        self.response_data[key] = False
-                else:
-                    self.response_data[key] = value
-
-        except requests.exceptions.Timeout:
-            _LOGGER.error('Timeout response from server for collection history data for windturbine {}'.format(self.windturbine_name))
-            return
-
-        except Exception as exc:
-            _LOGGER.error('Error occurred while fetching data: %r', exc)
-            return
 
 class ProductionAPI:
     """Collect production data"""
