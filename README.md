@@ -26,12 +26,10 @@ The official websites are https://www.windcentrale.nl and https://winddelen.nl
   * [Set Up](#set-up)
   * [Options](#options)
 * [Sensors](#sensors)
-  * [Live](#live)
   * [History](#history)
   * [News](#news)
 * [Button](#button)
 * [Example](#example)
-* [Energy Management tab](#energy-management-tab)
 * [Contributors](#contributors)
 * [Stargazers](#stargazers)
 * [License](#license)
@@ -73,28 +71,6 @@ Go to Settings and then Devices & Service, select Integrations and search for th
 
 ## Sensors
 
-### Live
-
-These sensors show live data from the wind turbine.
-
-|ID|Type|Description|Unit of Measurement|
-|------------|------------|------------|------------|
-| `sensor.name` | Int | The total amount of power you currently generate with the number of wind shares. | Watt (W) |
-| `sensor.name_energy` | Int | The energy that the wind turbine has produced this year. | Kilowatt-hour (kWh) |
-| `sensor.name_energy_prognoses_this_year` | Float | The percentage of how much the wind turbine should produce in a year. | Percentage (%) |
-| `sensor.name_energy_shares` | Float | The energy that your shares of the wind turbine has produced this year. | Kilowatt-hour (kWh) |
-| `sensor.name_hours_run_this_year` | Int | The number of hours the wind turbine has operated this year. | Hours (h) |
-| `sensor.name_hours_run_total` | Int | The number of hours the wind turbine has operated in total. | Hours (h) |
-| `sensor.name_last_update` | DateTime | Returns when the wind turbine last updated. | DateTime |
-| `sensor.name_power_per_share` | Int | The power per wind share that the wind turbine currently generates. | Watt (W) |
-| `sensor.name_power_percentage` | Int | The ability in percentage the wind turbine can generate power. | Percentage (%) |
-| `sensor.name_power_total` | Int | The total power that the wind turbine currently generates. | Kilowatt (kW) |
-| `binary_sensor.name_pulsating` | Bool | The wind turbine is at max power. | Boolean |
-| `sensor.name_revolutions_per_minute` | Float | The speed at which the blades of the wind turbine rotate. | Revolutions Per minute (RPM) |
-| `sensor.name_run_percentage` | Float | The percentage of the wind turbine is operational since the start date. | Percentage (%) |
-| `sensor.name_wind_direction` | String | The direction of the wind at the wind turbine. | Wind rose |
-| `sensor.name_wind_speed` | Int | The speed of the wind at the wind turbine. | Beaufort scale (BFT) |
-
 ### History
 
 These sensors show how much power the wind turbine has delivered over a certain time.
@@ -135,24 +111,11 @@ This button `button.the_windcentrale_update_wind_shares` updates your shares. Th
 
 Below is an example of the sensors.
 
-![image](https://user-images.githubusercontent.com/32730202/195425402-9ecdb159-898e-4a13-a0a8-c406d5b3ccf8.png)
-
-## Energy Management tab
-
-To use of Energy Management tab you need to use the sensor `sensor.name_energy_shares` 
-
-The sensor state_class is "total" and not "total_increasing" because of energy use of the wind turbine. If the wind turbine is not spinning the wind turbine can use more power than it produces. Found this on their site:
-
-![image](https://user-images.githubusercontent.com/32730202/194364186-bf6ce362-11df-4471-9f1e-014b80835a3b.png)
-
-But there is also a problem. The API uses live data for the power management tab. But for the graph on the official site has a small correction. But this means there is a difference between the graph of energy management tab and the official site. This also means that when the day is past, the total does not match the correct values. When I have found a solution I will certainly update it.
-
-If you found a solution please start a [Discussion](https://github.com/jobvk/Home-Assistant-Windcentrale/discussions).
+![image](https://github.com/jobvk/Home-Assistant-Windcentrale/assets/32730202/cb7c24e9-d27f-4c06-9c29-9d36a3393b6d)
 
 ## Contributors
 Special Thanks to all contributors
 * [@vdheidenet](https://github.com/vdheidenet): Sharing his data for creating the signing in function
-* [@rob-on-git](https://github.com/rob-on-git): For creating a formula for the run percentage sensor
 
 ## Stargazers
 Thanks to everyone having starred my repo!

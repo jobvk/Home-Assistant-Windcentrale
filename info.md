@@ -21,31 +21,9 @@ The official websites are https://www.windcentrale.nl and https://winddelen.nl
 
 Below is an example of the sensors.
 
-![image](https://user-images.githubusercontent.com/32730202/195425402-9ecdb159-898e-4a13-a0a8-c406d5b3ccf8.png)
+![image](https://github.com/jobvk/Home-Assistant-Windcentrale/assets/32730202/cb7c24e9-d27f-4c06-9c29-9d36a3393b6d)
 
 ## Sensors
-
-### Live
-
-These sensors show live data from the wind turbine.
-
-|ID|Type|Description|Unit of Measurement|
-|------------|------------|------------|------------|
-| `sensor.name` | Int | The total amount of power you currently generate with the number of wind shares. | Watt (W) |
-| `sensor.name_energy` | Int | The energy that the wind turbine has produced this year. | Kilowatt-hour (kWh) |
-| `sensor.name_energy_prognoses_this_year` | Float | The percentage of how much the wind turbine should produce in a year. | Percentage (%) |
-| `sensor.name_energy_shares` | Float | The energy that your shares of the wind turbine has produced this year. | Kilowatt-hour (kWh) |
-| `sensor.name_hours_run_this_year` | Int | The number of hours the wind turbine has operated this year. | Hours (h) |
-| `sensor.name_hours_run_total` | Int | The number of hours the wind turbine has operated in total. | Hours (h) |
-| `sensor.name_last_update` | DateTime | Returns when the wind turbine last updated. | DateTime |
-| `sensor.name_power_per_share` | Int | The power per wind share that the wind turbine currently generates. | Watt (W) |
-| `sensor.name_power_percentage` | Int | The ability in percentage the wind turbine can generate power. | Percentage (%) |
-| `sensor.name_power_total` | Int | The total power that the wind turbine currently generates. | Kilowatt (kW) |
-| `binary_sensor.name_pulsating` | Bool | The wind turbine is at max power. | Boolean |
-| `sensor.name_revolutions_per_minute` | Float | The speed at which the blades of the wind turbine rotate. | Revolutions Per minute (RPM) |
-| `sensor.name_run_percentage` | Float | The percentage of the wind turbine is operational since the start date. | Percentage (%) |
-| `sensor.name_wind_direction` | String | The direction of the wind at the wind turbine. | Wind rose |
-| `sensor.name_wind_speed` | Int | The speed of the wind at the wind turbine. | Beaufort scale (BFT) |
 
 ### History
 

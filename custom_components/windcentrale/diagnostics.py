@@ -29,13 +29,14 @@ async def async_get_config_entry_diagnostics(hass, config_entry) -> dict[str, An
             "start_date": windturbine.start_date,
             "energy_prognoses": windturbine.energy_prognoses,
             "data": {
-                "live_data": windturbine.liveapi.response_data,
                 "production_windtrubine_year_data": windturbine.production_windtrubine_year_api.response_data,
                 "production_windtrubine_month_data": windturbine.production_windtrubine_month_api.response_data,
                 "production_windtrubine_week_data": windturbine.production_windtrubine_week_api.response_data,
+                "production_windtrubine_day_data": windturbine.production_windtrubine_day_api.response_data,
                 "production_shares_year_data": windturbine.production_shares_year_api.response_data,
                 "production_shares_month_data": windturbine.production_shares_month_api.response_data,
-                "production_shares_week_data": windturbine.production_shares_week_api.response_data
+                "production_shares_week_data": windturbine.production_shares_week_api.response_data,
+                "production_shares_day_data": windturbine.production_shares_day_api.response_data
             }
         })
 
@@ -47,7 +48,6 @@ async def async_get_config_entry_diagnostics(hass, config_entry) -> dict[str, An
             "default_show_on_map": DEFAULT_SHOW_ON_MAP,
             "conf_windtubines": CONF_WINDTURBINES,
             "intervals": {
-                "live": LIVE_INTERVAL,
                 "production": PRODUCTION_INTERVAL,
                 "news": NEWS_INTERVAL,
                 "token": TOKEN_INTERVAL
