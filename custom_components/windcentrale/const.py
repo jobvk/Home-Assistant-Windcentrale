@@ -1,15 +1,14 @@
 """Constants for the Windcentrale integration."""
 import datetime as dt
 from homeassistant.components.sensor import SensorDeviceClass
-from homeassistant.const import POWER_WATT, POWER_KILO_WATT, ENERGY_KILO_WATT_HOUR, TIME_HOURS, PERCENTAGE, Platform
+from homeassistant.const import ENERGY_KILO_WATT_HOUR, Platform
 
 DOMAIN = "windcentrale"
 
-PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.BUTTON]
+PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BUTTON]
 
 CONF_WINDTURBINES = "windturbines"
 
-LIVE_INTERVAL = 1 #min
 PRODUCTION_INTERVAL = 1 #hour
 NEWS_INTERVAL = 5 #min
 TOKEN_INTERVAL = 55 #min
@@ -39,25 +38,6 @@ WINDTURBINES_LIST = {
     "De Vier Winden": ["Vestas", "V52", "Burgerbrug", 52.762214, 4.688828, 5512, dt.datetime(2014, 7, 1), 2800000],
     "De Boerenzwaluw": ["Enercon", "E-44", "Burum", 53.265376, 6.214152, 3000, dt.datetime(2016, 8, 1), 1500000],
     "Het Vliegend Hert": ["Lagerwey", "L82", "Rouveen", 52.59131, 6.22014, 9751, dt.datetime(2018, 9, 15), 5000000]
-}
-
-# Format:
-# Id: [Name, Device Class, Unit Of Measurement, Icon, Json Key]
-LIVE_SENSOR_TYPES = {
-    "windturbine": [None, SensorDeviceClass.POWER, POWER_WATT, "mdi:wind-turbine", "power_per_share"],
-    "windspeed": ["Wind Speed", None, "BFT", "mdi:windsock", "wind_power"],
-    "winddirection": ["Wind Direction", None, None, "mdi:compass", "wind_direction"],
-    "powertotal": ["Power Total", SensorDeviceClass.POWER, POWER_KILO_WATT, None, "power"],
-    "powerpershare": ["Power Per Share", SensorDeviceClass.POWER, POWER_WATT, None, "power_per_share"],
-    "powerpercentage": ["Power Percentage", None, PERCENTAGE, "mdi:percent", "power_percentage"],
-    "rpm": ["Revolutions Per Minute", None, "RPM", "mdi:gauge", "rpm"],
-    "energy": ["Energy", SensorDeviceClass.ENERGY, ENERGY_KILO_WATT_HOUR, None, "year_production"],
-    "energyshares": ["Energy shares", SensorDeviceClass.ENERGY, ENERGY_KILO_WATT_HOUR, None, "year_production"],
-    "energyprognoses": ["Energy Prognoses This Year", None, PERCENTAGE, "mdi:percent", "year_production"],
-    "runtimeyear": ["Hours Run This Year", None, TIME_HOURS, "mdi:calendar-clock", "year_runtime"],
-    "runtimetotal": ["Hours Run Total", None, TIME_HOURS, "mdi:calendar-clock", "total_runtime"],
-    "runpercentage": ["Run Percentage", None, PERCENTAGE, "mdi:percent", "year_runtime"],
-    "timestamp": ["Last Update", SensorDeviceClass.TIMESTAMP, None, None, "timestamp"]
 }
 
 # Format:
