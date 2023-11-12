@@ -74,16 +74,18 @@ Go to Settings and then Devices & Service, select Integrations and search for th
 ### History
 
 These sensors show how much power the wind turbine has delivered over a certain time.
-These sensors are not displaying live data. These senors are updated around noon the following day.
+These sensors are not displaying live data. These sensors are updated around noon the following day.
 
 |ID|Type|Description|Unit of Measurement|
 |----------|------------|------------|------------|
 | `sensor.name_production_year_total` | Int | The energy produced by the wind turbine total this year. | Kilowatt-hour (kWh) |
 | `sensor.name_production_month_total` | Int | The energy produced by the wind turbine total this month. | Kilowatt-hour (kWh) |
 | `sensor.name_production_week_total` | Int | The energy produced by the wind turbine total this week. | Kilowatt-hour (kWh) |
+| `sensor.name_production_day_total` | Int | The energy produced by the wind turbine total 1 or 2 days ago. | Kilowatt-hour (kWh) |
 | `sensor.name_production_year_shares` | Int | The energy produced by your shares of the wind turbine this year. | Kilowatt-hour (kWh) |
 | `sensor.name_production_month_shares` | Int | The energy produced by your shares of the wind turbine this month. | Kilowatt-hour (kWh) |
 | `sensor.name_production_week_shares` | Int | The energy produced by your shares of the wind turbine this week. | Kilowatt-hour (kWh) |
+| `sensor.name_production_day_shares` | Int | The energy produced by your shares of the wind turbine 1 or 2 days ago. | Kilowatt-hour (kWh) |
 
 ### News
 
@@ -93,7 +95,7 @@ The value of `sensor.the_windcentrale_news` doesn't change because the news stri
 
 The attributes have no limit on characters there for I made a solution.
 
-Create a markdown card with the following content: 
+Create a markdown card with the following content:
 ``` yaml
 type: markdown
 content: '{{ state_attr(''sensor.the_windcentrale_news'', ''News Item'') }}'
@@ -115,7 +117,7 @@ Below is an example of the sensors.
 
 ## Contributors
 Special Thanks to all contributors
-* [@vdheidenet](https://github.com/vdheidenet): Sharing his data for creating the signing in function
+* [@vdheidenet](https://github.com/vdheidenet): for sharing his data on multiple windshares in different windturbines [#10](https://github.com/jobvk/Home-Assistant-Windcentrale/issues/10)
 
 ## Stargazers
 Thanks to everyone having starred my repo!
