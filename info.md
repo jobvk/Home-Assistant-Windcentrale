@@ -28,7 +28,7 @@ Below is an example of the sensors.
 ### History
 
 These sensors show how much power the wind turbine has delivered over a certain time.
-These sensors are not displaying live data. These senors are updated around noon the following day.
+These sensors are not displaying live data. These sensors are updated around noon the following day.
 
 |ID|Type|Description|Unit of Measurement|
 |----------|------------|------------|------------|
