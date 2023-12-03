@@ -113,19 +113,20 @@ class ProductionSensor(SensorBase):
                 week = "Week " + str(datetime.now().isocalendar().week - i - 1)
                 self.attr[week] = state.attributes[week]
         elif "Day " + str(datetime.now().day) in state.attributes:
-            for i in range(datetime.now().day):
-                day = "Day " + str(datetime.now().day - i)
+            for i in range(1, datetime.now().day + 1):
+                day = "Day {}".format(i)
                 self.attr[day] = state.attributes[day]
 
     def update(self):
         """Update the sensor."""
+        self.attr.clear()
         try:
             if self.type == "yeartotal" :
                 self._state = self._windturbine.production_windtrubine_year_api.response_data[datetime.now().year]
                 for i in range(2):
                     self.attr["Year " + str(datetime.now().year - i - 1)] = self._windturbine.production_windtrubine_year_api.response_data[datetime.now().year - i - 1]
-        except KeyError as keyecx:
-            _LOGGER.warning('The year {} is missing in total production data'.format(keyecx))
+        except KeyError:
+            self._state = 0
         except Exception as exc:
             _LOGGER.error('There was an exception when updating total year production data. The error: {}'.format(exc))
 
@@ -135,8 +136,8 @@ class ProductionSensor(SensorBase):
                 for i in range(datetime.now().month - 1):
                     month = datetime.now() - dateutil.relativedelta.relativedelta(months= i+1)
                     self.attr[month.strftime("%B")] = self._windturbine.production_windtrubine_month_api.response_data[datetime.now().month - i - 1]
-        except KeyError as keyecx:
-            _LOGGER.warning('The month {} is missing in total production data'.format(keyecx))
+        except KeyError:
+            self._state = 0
         except Exception as exc:
             _LOGGER.error('There was an exception when updating total month production data. The error: {}'.format(exc))
 
@@ -145,8 +146,8 @@ class ProductionSensor(SensorBase):
                 self._state = self._windturbine.production_windtrubine_week_api.response_data[datetime.now().isocalendar().week]
                 for i in range(3):
                     self.attr["Week " + str(datetime.now().isocalendar().week - i - 1)] = self._windturbine.production_windtrubine_week_api.response_data[datetime.now().isocalendar().week - i - 1]
-        except KeyError as keyecx:
-            _LOGGER.warning('The week {} is missing in total production data'.format(keyecx))
+        except KeyError:
+            self._state = 0
         except Exception as exc:
             _LOGGER.error('There was an exception when updating total week production data. The error: {}'.format(exc))
 
@@ -162,10 +163,14 @@ class ProductionSensor(SensorBase):
                             self._state = self._windturbine.production_windtrubine_day_api.response_data[datetime.now().day - 2]
                     else:
                         self._state = self._windturbine.production_windtrubine_day_api.response_data[datetime.now().day - 1]
-                    for i in range(datetime.now().day):
-                        self.attr["Day " + str(datetime.now().day - i)] = self._windturbine.production_windtrubine_day_api.response_data[datetime.now().day - i]
-        except KeyError as keyecx:
-            _LOGGER.warning('The day {} is missing in total production data'.format(keyecx))
+                    for i in range(1, datetime.now().day + 1):
+                        day = "Day {}".format(i)
+                        if i == datetime.now().day:
+                            self.attr[day] = 0
+                        else:
+                            self.attr[day] = self._windturbine.production_windtrubine_day_api.response_data[i]
+        except KeyError:
+            self._state = 0
         except Exception as exc:
             _LOGGER.error('There was an exception when updating total day production data. The error: {}'.format(exc))
 
@@ -174,8 +179,8 @@ class ProductionSensor(SensorBase):
                 self._state = self._windturbine.production_shares_year_api.response_data[datetime.now().year]
                 for i in range(2):
                     self.attr["Year " + str(datetime.now().year - i - 1)] = self._windturbine.production_shares_year_api.response_data[datetime.now().year - i - 1]
-        except KeyError as keyecx:
-            _LOGGER.warning('The year {} is missing in shares production data'.format(keyecx))
+        except KeyError:
+            self._state = 0
         except Exception as exc:
             _LOGGER.error('There was an exception when updating shares year production data. The error: {}'.format(exc))
 
@@ -185,8 +190,8 @@ class ProductionSensor(SensorBase):
                 for i in range(datetime.now().month - 1):
                     month = datetime.now() - dateutil.relativedelta.relativedelta(months= i+1)
                     self.attr[month.strftime("%B")] = self._windturbine.production_shares_month_api.response_data[datetime.now().month - i - 1]
-        except KeyError as keyecx:
-            _LOGGER.warning('The month {} is missing in shares production data'.format(keyecx))
+        except KeyError:
+            self._state = 0
         except Exception as exc:
             _LOGGER.error('There was an exception when updating shares month production data. The error: {}'.format(exc))
 
@@ -195,8 +200,8 @@ class ProductionSensor(SensorBase):
                 self._state = self._windturbine.production_shares_week_api.response_data[datetime.now().isocalendar().week]
                 for i in range(3):
                     self.attr["Week " + str(datetime.now().isocalendar().week - i - 1)] = self._windturbine.production_shares_week_api.response_data[datetime.now().isocalendar().week - i - 1]
-        except KeyError as keyecx:
-            _LOGGER.warning('The week {} is missing in shares production data'.format(keyecx))
+        except KeyError:
+            self._state = 0
         except Exception as exc:
             _LOGGER.error('There was an exception when updating shares week production data. The error: {}'.format(exc))
 
@@ -212,10 +217,14 @@ class ProductionSensor(SensorBase):
                             self._state = self._windturbine.production_shares_day_api.response_data[datetime.now().day - 2]
                     else:
                         self._state = self._windturbine.production_shares_day_api.response_data[datetime.now().day - 1]
-                    for i in range(datetime.now().day):
-                        self.attr["Day " + str(datetime.now().day - i)] = self._windturbine.production_shares_day_api.response_data[datetime.now().day - i]
-        except KeyError as keyecx:
-            _LOGGER.warning('The day {} is missing in shares production data'.format(keyecx))
+                    for i in range(1, datetime.now().day + 1):
+                        day = "Day {}".format(i)
+                        if i == datetime.now().day:
+                            self.attr[day] = 0
+                        else:
+                            self.attr[day] = self._windturbine.production_shares_day_api.response_data[i]
+        except KeyError:
+            self._state = 0
         except Exception as exc:
             _LOGGER.error('There was an exception when updating shares day production data. The error: {}'.format(exc))
 
