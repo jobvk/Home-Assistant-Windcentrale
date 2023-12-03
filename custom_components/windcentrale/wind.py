@@ -130,9 +130,11 @@ class Windturbine:
         self.production_windtrubine_year_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR3_YEARS", 0, "TOTAL_PROJECT")
         self.production_windtrubine_month_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR_MONTHS", 0, "TOTAL_PROJECT")
         self.production_windtrubine_week_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "WEEK4_WEEKS", 0, "TOTAL_PROJECT")
+        self.production_windtrubine_day_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "MONTH_DAYS", 0, "TOTAL_PROJECT")
         self.production_shares_year_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR3_YEARS", 0, "SHARES_IN_PROJECT")
         self.production_shares_month_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "YEAR_MONTHS", 0, "SHARES_IN_PROJECT")
         self.production_shares_week_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "WEEK4_WEEKS", 0, "SHARES_IN_PROJECT")
+        self.production_shares_day_api = ProductionAPI(self.hass, self.wind, self.id, self.name, "MONTH_DAYS", 0, "SHARES_IN_PROJECT")
         self.production_update_task = None
 
     async def schedule_update_production(self, interval):
@@ -145,9 +147,11 @@ class Windturbine:
         await self.production_windtrubine_year_api.update()
         await self.production_windtrubine_month_api.update()
         await self.production_windtrubine_week_api.update()
+        await self.production_windtrubine_day_api.update()
         await self.production_shares_year_api.update()
         await self.production_shares_month_api.update()
         await self.production_shares_week_api.update()
+        await self.production_shares_day_api.update()
         await self.schedule_update_production(timedelta(hours=PRODUCTION_INTERVAL))
 
     def cancel_scheduled_updates(self):
@@ -198,6 +202,8 @@ class ProductionAPI:
                     date_object = json_item["labels"]["month"]
                 elif self.timeframe_type == "WEEK4_WEEKS":
                     date_object = json_item["labels"]["week"]
+                elif self.timeframe_type == "MONTH_DAYS":
+                    date_object = json_item["labels"]["date"]["day"]
 
                 value = json_item["value"]
 

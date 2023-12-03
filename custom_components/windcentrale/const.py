@@ -46,9 +46,11 @@ PRODUCTION_SENSOR_TYPES = {
     "yeartotal": ["Production Year Total", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR3_YEARS"],
     "monthtotal": ["Production Month Total", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR_MONTHS"],
     "weektotal": ["Production Week Total", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "WEEK4_WEEKS"],
+    "daytotal": ["Production Day Total", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "MONTH_DAYS"],
     "yearshares": ["Production Year Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR3_YEARS"],
     "monthshares": ["Production Month Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR_MONTHS"],
-    "weekshares": ["Production Week Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "WEEK4_WEEKS"]
+    "weekshares": ["Production Week Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "WEEK4_WEEKS"],
+    "dayshares": ["Production Day Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "MONTH_DAYS"]
 }
 
 class powerProducer: 

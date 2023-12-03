@@ -28,16 +28,18 @@ Below is an example of the sensors.
 ### History
 
 These sensors show how much power the wind turbine has delivered over a certain time.
-These sensors are not displaying live data. These senors are updated around noon the following day.
+These sensors are not displaying live data. These sensors are updated around noon the following day.
 
 |ID|Type|Description|Unit of Measurement|
 |----------|------------|------------|------------|
 | `sensor.name_production_year_total` | Int | The energy produced by the wind turbine total this year. | Kilowatt-hour (kWh) |
 | `sensor.name_production_month_total` | Int | The energy produced by the wind turbine total this month. | Kilowatt-hour (kWh) |
 | `sensor.name_production_week_total` | Int | The energy produced by the wind turbine total this week. | Kilowatt-hour (kWh) |
+| `sensor.name_production_day_total` | Int | The energy produced by the wind turbine total 1 or 2 days ago. | Kilowatt-hour (kWh) |
 | `sensor.name_production_year_shares` | Int | The energy produced by your shares of the wind turbine this year. | Kilowatt-hour (kWh) |
 | `sensor.name_production_month_shares` | Int | The energy produced by your shares of the wind turbine this month. | Kilowatt-hour (kWh) |
 | `sensor.name_production_week_shares` | Int | The energy produced by your shares of the wind turbine this week. | Kilowatt-hour (kWh) |
+| `sensor.name_production_day_shares` | Int | The energy produced by your shares of the wind turbine 1 or 2 days ago. | Kilowatt-hour (kWh) |
 
 ### News
 
