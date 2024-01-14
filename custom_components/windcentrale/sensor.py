@@ -110,7 +110,10 @@ class ProductionSensor(SensorBase):
                 self.attr[month] = state.attributes[month]
         elif "Week " + str(datetime.now().isocalendar().week - 1) in state.attributes:
             for i in range(3):
-                week = "Week " + str(datetime.now().isocalendar().week - i - 1)
+                week_number = datetime.now().isocalendar().week - i - 1
+                if week_number <= 0:
+                    week_number = 1 
+                week = "Week " + str(week_number)
                 self.attr[week] = state.attributes[week]
         elif "Day " + str(datetime.now().day) in state.attributes:
             for i in range(1, datetime.now().day + 1):
