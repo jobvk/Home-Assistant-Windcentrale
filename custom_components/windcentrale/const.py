@@ -1,7 +1,7 @@
 """Constants for the Windcentrale integration."""
 import datetime as dt
 from homeassistant.components.sensor import SensorDeviceClass
-from homeassistant.const import ENERGY_KILO_WATT_HOUR, Platform
+from homeassistant.const import UnitOfEnergy, Platform
 
 DOMAIN = "windcentrale"
 
@@ -43,14 +43,14 @@ WINDTURBINES_LIST = {
 # Format:
 # Id: [Name, Unit Of Measurement, Device Class, Timeframe Type]
 PRODUCTION_SENSOR_TYPES = {
-    "yeartotal": ["Production Year Total", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR3_YEARS"],
-    "monthtotal": ["Production Month Total", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR_MONTHS"],
-    "weektotal": ["Production Week Total", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "WEEK4_WEEKS"],
-    "daytotal": ["Production Day Total", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "MONTH_DAYS"],
-    "yearshares": ["Production Year Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR3_YEARS"],
-    "monthshares": ["Production Month Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR_MONTHS"],
-    "weekshares": ["Production Week Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "WEEK4_WEEKS"],
-    "dayshares": ["Production Day Shares", ENERGY_KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "MONTH_DAYS"]
+    "yeartotal": ["Production Year Total", UnitOfEnergy.KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR3_YEARS"],
+    "monthtotal": ["Production Month Total", UnitOfEnergy.KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR_MONTHS"],
+    "weektotal": ["Production Week Total", UnitOfEnergy.KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "WEEK4_WEEKS"],
+    "daytotal": ["Production Day Total", UnitOfEnergy.KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "MONTH_DAYS"],
+    "yearshares": ["Production Year Shares", UnitOfEnergy.KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR3_YEARS"],
+    "monthshares": ["Production Month Shares", UnitOfEnergy.KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "YEAR_MONTHS"],
+    "weekshares": ["Production Week Shares", UnitOfEnergy.KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "WEEK4_WEEKS"],
+    "dayshares": ["Production Day Shares", UnitOfEnergy.KILO_WATT_HOUR, SensorDeviceClass.ENERGY, "MONTH_DAYS"]
 }
 
 class powerProducer: 
