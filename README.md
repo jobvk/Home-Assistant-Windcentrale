@@ -17,25 +17,6 @@ The `Windcentrale` component is a Home Assistant component which lets you get se
 
 The official websites are https://www.windcentrale.nl and https://winddelen.nl
 
-## Table of Contents
-
-* [Installation](#installation)
-  * [Installation through HACS](#installation-through-hacs)
-  * [Manual Installation](#manual-installation)
-* [Configuration](#configuration)
-  * [Set Up](#set-up)
-  * [Options](#options)
-* [Sensors](#sensors)
-  * [History](#history)
-  * [News](#news)
-* [Button](#button)
-* [Example](#example)
-* [Contributors](#contributors)
-* [Stargazers](#stargazers)
-* [License](#license)
-* [Disclaimer](#disclaimer)
-* [Say thank you](#say-thank-you)
-
 ## Installation
 
 ### Installation through HACS
