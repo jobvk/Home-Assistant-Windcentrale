@@ -19,8 +19,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: config_entries.Conf
     hass.data[DOMAIN][entry.entry_id] = wind.Wind(hass, entry)
 
     # This creates an HA object for each platform.
-    for component in PLATFORMS:
-        hass.async_create_task(hass.config_entries.async_forward_entry_setup(entry, component))
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
