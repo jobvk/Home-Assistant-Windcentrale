@@ -17,25 +17,6 @@ The `Windcentrale` component is a Home Assistant component which lets you get se
 
 The official websites are https://www.windcentrale.nl and https://winddelen.nl
 
-## Table of Contents
-
-* [Installation](#installation)
-  * [Installation through HACS](#installation-through-hacs)
-  * [Manual Installation](#manual-installation)
-* [Configuration](#configuration)
-  * [Set Up](#set-up)
-  * [Options](#options)
-* [Sensors](#sensors)
-  * [History](#history)
-  * [News](#news)
-* [Button](#button)
-* [Example](#example)
-* [Contributors](#contributors)
-* [Stargazers](#stargazers)
-* [License](#license)
-* [Disclaimer](#disclaimer)
-* [Say thank you](#say-thank-you)
-
 ## Installation
 
 ### Installation through HACS
@@ -118,11 +99,6 @@ Below is an example of the sensors.
 ## Contributors
 Special Thanks to all contributors
 * [@vdheidenet](https://github.com/vdheidenet): for sharing his data on multiple windshares in different windturbines [#10](https://github.com/jobvk/Home-Assistant-Windcentrale/issues/10)
-
-## Stargazers
-Thanks to everyone having starred my repo!
-
-[![Stargazers repo roster for @jobvk/Home-Assistant-Windcentrale](https://git-lister.onrender.com/api/stars/jobvk/Home-Assistant-Windcentrale?limit=30)](https://github.com/jobvk/Home-Assistant-Windcentrale/stargazers)
 
 ## License
 [Apache License 2.0](https://github.com/jobvk/Home-Assistant-Windcentrale/blob/main/LICENSE)
