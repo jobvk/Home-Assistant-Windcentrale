@@ -9,6 +9,6 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jobvk/Home-Assistant-Windcentrale/issues",
   "loggers": ["boto3"],
-  "requirements": ["boto3==1.35.5", "pycognito==2024.5.1"],
-  "version": "2024.8.1"
+  "requirements": ["boto3==1.37.7", "pycognito==2024.5.1"],
+  "version": "2025.3.1"
 }
