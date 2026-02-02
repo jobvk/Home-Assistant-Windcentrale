@@ -3,8 +3,11 @@ import asyncio
 from homeassistant import config_entries, core
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation
 from .const import DOMAIN, PLATFORMS
 from . import wind
+
+CONFIG_SCHEMA = config_validation.config_entry_only_config_schema(DOMAIN)
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the Windcentrale component."""
