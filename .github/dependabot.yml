@@ -7,7 +7,6 @@ updates:
       - "dependency-update"
     schedule:
       interval: "daily"
-
   - package-ecosystem: "pip"
     directory: "/"
     target-branch: "development"

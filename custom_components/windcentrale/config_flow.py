@@ -45,7 +45,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "unknown"
 
         # If there is no user input or there were errors, show the form again, including any errors that were found with the input.
-        return self.async_show_form(step_id="user", data_schema=WINDTURBINE_SCHEMA, errors=errors)
+        return self.async_show_form(
+            step_id="user",
+            data_schema=WINDTURBINE_SCHEMA,
+            errors=errors,
+            description_placeholders={"git_url": GIT_URL},
+        )
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry) -> None:
@@ -62,10 +67,21 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 _LOGGER.error(f"Unexpected exception when changing windcentrale options: {exc}")
                 errors["base"] = "unknown"
 
-        return self.async_show_form(step_id="init", data_schema=vol.Schema({
-            vol.Optional(CONF_SHOW_ON_MAP, default=self.config_entry.options.get(CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP)): bool
-        }),
-        errors=errors)
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema(
+                {
+                    vol.Optional(
+                        CONF_SHOW_ON_MAP,
+                        default=self.config_entry.options.get(
+                            CONF_SHOW_ON_MAP, DEFAULT_SHOW_ON_MAP
+                        ),
+                    ): bool
+                }
+            ),
+            errors=errors,
+            description_placeholders={"git_url": GIT_URL},
+        )
 
 async def validate_input(hass, user_input: dict) -> dict:
     """Validate the user input."""

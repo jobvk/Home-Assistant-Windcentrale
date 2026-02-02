@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "The Windcentrale Set Up",
-        "description": "If you need help with the configuration have a look over here: https://github.com/jobvk/Home-Assistant-Windcentrale",
+        "description": "If you need help with the configuration have a look over here: {git_url}",
         "data": {
           "email": "Enter your email address",
           "password": "Enter your password",
@@ -25,7 +25,7 @@
     "step": {
       "init": {
         "title": "The Windcentrale Options",
-        "description": "If you need help with the configuration have a look over here: https://github.com/jobvk/Home-Assistant-Windcentrale",
+        "description": "If you need help with the configuration have a look over here: {git_url}",
         "data": {
           "show_on_map": "Show the windturbine(s) on the map"
         }

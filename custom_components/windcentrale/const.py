@@ -15,6 +15,7 @@ TOKEN_INTERVAL = 55 #min
 
 PLATFORM_SELECT = ["Windcentrale", "Winddelen"]
 DEFAULT_SHOW_ON_MAP = False
+GIT_URL = "https://github.com/jobvk/Home-Assistant-Windcentrale"
 
 WINDCENTRALE_BASE_URL = "mijn.windcentrale.nl"
 WINDCENTRALE_POOL_ID = "eu-west-1_U7eYBPrBd"
