@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "The Windcentrale Instellen",
-        "description": "Als je hulp nodig hebt bij de configuratie, kijk dan hier: https://github.com/jobvk/Home-Assistant-Windcentrale",
+        "description": "Als je hulp nodig hebt bij de configuratie, kijk dan hier: {git_url}",
         "data": {
           "email": "Vul je e-mailadres in",
           "password": "Vul je wachtwoord in",
@@ -25,7 +25,7 @@
     "step": {
       "init": {
         "title": "De Windcentrale Aanpassen",
-        "description": "Als je hulp nodig hebt bij de configuratie, kijk dan hier: https://github.com/jobvk/Home-Assistant-Windcentrale",
+        "description": "Als je hulp nodig hebt bij de configuratie, kijk dan hier: {git_url}",
         "data": {
           "show_on_map": "Laat de windturbine(s) op de kaart zien"
         }

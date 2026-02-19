@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Die Windcentrale Einrichten",
-        "description": "Wenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: https://github.com/jobvk/Home-Assistant-Windcentrale",
+        "description": "Wenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: {git_url}",
         "data": {
           "email": "Geben Sie Ihre E-Mailadresse ein",
           "password": "Geben Sie Ihr Passwort ein",
@@ -25,7 +25,7 @@
     "step": {
       "init": {
         "title": "De Windcentrale Anpassen",
-        "description": "Wenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: https://github.com/jobvk/Home-Assistant-Windcentrale",
+        "description": "Wenn man Hilfe braucht bei der Konfiguration, schau dann mal hier: {git_url}",
         "data": {
           "show_on_map": "Zeige die Windkraftanlage(n) auf der Karte"
         }
