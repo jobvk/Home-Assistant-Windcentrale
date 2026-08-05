@@ -32,6 +32,7 @@ jobs:
           cd "${STAGING}"
 
           ZIP_PATH="${BUILD_ROOT}/${COMPONENT_SLUG}.zip"
+
           zip -r "${ZIP_PATH}" .
 
           echo "ZIP_PATH=${ZIP_PATH}" >> "${GITHUB_ENV}"
