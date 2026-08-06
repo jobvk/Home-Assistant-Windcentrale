@@ -2,6 +2,7 @@
 import logging
 import voluptuous as vol
 from homeassistant import config_entries, exceptions
+from homeassistant.config_entries import ConfigEntry, OptionsFlow
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_PLATFORM, CONF_SHOW_ON_MAP
 from homeassistant.core import callback
 from .const import *
@@ -22,9 +23,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry):
-        """Get the options flow for this handler."""
-        return OptionsFlowHandler(config_entry)
+    def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlowHandler:
+        """Create the options flow."""
+        return OptionsFlowHandler()
 
     async def async_step_user(self, user_input=None) -> dict:
         """Handle the initial step."""
@@ -52,11 +53,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             description_placeholders={"git_url": GIT_URL},
         )
 
-class OptionsFlowHandler(config_entries.OptionsFlow):
-    def __init__(self, config_entry) -> None:
-        """Initialize The Windcentrale options flow."""
-        self.config_entry = config_entry
-
+class OptionsFlowHandler(OptionsFlow):
     async def async_step_init(self, user_input=None) -> dict:
         """Manage the Windcentrale options."""
         errors = {}

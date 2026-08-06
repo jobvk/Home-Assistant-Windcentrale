@@ -1,0 +1,52 @@
+name: 'release-zip'
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  package:
+    name: Build plugin zip
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Build zip archive
+        run: |
+          set -euo pipefail
+
+          COMPONENT_SLUG="windcentrale"
+          BUILD_ROOT="${RUNNER_TEMP}/${COMPONENT_SLUG}"
+          STAGING="${BUILD_ROOT}/content"
+
+          mkdir -p "${STAGING}"
+
+          rsync -av "custom_components/${COMPONENT_SLUG}/" "${STAGING}/"
+
+          cd "${STAGING}"
+
+          ZIP_PATH="${BUILD_ROOT}/${COMPONENT_SLUG}.zip"
+
+          zip -r "${ZIP_PATH}" .
+
+          echo "ZIP_PATH=${ZIP_PATH}" >> "${GITHUB_ENV}"
+          echo "ZIP_NAME=${COMPONENT_SLUG}.zip" >> "${GITHUB_ENV}"
+
+      - name: Upload zip as artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: ${{ env.ZIP_PATH }}
+          if-no-files-found: error
+
+      - name: Attach zip to release
+        uses: softprops/action-gh-release@v3.0.2
+        with:
+          files: ${{ env.ZIP_PATH }}
+          generate_release_notes: true
