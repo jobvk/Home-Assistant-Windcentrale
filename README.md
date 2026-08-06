@@ -68,6 +68,14 @@ These sensors are not displaying live data. These sensors are updated around noo
 | `sensor.name_production_week_shares` | Int | The energy produced by your shares of the wind turbine this week. | Kilowatt-hour (kWh) |
 | `sensor.name_production_day_shares` | Int | The energy produced by your shares of the wind turbine 1 or 2 days ago. | Kilowatt-hour (kWh) |
 
+### Energy Dashboard
+
+The year-to-date production sensors expose `state_class: total_increasing`, so Home Assistant can record statistics for them. Windcentrale publishes production data around noon on the following day, however, so using those sensors directly would assign production to the day it was received.
+
+To retain the production date, the integration imports two Energy Dashboard statistics for every wind turbine: `<turbine> Production Shares` and `<turbine> Production Total`. Add the Shares statistic as a Solar production source when you want to show the energy from your own shares. The Total statistic represents the entire turbine's production.
+
+Each completed day in the current month is written with that day's timestamp. When Windcentrale later corrects a delayed value, the integration updates the existing statistic so the Energy Dashboard is corrected as well. The statistics become available after the integration has completed its first successful production-data update.
+
 ### News
 
 This sensor shows the latest news.

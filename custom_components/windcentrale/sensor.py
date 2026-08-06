@@ -4,7 +4,7 @@ import dateutil.relativedelta
 from datetime import timedelta, datetime
 from .const import DOMAIN, PRODUCTION_SENSOR_TYPES
 from homeassistant.helpers.restore_state import RestoreEntity
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -76,6 +76,13 @@ class ProductionSensor(SensorBase):
     def device_class(self) -> SensorDeviceClass:
         """Device class of the sensor."""
         return self._device_class
+
+    @property
+    def state_class(self) -> SensorStateClass | None:
+        """Return the state class for cumulative production sensors."""
+        if self._timeframe_type == "YEAR3_YEARS":
+            return SensorStateClass.TOTAL_INCREASING
+        return None
 
     @property
     def state(self):

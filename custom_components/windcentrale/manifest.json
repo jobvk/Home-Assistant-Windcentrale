@@ -1,7 +1,7 @@
 {
   "domain": "windcentrale",
   "name": "Windcentrale",
-  "after_dependencies": [],
+  "after_dependencies": ["recorder"],
   "codeowners": ["@jobvk"],
   "config_flow": true,
   "dependencies": [],

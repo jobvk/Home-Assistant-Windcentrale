@@ -3,14 +3,22 @@ import json
 import requests
 import boto3
 import datetime
+from functools import partial
 from pycognito.aws_srp import AWSSRP
 from http import HTTPStatus
 from datetime import timedelta
+from homeassistant.components.recorder.models import StatisticMeanType
+from homeassistant.components.recorder.statistics import (
+    async_add_external_statistics,
+    get_last_statistics,
+    statistics_during_period,
+)
 from homeassistant.core import callback
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.util import dt as dt_util
-from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_PLATFORM, CONF_SHOW_ON_MAP
+from homeassistant.util import slugify
+from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_PLATFORM, CONF_SHOW_ON_MAP, UnitOfEnergy
 from .const import *
 
 _LOGGER = logging.getLogger(__name__)
@@ -152,7 +160,140 @@ class Windturbine:
         await self.production_shares_month_api.update()
         await self.production_shares_week_api.update()
         await self.production_shares_day_api.update()
+        try:
+            await self.async_update_energy_statistics()
+        except Exception as exc:
+            _LOGGER.error('There was an exception when updating Energy Dashboard statistics for windturbine %s: %s', self.name, exc)
         await self.schedule_update_production(timedelta(hours=PRODUCTION_INTERVAL))
+
+    async def async_update_energy_statistics(self):
+        """Import delayed production using the day when it was generated."""
+        if "recorder" not in self.hass.config.components:
+            return
+
+        now = dt_util.now()
+        production_sources = (
+            (
+                "total",
+                "Total",
+                self.production_windtrubine_day_api.response_data,
+            ),
+            (
+                "shares",
+                "Shares",
+                self.production_shares_day_api.response_data,
+            ),
+        )
+
+        for statistic_type, statistic_name, daily_data in production_sources:
+            try:
+                await self._async_update_energy_statistic(statistic_type, statistic_name, daily_data, now)
+            except Exception as exc:
+                _LOGGER.error(
+                    'There was an exception when importing %s Energy Dashboard statistics for windturbine %s: %s',
+                    statistic_type,
+                    self.name,
+                    exc,
+                )
+
+    async def _async_update_energy_statistic(self, statistic_type, statistic_name, daily_data, now):
+        """Import one cumulative Energy Dashboard statistic."""
+        daily_values = []
+        for day, value in daily_data.items():
+            try:
+                production_date = datetime.date(now.year, now.month, int(day))
+                production_value = float(value)
+            except (TypeError, ValueError):
+                continue
+
+            if production_date >= now.date() or production_value < 0:
+                continue
+
+            daily_values.append((production_date, production_value))
+
+        if not daily_values:
+            return
+
+        daily_values.sort(key=lambda item: item[0])
+        statistic_id = self._energy_statistic_id(statistic_type)
+        cumulative_total = await self._async_get_energy_statistic_start(statistic_id, now)
+        timezone = dt_util.get_default_time_zone()
+        first_date = daily_values[0][0]
+        statistics = [
+            {
+                "start": dt_util.as_utc(
+                    datetime.datetime(first_date.year, first_date.month, first_date.day, tzinfo=timezone)
+                ),
+                "state": cumulative_total,
+                "sum": cumulative_total,
+            }
+        ]
+
+        for production_date, production_value in daily_values:
+            cumulative_total += production_value
+            statistics.append(
+                {
+                    "start": dt_util.as_utc(
+                        datetime.datetime(
+                            production_date.year,
+                            production_date.month,
+                            production_date.day,
+                            23,
+                            tzinfo=timezone,
+                        )
+                    ),
+                    "state": cumulative_total,
+                    "sum": cumulative_total,
+                }
+            )
+
+        async_add_external_statistics(
+            self.hass,
+            {
+                "has_sum": True,
+                "mean_type": StatisticMeanType.NONE,
+                "name": "{} Production {}".format(self.name, statistic_name),
+                "source": DOMAIN,
+                "statistic_id": statistic_id,
+                "unit_class": "energy",
+                "unit_of_measurement": UnitOfEnergy.KILO_WATT_HOUR,
+            },
+            statistics,
+        )
+
+    async def _async_get_energy_statistic_start(self, statistic_id, now):
+        """Return the total recorded before the current source month."""
+        timezone = dt_util.get_default_time_zone()
+        month_start = dt_util.as_utc(datetime.datetime(now.year, now.month, 1, tzinfo=timezone))
+        statistics = await self.hass.async_add_executor_job(
+            partial(
+                statistics_during_period,
+                self.hass,
+                month_start,
+                None,
+                {statistic_id},
+                "hour",
+                None,
+                {"sum"},
+            )
+        )
+
+        for statistic in statistics.get(statistic_id, []):
+            if statistic.get("sum") is not None:
+                return float(statistic["sum"])
+
+        previous_statistics = await self.hass.async_add_executor_job(
+            partial(get_last_statistics, self.hass, 1, statistic_id, True, {"sum"})
+        )
+        for statistic in previous_statistics.get(statistic_id, []):
+            if statistic.get("sum") is not None:
+                return float(statistic["sum"])
+
+        return 0
+
+    def _energy_statistic_id(self, statistic_type):
+        """Return a valid, stable external statistic ID."""
+        return "{}:{}".format(DOMAIN, slugify("{}_production_{}".format(self.id, statistic_type)))
 
     def cancel_scheduled_updates(self):
         """Cancel scheduled production updates"""
