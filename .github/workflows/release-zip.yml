@@ -46,7 +46,7 @@ jobs:
           if-no-files-found: error
 
       - name: Attach zip to release
-        uses: softprops/action-gh-release@v3.0.2
+        uses: softprops/action-gh-release@v3.0.3
         with:
           files: ${{ env.ZIP_PATH }}
           generate_release_notes: true
